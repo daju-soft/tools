@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JSON Formatter & Validator Online — Free Tool | DevToolbox</title>
+  <meta name="description" content="Format, beautify and validate JSON online for free. Paste your JSON and get instant results. No login required. Works in your browser." />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; background: #0f1117; color: #e8e8f0; min-height: 100vh; }
+    header { background: #161b22; border-bottom: 1px solid #21262d; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+    header a { text-decoration: none; }
+    header h1 { font-size: 1.3rem; font-weight: 700; color: #58a6ff; }
+    header span { font-size: 0.8rem; color: #8b949e; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .page-title { margin-bottom: 0.4rem; font-size: 1.8rem; font-weight: 800; }
+    .page-subtitle { color: #8b949e; font-size: 0.9rem; margin-bottom: 2rem; }
+    .toolbar { display: flex; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    button { padding: 0.55rem 1.2rem; border-radius: 7px; border: none; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+    button:hover { opacity: 0.85; }
+    .btn-primary { background: #58a6ff; color: #000; }
+    .btn-secondary { background: #21262d; color: #e8e8f0; border: 1px solid #30363d; }
+    .btn-danger { background: #f85149; color: #fff; }
+    .btn-success { background: #3fb950; color: #000; }
+    .editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media(max-width: 700px) { .editor-grid { grid-template-columns: 1fr; } }
+    .editor-box label { display: block; font-size: 0.75rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+    textarea { width: 100%; height: 420px; background: #161b22; border: 1px solid #21262d; border-radius: 8px; color: #e8e8f0; font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 0.85rem; padding: 1rem; resize: vertical; outline: none; line-height: 1.6; }
+    textarea:focus { border-color: #58a6ff; }
+    .status { margin-top: 0.6rem; font-size: 0.82rem; min-height: 1.2rem; }
+    .status.ok { color: #3fb950; }
+    .status.err { color: #f85149; }
+    .options { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .options label { font-size: 0.82rem; color: #8b949e; display: flex; align-items: center; gap: 0.4rem; }
+    select { background: #161b22; border: 1px solid #21262d; color: #e8e8f0; padding: 0.35rem 0.7rem; border-radius: 6px; font-size: 0.82rem; }
+    .divider { border: none; border-top: 1px solid #21262d; margin: 3rem 0; }
+    .content-section h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.8rem; color: #e8e8f0; }
+    .content-section p { color: #8b949e; line-height: 1.8; font-size: 0.92rem; margin-bottom: 1rem; }
+    .content-section h3 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: #e8e8f0; }
+    .steps { counter-reset: step; list-style: none; padding: 0; }
+    .steps li { counter-increment: step; padding: 0.5rem 0 0.5rem 2.2rem; position: relative; color: #8b949e; font-size: 0.92rem; line-height: 1.7; }
+    .steps li::before { content: counter(step); position: absolute; left: 0; top: 0.5rem; background: #58a6ff; color: #000; width: 1.4rem; height: 1.4rem; border-radius: 50%; font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .faq { margin-top: 1rem; }
+    .faq-item { border-top: 1px solid #21262d; padding: 1rem 0; }
+    .faq-item h4 { font-size: 0.92rem; font-weight: 600; margin-bottom: 0.4rem; color: #e8e8f0; }
+    .faq-item p { font-size: 0.88rem; color: #8b949e; line-height: 1.7; }
+    footer { text-align: center; padding: 3rem 1rem; color: #8b949e; font-size: 0.8rem; margin-top: 4rem; border-top: 1px solid #21262d; }
+    footer a { color: #58a6ff; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/"><h1>⚡ DevToolbox</h1></a>
+  <span>Free tools for developers</span>
+</header>
+
+<div class="container">
+
+  <h1 class="page-title">JSON Formatter & Validator</h1>
+  <p class="page-subtitle">Paste your JSON below to format, beautify and validate it instantly. Everything runs in your browser — nothing is sent to any server.</p>
+
+  <div class="options">
+    <label>
+      Indent:
+      <select id="indent">
+        <option value="2">2 spaces</option>
+        <option value="4">4 spaces</option>
+        <option value="tab">Tab</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn-primary" onclick="formatJSON()">Format JSON</button>
+    <button class="btn-secondary" onclick="minifyJSON()">Minify</button>
+    <button class="btn-secondary" onclick="copyOutput()">Copy Output</button>
+    <button class="btn-danger" onclick="clearAll()">Clear</button>
+    <button class="btn-secondary" onclick="loadSample()">Load Sample</button>
+  </div>
+
+  <div class="editor-grid">
+    <div class="editor-box">
+      <label>Input — paste your JSON here</label>
+      <textarea id="input" placeholder='Paste your JSON here...&#10;&#10;{"name":"John","age":30}'></textarea>
+      <div class="status" id="input-status"></div>
+    </div>
+    <div class="editor-box">
+      <label>Output — formatted result</label>
+      <textarea id="output" readonly placeholder="Formatted JSON will appear here..."></textarea>
+      <div class="status" id="output-status"></div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <div class="content-section">
+
+    <h2>What is a JSON Formatter?</h2>
+    <p>A JSON formatter takes raw JSON text and adds proper indentation and line breaks to make it easy to read. When you get JSON from an API or a log file it often comes as one long line with no spacing. That is fine for machines but terrible for humans trying to read it.</p>
+    <p>This tool takes that compressed JSON and reformats it so each key and value sits on its own line with consistent indentation. It also validates the JSON at the same time — if there is a syntax error like a missing comma or a stray bracket it will tell you exactly what went wrong.</p>
+
+    <h3>How to Use This Tool</h3>
+    <ol class="steps">
+      <li>Paste your raw JSON into the left input box.</li>
+      <li>Choose your preferred indentation — 2 spaces, 4 spaces, or tabs.</li>
+      <li>Click the Format JSON button.</li>
+      <li>The formatted result appears on the right. Click Copy Output to copy it.</li>
+    </ol>
+
+    <h3>Why Format JSON?</h3>
+    <p>Formatted JSON is easier to scan when debugging an API response. When you can see the structure clearly — which keys are nested inside which objects — you spot problems in seconds instead of minutes. Most developers format JSON dozens of times a day without thinking about it.</p>
+
+    <h3>What is JSON Validation?</h3>
+    <p>JSON has strict rules. Every key must be in double quotes. Strings must be closed. Arrays must be closed. A single missing character breaks the whole document. This tool parses your JSON using the same engine your browser uses and reports any errors immediately. You get the exact line and reason for the failure so you can fix it fast.</p>
+
+    <hr class="divider" />
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+
+      <div class="faq-item">
+        <h4>Is my JSON data safe?</h4>
+        <p>Yes, completely. This tool runs entirely inside your browser. Your JSON is never sent to any server. You can use it with sensitive data and nothing leaves your machine.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>Does it support large JSON files?</h4>
+        <p>Yes. Since everything runs in the browser the limit depends on your device memory. Most JSON files up to several megabytes will format without any issues.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>What is the difference between format and minify?</h4>
+        <p>Formatting adds indentation and line breaks to make JSON readable. Minifying does the opposite — it removes all whitespace to make the JSON as small as possible. Minified JSON is useful when you are sending data over a network and want to reduce the payload size.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>Why is my JSON showing an error?</h4>
+        <p>Common reasons include a trailing comma after the last item in an object or array, a missing closing bracket or brace, keys that are not wrapped in double quotes, or a string that is not properly closed. The error message will tell you where the problem is.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>Does this work on mobile?</h4>
+        <p>Yes. The tool is fully responsive and works on phones and tablets. Paste your JSON into the input box and tap Format JSON.</p>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <p><a href="/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox — Free developer tools. No login required.</p>
+</footer>
+
+<script>
+  function getIndent() {
+    const v = document.getElementById('indent').value;
+    return v === 'tab' ? '\t' : parseInt(v);
+  }
+
+  function formatJSON() {
+    const input = document.getElementById('input').value.trim();
+    const inputStatus = document.getElementById('input-status');
+    const outputStatus = document.getElementById('output-status');
+    const output = document.getElementById('output');
+
+    if (!input) {
+      inputStatus.textContent = 'Please paste some JSON first.';
+      inputStatus.className = 'status err';
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(input);
+      const formatted = JSON.stringify(parsed, null, getIndent());
+      output.value = formatted;
+      inputStatus.textContent = '✓ Valid JSON';
+      inputStatus.className = 'status ok';
+      outputStatus.textContent = `✓ Formatted — ${formatted.split('\n').length} lines`;
+      outputStatus.className = 'status ok';
+    } catch (e) {
+      inputStatus.textContent = '✗ Invalid JSON: ' + e.message;
+      inputStatus.className = 'status err';
+      output.value = '';
+      outputStatus.textContent = '';
+    }
+  }
+
+  function minifyJSON() {
+    const input = document.getElementById('input').value.trim();
+    const inputStatus = document.getElementById('input-status');
+    const output = document.getElementById('output');
+    const outputStatus = document.getElementById('output-status');
+
+    try {
+      const parsed = JSON.parse(input);
+      const minified = JSON.stringify(parsed);
+      output.value = minified;
+      inputStatus.textContent = '✓ Valid JSON';
+      inputStatus.className = 'status ok';
+      outputStatus.textContent = `✓ Minified — ${minified.length} characters`;
+      outputStatus.className = 'status ok';
+    } catch (e) {
+      inputStatus.textContent = '✗ Invalid JSON: ' + e.message;
+      inputStatus.className = 'status err';
+    }
+  }
+
+  function copyOutput() {
+    const output = document.getElementById('output');
+    if (!output.value) return;
+    navigator.clipboard.writeText(output.value);
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy Output', 1500);
+  }
+
+  function clearAll() {
+    document.getElementById('input').value = '';
+    document.getElementById('output').value = '';
+    document.getElementById('input-status').textContent = '';
+    document.getElementById('output-status').textContent = '';
+  }
+
+  function loadSample() {
+    document.getElementById('input').value = JSON.stringify({
+      "name": "John Doe",
+      "age": 30,
+      "email": "john@example.com",
+      "address": { "street": "123 Main St", "city": "London", "country": "UK" },
+      "skills": ["JavaScript", "Python", "C#"],
+      "active": true
+    });
+    formatJSON();
+  }
+
+  document.getElementById('input').addEventListener('input', function() {
+    const status = document.getElementById('input-status');
+    if (!this.value.trim()) { status.textContent = ''; return; }
+    try {
+      JSON.parse(this.value);
+      status.textContent = '✓ Valid JSON';
+      status.className = 'status ok';
+    } catch(e) {
+      status.textContent = '✗ ' + e.message;
+      status.className = 'status err';
+    }
+  });
+</script>
+
+</body>
+</html>

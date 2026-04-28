@@ -1,1 +1,86 @@
-hello
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DevToolbox — Free Online Developer Tools</title>
+  <meta name="description" content="Free online developer tools. JSON formatter, Base64 encoder, regex tester, word counter and more. Fast, free, no login required." />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; background: #0f1117; color: #e8e8f0; min-height: 100vh; }
+    header { background: #161b22; border-bottom: 1px solid #21262d; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+    header h1 { font-size: 1.3rem; font-weight: 700; color: #58a6ff; }
+    header span { font-size: 0.8rem; color: #8b949e; }
+    .hero { text-align: center; padding: 4rem 2rem 2rem; }
+    .hero h2 { font-size: 2.2rem; font-weight: 800; margin-bottom: 1rem; }
+    .hero h2 span { color: #58a6ff; }
+    .hero p { color: #8b949e; font-size: 1rem; max-width: 500px; margin: 0 auto; }
+    .search { margin: 2rem auto; max-width: 500px; padding: 0 1rem; }
+    .search input { width: 100%; padding: 0.8rem 1.2rem; border-radius: 8px; border: 1px solid #21262d; background: #161b22; color: #e8e8f0; font-size: 1rem; outline: none; }
+    .search input:focus { border-color: #58a6ff; }
+    .categories { max-width: 1000px; margin: 2rem auto; padding: 0 1.5rem; }
+    .category-title { font-size: 0.75rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; margin-top: 2rem; }
+    .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+    .tool-card { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 1.2rem; text-decoration: none; color: inherit; transition: border-color 0.2s, transform 0.2s; display: block; }
+    .tool-card:hover { border-color: #58a6ff; transform: translateY(-2px); }
+    .tool-card .icon { font-size: 1.5rem; margin-bottom: 0.6rem; }
+    .tool-card h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.3rem; }
+    .tool-card p { font-size: 0.78rem; color: #8b949e; line-height: 1.4; }
+    footer { text-align: center; padding: 3rem 1rem; color: #8b949e; font-size: 0.8rem; margin-top: 4rem; border-top: 1px solid #21262d; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>⚡ DevToolbox</h1>
+  <span>Free tools for developers</span>
+</header>
+
+<div class="hero">
+  <h2>Developer Tools, <span>Fast & Free</span></h2>
+  <p>No login. No ads. No nonsense. Just tools that work.</p>
+</div>
+
+<div class="search">
+  <input type="text" id="search" placeholder="Search tools..." onkeyup="filterTools()" />
+</div>
+
+<div class="categories" id="tool-list">
+
+  <div class="category-title">📦 Data & Formatting</div>
+  <div class="tools-grid">
+    <a href="/tools/json-formatter/" class="tool-card">
+      <div class="icon">🔧</div>
+      <h3>JSON Formatter</h3>
+      <p>Format and validate JSON instantly in your browser.</p>
+    </a>
+    <a href="/tools/base64-encoder/" class="tool-card">
+      <div class="icon">🔒</div>
+      <h3>Base64 Encoder / Decoder</h3>
+      <p>Encode or decode Base64 strings with one click.</p>
+    </a>
+    <a href="/tools/xml-formatter/" class="tool-card">
+      <div class="icon">📄</div>
+      <h3>XML Formatter</h3>
+      <p>Beautify and format XML code instantly.</p>
+    </a>
+    <a href="/tools/csv-to-json/" class="tool-card">
+      <div class="icon">🔄</div>
+      <h3>CSV to JSON</h3>
+      <p>Convert CSV data to JSON format in seconds.</p>
+    </a>
+  </div>
+
+  <div class="category-title">✍️ Text Tools</div>
+  <div class="tools-grid">
+    <a href="/tools/word-counter/" class="tool-card">
+      <div class="icon">📝</div>
+      <h3>Word Counter</h3>
+      <p>Count words, characters, sentences and paragraphs.</p>
+    </a>
+    <a href="/tools/diff-checker/" class="tool-card">
+      <div class="icon">🔍</div>
+      <h3>Diff Checker</h3>
+      <p>Compare two pieces of text and spot the differences.</p>
+    </a>
+    <a href="/tools/

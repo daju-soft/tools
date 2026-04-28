@@ -3,72 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../style.css" />
   <title>JWT Decoder Online — Decode & Inspect JWT Tokens Free | DevToolbox</title>
   <meta name="description" content="Decode and inspect JWT tokens online for free. See header, payload and signature instantly. No login required. Your token never leaves your browser." />
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: system-ui, sans-serif; background: #0f1117; color: #e8e8f0; min-height: 100vh; }
-    header { background: #161b22; border-bottom: 1px solid #21262d; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
-    header a { text-decoration: none; }
-    header h1 { font-size: 1.3rem; font-weight: 700; color: #58a6ff; }
-    header span { font-size: 0.8rem; color: #8b949e; }
-    .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
-    .page-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.4rem; }
-    .page-subtitle { color: #8b949e; font-size: 0.9rem; margin-bottom: 2rem; }
-    .input-box { margin-bottom: 1.5rem; }
-    .input-box label { font-size: 0.75rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 0.5rem; }
-    textarea { width: 100%; background: #161b22; border: 1px solid #21262d; border-radius: 8px; color: #e8e8f0; font-family: monospace; font-size: 0.85rem; padding: 1rem; resize: vertical; outline: none; line-height: 1.6; }
-    textarea:focus { border-color: #58a6ff; }
-    #jwt-input { height: 120px; }
-    .toolbar { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-    button { padding: 0.55rem 1.2rem; border-radius: 7px; border: none; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
-    button:hover { opacity: 0.85; }
-    .btn-primary { background: #58a6ff; color: #000; }
-    .btn-danger { background: #f85149; color: #fff; }
-    .btn-secondary { background: #21262d; color: #e8e8f0; border: 1px solid #30363d; }
-    .status { font-size: 0.82rem; margin-bottom: 1rem; min-height: 1.2rem; }
-    .status.ok { color: #3fb950; }
-    .status.err { color: #f85149; }
-    .jwt-parts { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
-    @media(max-width:700px) { .jwt-parts { grid-template-columns: 1fr; } }
-    .jwt-part { background: #161b22; border-radius: 10px; padding: 1.2rem; border-top: 3px solid #21262d; }
-    .jwt-part.header-part { border-top-color: #f85149; }
-    .jwt-part.payload-part { border-top-color: #58a6ff; grid-column: 1 / -1; }
-    .jwt-part.signature-part { border-top-color: #3fb950; }
-    .jwt-part h3 { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.8rem; }
-    .jwt-part.header-part h3 { color: #f85149; }
-    .jwt-part.payload-part h3 { color: #58a6ff; }
-    .jwt-part.signature-part h3 { color: #3fb950; }
-    .jwt-part textarea { height: 160px; background: #0f1117; font-size: 0.82rem; border-color: #21262d; }
-    .payload-part textarea { height: 260px; }
-    .claims-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.6rem; margin-top: 1rem; }
-    .claim-item { background: #0f1117; border-radius: 8px; padding: 0.7rem; border: 1px solid #21262d; }
-    .claim-key { font-size: 0.72rem; color: #8b949e; font-family: monospace; margin-bottom: 0.2rem; }
-    .claim-value { font-size: 0.88rem; color: #e8e8f0; font-family: monospace; word-break: break-all; }
-    .claim-value.expired { color: #f85149; }
-    .claim-value.valid { color: #3fb950; }
-    .token-display { font-family: monospace; font-size: 0.82rem; line-height: 1.8; word-break: break-all; background: #161b22; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; border: 1px solid #21262d; }
-    .token-display .part-header { color: #f85149; }
-    .token-display .part-payload { color: #58a6ff; }
-    .token-display .part-signature { color: #3fb950; }
-    .token-display .dot { color: #8b949e; }
-    .divider { border: none; border-top: 1px solid #21262d; margin: 3rem 0; }
-    .content-section h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.8rem; }
-    .content-section p { color: #8b949e; line-height: 1.8; font-size: 0.92rem; margin-bottom: 1rem; }
-    .content-section h3 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; }
-    .faq { margin-top: 1rem; }
-    .faq-item { border-top: 1px solid #21262d; padding: 1rem 0; }
-    .faq-item h4 { font-size: 0.92rem; font-weight: 600; margin-bottom: 0.4rem; }
-    .faq-item p { font-size: 0.88rem; color: #8b949e; line-height: 1.7; }
-    footer { text-align: center; padding: 3rem 1rem; color: #8b949e; font-size: 0.8rem; margin-top: 4rem; border-top: 1px solid #21262d; }
-    footer a { color: #58a6ff; text-decoration: none; }
-  </style>
+  
 </head>
 <body>
 
 <header>
-  <a href="/"><h1>⚡ DevToolbox</h1></a>
-  <span>Free tools for developers</span>
+  <a href="/" class="logo">
+    <div class="logo-icon">⚡</div>
+    <span class="logo-text">DevToolbox</span>
+  </a>
+  <div class="header-right">Free tools for developers</div>
 </header>
 
 <div class="container">

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Base64 Encoder & Decoder Online — Free Tool | DevToolbox</title>
+  <meta name="description" content="Encode and decode Base64 strings online for free. Supports text and URLs. instant results, no login required. Everything runs in your browser." />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; background: #0f1117; color: #e8e8f0; min-height: 100vh; }
+    header { background: #161b22; border-bottom: 1px solid #21262d; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+    header a { text-decoration: none; }
+    header h1 { font-size: 1.3rem; font-weight: 700; color: #58a6ff; }
+    header span { font-size: 0.8rem; color: #8b949e; }
+    .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .page-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.4rem; }
+    .page-subtitle { color: #8b949e; font-size: 0.9rem; margin-bottom: 2rem; }
+    .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .tab { padding: 0.5rem 1.2rem; border-radius: 7px; border: 1px solid #21262d; background: transparent; color: #8b949e; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .tab.active { background: #58a6ff; color: #000; border-color: #58a6ff; }
+    .editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media(max-width: 700px) { .editor-grid { grid-template-columns: 1fr; } }
+    .editor-box label { display: block; font-size: 0.75rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+    textarea { width: 100%; height: 280px; background: #161b22; border: 1px solid #21262d; border-radius: 8px; color: #e8e8f0; font-family: 'Courier New', monospace; font-size: 0.85rem; padding: 1rem; resize: vertical; outline: none; line-height: 1.6; }
+    textarea:focus { border-color: #58a6ff; }
+    .toolbar { display: flex; gap: 0.75rem; margin: 1rem 0; flex-wrap: wrap; }
+    button { padding: 0.55rem 1.2rem; border-radius: 7px; border: none; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+    button:hover { opacity: 0.85; }
+    .btn-primary { background: #58a6ff; color: #000; }
+    .btn-secondary { background: #21262d; color: #e8e8f0; border: 1px solid #30363d; }
+    .btn-danger { background: #f85149; color: #fff; }
+    .btn-flip { background: #7c6aff; color: #fff; }
+    .status { font-size: 0.82rem; min-height: 1.2rem; margin-top: 0.4rem; }
+    .status.ok { color: #3fb950; }
+    .status.err { color: #f85149; }
+    .divider { border: none; border-top: 1px solid #21262d; margin: 3rem 0; }
+    .content-section h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.8rem; }
+    .content-section p { color: #8b949e; line-height: 1.8; font-size: 0.92rem; margin-bottom: 1rem; }
+    .content-section h3 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; }
+    .steps { counter-reset: step; list-style: none; padding: 0; }
+    .steps li { counter-increment: step; padding: 0.5rem 0 0.5rem 2.2rem; position: relative; color: #8b949e; font-size: 0.92rem; line-height: 1.7; }
+    .steps li::before { content: counter(step); position: absolute; left: 0; top: 0.5rem; background: #58a6ff; color: #000; width: 1.4rem; height: 1.4rem; border-radius: 50%; font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .faq { margin-top: 1rem; }
+    .faq-item { border-top: 1px solid #21262d; padding: 1rem 0; }
+    .faq-item h4 { font-size: 0.92rem; font-weight: 600; margin-bottom: 0.4rem; }
+    .faq-item p { font-size: 0.88rem; color: #8b949e; line-height: 1.7; }
+    footer { text-align: center; padding: 3rem 1rem; color: #8b949e; font-size: 0.8rem; margin-top: 4rem; border-top: 1px solid #21262d; }
+    footer a { color: #58a6ff; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/"><h1>⚡ DevToolbox</h1></a>
+  <span>Free tools for developers</span>
+</header>
+
+<div class="container">
+
+  <h1 class="page-title">Base64 Encoder & Decoder</h1>
+  <p class="page-subtitle">Encode plain text to Base64 or decode Base64 back to text instantly. Everything runs in your browser — nothing is sent to any server.</p>
+
+  <div class="tabs">
+    <button class="tab active" onclick="setMode('encode', this)">Encode</button>
+    <button class="tab" onclick="setMode('decode', this)">Decode</button>
+  </div>
+
+  <div class="editor-grid">
+    <div class="editor-box">
+      <label id="input-label">Input — plain text</label>
+      <textarea id="input" placeholder="Type or paste your text here..."></textarea>
+      <div class="status" id="input-status"></div>
+    </div>
+    <div class="editor-box">
+      <label id="output-label">Output — Base64 encoded</label>
+      <textarea id="output" readonly placeholder="Result will appear here..."></textarea>
+      <div class="status" id="output-status"></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn-primary" onclick="process()">Convert</button>
+    <button class="btn-secondary" onclick="copyOutput()">Copy Output</button>
+    <button class="btn-flip" onclick="flipInputOutput()">⇄ Flip</button>
+    <button class="btn-danger" onclick="clearAll()">Clear</button>
+    <button class="btn-secondary" onclick="loadSample()">Load Sample</button>
+  </div>
+
+  <hr class="divider" />
+
+  <div class="content-section">
+
+    <h2>What is Base64 Encoding?</h2>
+    <p>Base64 is a way of encoding binary data as plain text. It takes any input — text, images, files — and converts it into a string of characters that only uses letters, numbers, and the symbols + and /. The name comes from the fact that it uses 64 different characters to represent the data.</p>
+    <p>Base64 is not encryption. It does not protect your data. Anyone who has the Base64 string can decode it back to the original in seconds. It is purely a way to safely transmit binary data through systems that only handle text, like email or JSON APIs.</p>
+
+    <h3>When is Base64 Used?</h3>
+    <p>Base64 is used in email attachments to send binary files through text-based email systems. It is used in data URIs to embed images directly into HTML or CSS without a separate file. It is used in HTTP Basic Authentication to encode usernames and passwords. It is also used in JWTs and many other token formats.</p>
+
+    <h3>How to Use This Tool</h3>
+    <ol class="steps">
+      <li>Choose Encode or Decode using the tabs at the top.</li>
+      <li>Paste your text into the left input box.</li>
+      <li>Click Convert to see the result on the right.</li>
+      <li>Click Copy Output to copy the result to your clipboard.</li>
+      <li>Use the Flip button to swap input and output instantly.</li>
+    </ol>
+
+    <hr class="divider" />
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+
+      <div class="faq-item">
+        <h4>Is Base64 the same as encryption?</h4>
+        <p>No. Base64 is encoding, not encryption. Anyone can decode a Base64 string instantly without a key or password. Never use Base64 to protect sensitive data. Use proper encryption for that.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>Why does Base64 output end with == sometimes?</h4>
+        <p>Base64 works in groups of 3 bytes. If the input length is not divisible by 3 it adds padding characters at the end to complete the group. One or two equals signs at the end is normal and just means the input was padded.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>Can I encode images to Base64?</h4>
+        <p>This tool encodes text to Base64. To encode an image you would need to first convert the image to a binary string. A common use case is embedding small images directly in HTML using a data URI like src="data:image/png;base64,..."</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>Is my data safe?</h4>
+        <p>Yes. Everything runs in your browser. Your text is never sent to any server. You can safely use this tool with sensitive content.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>What characters does Base64 use?</h4>
+        <p>Base64 uses A-Z, a-z, 0-9, plus (+) and forward slash (/). The equals sign (=) is used as padding. URL-safe Base64 replaces + with - and / with _ to make the output safe to use in URLs.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p><a href="/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox — Free developer tools. No login required.</p>
+</footer>
+
+<script>
+  let mode = 'encode';
+
+  function setMode(m, btn) {
+    mode = m;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('input-label').textContent = m === 'encode' ? 'Input — plain text' : 'Input — Base64 string';
+    document.getElementById('output-label').textContent = m === 'encode' ? 'Output — Base64 encoded' : 'Output — decoded text';
+    document.getElementById('input').placeholder = m === 'encode' ? 'Type or paste your text here...' : 'Paste your Base64 string here...';
+    clearAll();
+  }
+
+  function process() {
+    const input = document.getElementById('input').value;
+    const inputStatus = document.getElementById('input-status');
+    const outputStatus = document.getElementById('output-status');
+    const output = document.getElementById('output');
+
+    if (!input.trim()) {
+      inputStatus.textContent = 'Please enter some text first.';
+      inputStatus.className = 'status err';
+      return;
+    }
+
+    try {
+      if (mode === 'encode') {
+        output.value = btoa(unescape(encodeURIComponent(input)));
+        inputStatus.textContent = '✓ Encoded successfully';
+        inputStatus.className = 'status ok';
+        outputStatus.textContent = `✓ ${output.value.length} characters`;
+        outputStatus.className = 'status ok';
+      } else {
+        output.value = decodeURIComponent(escape(atob(input.trim())));
+        inputStatus.textContent = '✓ Decoded successfully';
+        inputStatus.className = 'status ok';
+        outputStatus.textContent = `✓ ${output.value.length} characters`;
+        outputStatus.className = 'status ok';
+      }
+    } catch (e) {
+      inputStatus.textContent = '✗ Invalid Base64 string';
+      inputStatus.className = 'status err';
+      output.value = '';
+      outputStatus.textContent = '';
+    }
+  }
+
+  function copyOutput() {
+    const text = document.getElementById('output').value;
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy Output', 1500);
+  }
+
+  function flipInputOutput() {
+    const input = document.getElementById('input');
+    const output = document.getElementById('output');
+    const temp = input.value;
+    input.value = output.value;
+    output.value = temp;
+    document.getElementById('input-status').textContent = '';
+    document.getElementById('output-status').textContent = '';
+  }
+
+  function clearAll() {
+    document.getElementById('input').value = '';
+    document.getElementById('output').value = '';
+    document.getElementById('input-status').textContent = '';
+    document.getElementById('output-status').textContent = '';
+  }
+
+  function loadSample() {
+    if (mode === 'encode') {
+      document.getElementById('input').value = 'Hello, World! This is a Base64 encoding example.';
+    } else {
+      document.getElementById('input').value = 'SGVsbG8sIFdvcmxkISBUaGlzIGlzIGEgQmFzZTY0IGVuY29kaW5nIGV4YW1wbGUu';
+    }
+    process();
+  }
+</script>
+
+</body>
+</html>

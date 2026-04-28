@@ -1,21 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-<<<<<<< HEAD
-:root {
-  --bg: #202f53;
-  --surface: #161b22;
-  --surface2: #1c2128;
-  --border: #21262d;
-  --border2: #30363d;
-  --accent: #58a6ff;
-  --accent-dim: #58a6ff18;
-  --text: #e8e8f0;
-  --muted: #8b949e;
-  --white: #f0f6fc;
-}
-
-=======
->>>>>>> be2de2c (restore original clean dark theme)
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {

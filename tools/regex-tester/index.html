@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Regex Tester Online — Test Regular Expressions Free | DevToolbox</title>
+  <meta name="description" content="Test and debug regular expressions online for free. Real-time match highlighting, match list, and group captures. No login required." />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; background: #0f1117; color: #e8e8f0; min-height: 100vh; }
+    header { background: #161b22; border-bottom: 1px solid #21262d; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+    header a { text-decoration: none; }
+    header h1 { font-size: 1.3rem; font-weight: 700; color: #58a6ff; }
+    header span { font-size: 0.8rem; color: #8b949e; }
+    .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .page-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.4rem; }
+    .page-subtitle { color: #8b949e; font-size: 0.9rem; margin-bottom: 2rem; }
+    .regex-input-wrap { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 1.2rem; margin-bottom: 1rem; }
+    .regex-input-wrap label { font-size: 0.75rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 0.5rem; }
+    .regex-row { display: flex; align-items: center; gap: 0.5rem; }
+    .regex-slash { font-size: 1.4rem; color: #8b949e; font-family: monospace; }
+    .regex-row input { flex: 1; background: #0f1117; border: 1px solid #21262d; border-radius: 6px; color: #58a6ff; font-family: monospace; font-size: 1rem; padding: 0.6rem 0.8rem; outline: none; }
+    .regex-row input:focus { border-color: #58a6ff; }
+    .flags-input { width: 80px !important; flex: none !important; color: #3fb950 !important; }
+    .flags-row { display: flex; gap: 0.5rem; margin-top: 0.8rem; flex-wrap: wrap; }
+    .flag-btn { padding: 0.25rem 0.7rem; border-radius: 5px; border: 1px solid #21262d; background: transparent; color: #8b949e; font-family: monospace; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; }
+    .flag-btn.active { background: #3fb950; color: #000; border-color: #3fb950; font-weight: 700; }
+    .status-bar { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .match-badge { padding: 0.3rem 0.8rem; border-radius: 99px; font-size: 0.78rem; font-weight: 700; }
+    .match-badge.found { background: #3fb95020; color: #3fb950; border: 1px solid #3fb95040; }
+    .match-badge.none { background: #f8514920; color: #f85149; border: 1px solid #f8514940; }
+    .match-badge.empty { background: #21262d; color: #8b949e; }
+    .editor-box { margin-bottom: 1rem; }
+    .editor-box label { font-size: 0.75rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 0.5rem; }
+    .test-string-wrap { position: relative; }
+    #highlighted { position: absolute; top: 0; left: 0; width: 100%; height: 100%; padding: 1rem; font-family: monospace; font-size: 0.88rem; line-height: 1.6; border-radius: 8px; pointer-events: none; white-space: pre-wrap; word-wrap: break-word; color: transparent; overflow: hidden; }
+    #highlighted mark { background: #f6c90e40; color: transparent; border-radius: 2px; border-bottom: 2px solid #f6c90e; }
+    textarea { width: 100%; height: 200px; background: #161b22; border: 1px solid #21262d; border-radius: 8px; color: #e8e8f0; font-family: monospace; font-size: 0.88rem; padding: 1rem; resize: vertical; outline: none; line-height: 1.6; position: relative; }
+    textarea:focus { border-color: #58a6ff; }
+    .matches-box { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 1.2rem; margin-bottom: 1rem; min-height: 80px; }
+    .matches-box label { font-size: 0.75rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 0.8rem; }
+    .match-item { font-family: monospace; font-size: 0.85rem; padding: 0.4rem 0.7rem; background: #0f1117; border-radius: 6px; margin-bottom: 0.4rem; display: flex; gap: 1rem; align-items: center; }
+    .match-index { color: #8b949e; font-size: 0.75rem; min-width: 60px; }
+    .match-value { color: #f6c90e; }
+    .match-pos { color: #8b949e; font-size: 0.75rem; margin-left: auto; }
+    .cheatsheet { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 1.2rem; margin-bottom: 1.5rem; }
+    .cheatsheet label { font-size: 0.75rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 0.8rem; }
+    .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.4rem; }
+    .cheat-item { font-family: monospace; font-size: 0.78rem; padding: 0.3rem 0.6rem; background: #0f1117; border-radius: 5px; cursor: pointer; transition: background 0.2s; display: flex; gap: 0.5rem; }
+    .cheat-item:hover { background: #21262d; }
+    .cheat-pattern { color: #58a6ff; }
+    .cheat-desc { color: #8b949e; }
+    .toolbar { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    button { padding: 0.55rem 1.2rem; border-radius: 7px; border: none; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+    button:hover { opacity: 0.85; }
+    .btn-danger { background: #f85149; color: #fff; }
+    .btn-secondary { background: #21262d; color: #e8e8f0; border: 1px solid #30363d; }
+    .divider { border: none; border-top: 1px solid #21262d; margin: 3rem 0; }
+    .content-section h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.8rem; }
+    .content-section p { color: #8b949e; line-height: 1.8; font-size: 0.92rem; margin-bottom: 1rem; }
+    .content-section h3 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; }
+    .faq { margin-top: 1rem; }
+    .faq-item { border-top: 1px solid #21262d; padding: 1rem 0; }
+    .faq-item h4 { font-size: 0.92rem; font-weight: 600; margin-bottom: 0.4rem; }
+    .faq-item p { font-size: 0.88rem; color: #8b949e; line-height: 1.7; }
+    footer { text-align: center; padding: 3rem 1rem; color: #8b949e; font-size: 0.8rem; margin-top: 4rem; border-top: 1px solid #21262d; }
+    footer a { color: #58a6ff; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/"><h1>⚡ DevToolbox</h1></a>
+  <span>Free tools for developers</span>
+</header>
+
+<div class="container">
+
+  <h1 class="page-title">Regex Tester</h1>
+  <p class="page-subtitle">Test and debug regular expressions in real time. Matches highlight instantly as you type.</p>
+
+  <div class="regex-input-wrap">
+    <label>Regular Expression</label>
+    <div class="regex-row">
+      <span class="regex-slash">/</span>
+      <input type="text" id="regex-input" placeholder="Enter your regex pattern..." oninput="runRegex()" />
+      <span class="regex-slash">/</span>
+      <input type="text" id="flags-input" class="flags-input" placeholder="gim" maxlength="6" oninput="runRegex()" />
+    </div>
+    <div class="flags-row">
+      <button class="flag-btn active" data-flag="g" onclick="toggleFlag(this)">g — global</button>
+      <button class="flag-btn" data-flag="i" onclick="toggleFlag(this)">i — case insensitive</button>
+      <button class="flag-btn" data-flag="m" onclick="toggleFlag(this)">m — multiline</button>
+      <button class="flag-btn" data-flag="s" onclick="toggleFlag(this)">s — dot all</button>
+    </div>
+  </div>
+
+  <div class="status-bar">
+    <span class="match-badge empty" id="match-badge">Enter a pattern to start</span>
+  </div>
+
+  <div class="editor-box">
+    <label>Test String</label>
+    <div class="test-string-wrap">
+      <div id="highlighted"></div>
+      <textarea id="test-input" placeholder="Paste your test string here..." oninput="runRegex()"></textarea>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn-danger" onclick="clearAll()">Clear</button>
+    <button class="btn-secondary" onclick="loadSample()">Load Sample</button>
+  </div>
+
+  <div class="matches-box">
+    <label>Matches</label>
+    <div id="matches-list"><span style="color:#8b949e;font-size:0.85rem">No matches yet.</span></div>
+  </div>
+
+  <div class="cheatsheet">
+    <label>Quick Reference — click to insert</label>
+    <div class="cheat-grid">
+      <div class="cheat-item" onclick="insertPattern('.')"><span class="cheat-pattern">.</span><span class="cheat-desc">Any character</span></div>
+      <div class="cheat-item" onclick="insertPattern('\\d')"><span class="cheat-pattern">\d</span><span class="cheat-desc">Digit</span></div>
+      <div class="cheat-item" onclick="insertPattern('\\w')"><span class="cheat-pattern">\w</span><span class="cheat-desc">Word character</span></div>
+      <div class="cheat-item" onclick="insertPattern('\\s')"><span class="cheat-pattern">\s</span><span class="cheat-desc">Whitespace</span></div>
+      <div class="cheat-item" onclick="insertPattern('\\D')"><span class="cheat-pattern">\D</span><span class="cheat-desc">Non-digit</span></div>
+      <div class="cheat-item" onclick="insertPattern('\\W')"><span class="cheat-pattern">\W</span><span class="cheat-desc">Non-word</span></div>
+      <div class="cheat-item" onclick="insertPattern('^')"><span class="cheat-pattern">^</span><span class="cheat-desc">Start of string</span></div>
+      <div class="cheat-item" onclick="insertPattern('$')"><span class="cheat-pattern">$</span><span class="cheat-desc">End of string</span></div>
+      <div class="cheat-item" onclick="insertPattern('*')"><span class="cheat-pattern">*</span><span class="cheat-desc">0 or more</span></div>
+      <div class="cheat-item" onclick="insertPattern('+')"><span class="cheat-pattern">+</span><span class="cheat-desc">1 or more</span></div>
+      <div class="cheat-item" onclick="insertPattern('?')"><span class="cheat-pattern">?</span><span class="cheat-desc">0 or 1</span></div>
+      <div class="cheat-item" onclick="insertPattern('|')"><span class="cheat-pattern">|</span><span class="cheat-desc">Or</span></div>
+      <div class="cheat-item" onclick="insertPattern('()')"><span class="cheat-pattern">()</span><span class="cheat-desc">Group</span></div>
+      <div class="cheat-item" onclick="insertPattern('[]')"><span class="cheat-pattern">[]</span><span class="cheat-desc">Character class</span></div>
+      <div class="cheat-item" onclick="insertPattern('{n,m}')"><span class="cheat-pattern">{n,m}</span><span class="cheat-desc">Between n and m</span></div>
+      <div class="cheat-item" onclick="insertPattern('\\b')"><span class="cheat-pattern">\b</span><span class="cheat-desc">Word boundary</span></div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <div class="content-section">
+
+    <h2>What is a Regular Expression?</h2>
+    <p>A regular expression — usually called a regex — is a sequence of characters that defines a search pattern. You use them to find, match, or replace text that follows a specific pattern. For example a regex can find all email addresses in a document, validate a phone number format, or extract all URLs from a web page.</p>
+    <p>Regex is supported in almost every programming language including JavaScript, Python, C#, Java, and PHP. The syntax varies slightly between languages but the core concepts are the same everywhere.</p>
+
+    <h3>How to Use This Regex Tester</h3>
+    <p>Type your regex pattern in the top input box. Paste your test string in the text area below. Matches highlight in yellow instantly as you type. The matches list below shows every match with its position in the string. Click any item in the quick reference to insert it into your pattern.</p>
+
+    <hr class="divider" />
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+
+      <div class="faq-item">
+        <h4>What do the flags mean?</h4>
+        <p>The g flag means global — find all matches, not just the first one. The i flag makes the match case insensitive. The m flag makes ^ and $ match the start and end of each line instead of the whole string. The s flag makes the dot character match newlines as well.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>Why is my regex not matching anything?</h4>
+        <p>Common reasons include forgetting to escape special characters like dots and brackets, using the wrong flags, or a pattern that is more specific than you think. Try simplifying the pattern and building it up step by step to find where it breaks.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>What regex flavour does this use?</h4>
+        <p>This tester uses JavaScript regex which is ECMAScript standard. It is very similar to most other languages but has some differences from PCRE which is used in PHP, Python, and others.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>Can I use this to validate email addresses?</h4>
+        <p>Yes. A common email regex is <code style="color:#58a6ff;font-family:monospace">[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}</code>. Paste it into the pattern box and test your email addresses in the test string box.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p><a href="/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox — Free developer tools. No login required.</p>
+</footer>
+
+<script>
+  function getFlags() {
+    return document.getElementById('flags-input').value;
+  }
+
+  function toggleFlag(btn) {
+    btn.classList.toggle('active');
+    const activeFlags = [...document.querySelectorAll('.flag-btn.active')].map(b => b.dataset.flag).join('');
+    document.getElementById('flags-input').value = activeFlags;
+    runRegex();
+  }
+
+  function runRegex() {
+    const pattern = document.getElementById('regex-input').value;
+    const testStr = document.getElementById('test-input').value;
+    const flags = getFlags();
+    const badge = document.getElementById('match-badge');
+    const matchesList = document.getElementById('matches-list');
+
+    if (!pattern) {
+      badge.textContent = 'Enter a pattern to start';
+      badge.className = 'match-badge empty';
+      matchesList.innerHTML = '<span style="color:#8b949e;font-size:0.85rem">No matches yet.</span>';
+      document.getElementById('highlighted').innerHTML = '';
+      return;
+    }
+
+    try {
+      const regex = new RegExp(pattern, flags);
+      const matches = [...testStr.matchAll(new RegExp(pattern, flags.includes('g') ? flags : flags + 'g'))];
+
+      if (matches.length === 0) {
+        badge.textContent = 'No matches found';
+        badge.className = 'match-badge none';
+        matchesList.innerHTML = '<span style="color:#8b949e;font-size:0.85rem">No matches found.</span>';
+        document.getElementById('highlighted').innerHTML = escapeHtml(testStr);
+        return;
+      }
+
+      badge.textContent = `${matches.length} match${matches.length === 1 ? '' : 'es'} found`;
+      badge.className = 'match-badge found';
+
+      matchesList.innerHTML = matches.map((m, i) =>
+        `<div class="match-item">
+          <span class="match-index">Match ${i + 1}</span>
+          <span class="match-value">${escapeHtml(m[0])}</span>
+          <span class="match-pos">index ${m.index}</span>
+        </div>`
+      ).join('');
+
+      const highlighted = testStr.replace(new RegExp(pattern, flags.includes('g') ? flags : flags + 'g'),
+        match => `<mark>${escapeHtml(match)}</mark>`);
+      document.getElementById('highlighted').innerHTML = highlighted;
+
+    } catch (e) {
+      badge.textContent = 'Invalid regex: ' + e.message;
+      badge.className = 'match-badge none';
+      matchesList.innerHTML = '';
+    }
+  }
+
+  function escapeHtml(text) {
+    return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function insertPattern(p) {
+    const input = document.getElementById('regex-input');
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+    input.value = input.value.substring(0, start) + p + input.value.substring(end);
+    input.focus();
+    input.setSelectionRange(start + p.length, start + p.length);
+    runRegex();
+  }
+
+  function clearAll() {
+    document.getElementById('regex-input').value = '';
+    document.getElementById('test-input').value = '';
+    document.getElementById('flags-input').value = 'g';
+    document.getElementById('highlighted').innerHTML = '';
+    runRegex();
+  }
+
+  function loadSample() {
+    document.getElementById('regex-input').value = '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}';
+    document.getElementById('flags-input').value = 'g';
+    document.getElementById('test-input').value = `Hello, you can reach us at support@example.com or sales@devtoolbox.io.
+Invalid emails like @nodomain or missing@.com will not match.
+Contact john.doe+filter@company.co.uk for enterprise support.`;
+    runRegex();
+  }
+</script>
+
+</body>
+</html>

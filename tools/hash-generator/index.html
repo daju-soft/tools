@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hash Generator Online — MD5 SHA256 SHA512 Free Tool | DevToolbox</title>
+  <meta name="description" content="Generate MD5, SHA1, SHA256 and SHA512 hashes online for free. Paste your text and get instant hash results. No login required." />
+  <link rel="stylesheet" href="../../style.css" />
+  <style>
+    .hash-item { background: #161b22; border: 1px solid #21262d; border-radius: 8px; padding: 1rem; margin-bottom: 0.75rem; }
+    .hash-item label { font-size: 0.72rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 0.4rem; }
+    .hash-value { font-family: monospace; font-size: 0.82rem; color: #58a6ff; word-break: break-all; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+    .copy-btn { background: transparent; border: none; color: #8b949e; font-size: 0.75rem; cursor: pointer; padding: 0; font-weight: 600; flex-shrink: 0; }
+    .copy-btn:hover { color: #58a6ff; }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="logo">
+    <div class="logo-icon">⚡</div>
+    <span class="logo-text">DevToolbox</span>
+  </a>
+  <div class="header-right">Free tools for developers</div>
+</header>
+
+<div class="container">
+  <h1 class="page-title">Hash Generator</h1>
+  <p class="page-subtitle">Generate SHA-1, SHA-256, SHA-384 and SHA-512 hashes from any text instantly. Everything runs in your browser.</p>
+
+  <div class="editor-box" style="margin-bottom:1rem">
+    <label>Input Text</label>
+    <textarea id="input" style="height:160px" placeholder="Type or paste your text here..." oninput="generateHashes()"></textarea>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn-primary" onclick="generateHashes()">Generate Hashes</button>
+    <button class="btn-danger" onclick="clearAll()">Clear</button>
+    <button class="btn-secondary" onclick="loadSample()">Load Sample</button>
+  </div>
+
+  <div id="results" style="margin-top:1.5rem"></div>
+
+  <hr class="divider" />
+
+  <div class="content-section">
+    <h2>What is a Hash Function?</h2>
+    <p>A hash function takes any input and produces a fixed-length output called a hash or digest. The same input always produces the same output. But even a tiny change in the input produces a completely different hash. This makes hashes useful for verifying data integrity — if the hash matches, the data has not been tampered with.</p>
+    <p>Hash functions are one-way. You cannot reverse a hash back to the original input. This makes them useful for storing passwords — instead of storing the password itself you store its hash and compare hashes when the user logs in.</p>
+
+    <h3>SHA-256 vs SHA-512</h3>
+    <p>SHA-256 produces a 256-bit hash represented as a 64 character hex string. SHA-512 produces a 512-bit hash represented as a 128 character hex string. SHA-512 is stronger but both are considered secure for most purposes. SHA-256 is used in Bitcoin and most TLS certificates. SHA-512 is used when extra security margin is needed.</p>
+
+    <h3>Why Not MD5?</h3>
+    <p>MD5 is no longer considered cryptographically secure. Collisions — two different inputs producing the same hash — have been found. Do not use MD5 for security purposes. It is still useful for checksums and non-security data integrity checks where speed matters more than cryptographic strength.</p>
+
+    <hr class="divider" />
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <div class="faq-item">
+        <h4>Can I reverse a hash?</h4>
+        <p>No. Hash functions are designed to be one-way. You cannot mathematically reverse a hash to get the original input. Rainbow tables can crack weak or common passwords by pre-computing hashes but a strong unique password cannot be reversed.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Is my text safe?</h4>
+        <p>Yes. Everything runs in your browser using the Web Crypto API. Your text is never sent to any server.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Which hash should I use?</h4>
+        <p>Use SHA-256 for most purposes. It is fast, widely supported, and considered secure. Use SHA-512 when you need extra security margin. Avoid SHA-1 and MD5 for any security-sensitive use.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p><a href="/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox — Free developer tools.</p>
+</footer>
+
+<script>
+async function hash(algorithm, message) {
+  const msgBuffer = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest(algorithm, msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function generateHashes() {
+  const input = document.getElementById('input').value;
+  const results = document.getElementById('results');
+
+  if (!input.trim()) {
+    results.innerHTML = '';
+    return;
+  }
+
+  const algorithms = [
+    { name: 'SHA-1', key: 'SHA-1' },
+    { name: 'SHA-256', key: 'SHA-256' },
+    { name: 'SHA-384', key: 'SHA-384' },
+    { name: 'SHA-512', key: 'SHA-512' },
+  ];
+
+  results.innerHTML = '<div style="color:#8b949e;font-size:0.85rem">Generating...</div>';
+
+  const items = await Promise.all(algorithms.map(async algo => {
+    const h = await hash(algo.key, input);
+    return `<div class="hash-item">
+      <label>${algo.name}</label>
+      <div class="hash-value">
+        <span>${h}</span>
+        <button class="copy-btn" onclick="navigator.clipboard.writeText('${h}');this.textContent='✓';setTimeout(()=>this.textContent='copy',1200)">copy</button>
+      </div>
+    </div>`;
+  }));
+
+  results.innerHTML = items.join('');
+}
+
+function clearAll() {
+  document.getElementById('input').value = '';
+  document.getElementById('results').innerHTML = '';
+}
+
+function loadSample() {
+  document.getElementById('input').value = 'Hello, World!';
+  generateHashes();
+}
+</script>
+</body>
+</html>

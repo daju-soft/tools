@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HTTP Status Codes List — Complete Reference | DevToolbox</title>
+  <meta name="description" content="Complete list of HTTP status codes with explanations. Search any status code and get an instant description. Free reference tool." />
+  <link rel="stylesheet" href="../../style.css" />
+  <style>
+    .search-wrap { position: relative; margin-bottom: 1.5rem; }
+    .search-wrap input { width: 100%; padding: 0.8rem 1.2rem; border-radius: 8px; border: 1px solid #21262d; background: #161b22; color: #e8e8f0; font-size: 0.95rem; outline: none; font-family: inherit; }
+    .search-wrap input:focus { border-color: #58a6ff; }
+    .category-section { margin-bottom: 2rem; }
+    .category-header { font-size: 0.75rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.8rem; padding-bottom: 0.5rem; border-bottom: 1px solid #21262d; display: flex; align-items: center; gap: 0.5rem; }
+    .category-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .status-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 0.6rem; }
+    .status-item { background: #161b22; border: 1px solid #21262d; border-radius: 8px; padding: 0.9rem 1rem; display: flex; gap: 0.9rem; align-items: flex-start; transition: border-color 0.2s; cursor: pointer; }
+    .status-item:hover { border-color: #30363d; }
+    .status-code { font-family: monospace; font-size: 1rem; font-weight: 700; flex-shrink: 0; min-width: 44px; }
+    .status-name { font-size: 0.85rem; font-weight: 600; color: #f0f6fc; margin-bottom: 0.2rem; }
+    .status-desc { font-size: 0.75rem; color: #8b949e; line-height: 1.4; }
+    .c1xx { color: #8b949e; } .c2xx { color: #3fb950; } .c3xx { color: #58a6ff; } .c4xx { color: #e3b341; } .c5xx { color: #f85149; }
+    .dot1xx { background: #8b949e; } .dot2xx { background: #3fb950; } .dot3xx { background: #58a6ff; } .dot4xx { background: #e3b341; } .dot5xx { background: #f85149; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="/" class="logo"><div class="logo-icon">⚡</div><span class="logo-text">DevToolbox</span></a>
+  <div class="header-right">Free tools for developers</div>
+</header>
+<div class="container">
+  <h1 class="page-title">HTTP Status Codes</h1>
+  <p class="page-subtitle">Complete reference of all HTTP status codes with descriptions. Search by code or name to find what you need instantly.</p>
+
+  <div class="search-wrap">
+    <input type="text" id="search" placeholder="Search by code or name... e.g. 404 or Not Found" oninput="filterCodes()" />
+  </div>
+
+  <div id="codes-container"></div>
+
+  <hr class="divider" />
+  <div class="content-section">
+    <h2>HTTP Status Code Categories</h2>
+    <p>HTTP status codes are grouped into five categories based on the first digit. 1xx codes are informational responses. 2xx codes indicate success. 3xx codes indicate redirection. 4xx codes indicate client errors — problems with the request. 5xx codes indicate server errors — problems on the server side.</p>
+    <h3>Most Common Status Codes</h3>
+    <p>200 OK is the standard success response. 301 Moved Permanently is used for permanent redirects. 302 Found is used for temporary redirects. 400 Bad Request means the server could not understand the request. 401 Unauthorized means authentication is required. 403 Forbidden means access is denied. 404 Not Found is returned when a resource does not exist. 500 Internal Server Error is a generic server error. 503 Service Unavailable means the server is temporarily unable to handle requests.</p>
+    <hr class="divider" />
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <div class="faq-item">
+        <h4>What is the difference between 401 and 403?</h4>
+        <p>401 Unauthorized means the request lacks valid authentication credentials. The user needs to log in. 403 Forbidden means the server understood the request and the user may be authenticated, but they do not have permission to access the resource.</p>
+      </div>
+      <div class="faq-item">
+        <h4>What is the difference between 301 and 302?</h4>
+        <p>301 is a permanent redirect. Search engines update their index to point to the new URL and pass link equity. 302 is a temporary redirect. Search engines keep the original URL in their index. Use 301 when permanently moving a page and 302 when the redirect is temporary.</p>
+      </div>
+      <div class="faq-item">
+        <h4>What causes a 504 error?</h4>
+        <p>504 Gateway Timeout means a server acting as a gateway did not receive a timely response from an upstream server. This often happens when a backend service is slow or unresponsive. It is a server-side issue not caused by the client.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<footer><p><a href="/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox — Free developer tools.</p></footer>
+<script>
+const STATUS_CODES = {
+  '1xx Informational': [
+    { code: 100, name: 'Continue', desc: 'The server has received the request headers and the client should proceed to send the request body.' },
+    { code: 101, name: 'Switching Protocols', desc: 'The server agrees to switch protocols as requested by the client.' },
+    { code: 102, name: 'Processing', desc: 'The server has received and is processing the request, but no response is available yet.' },
+    { code: 103, name: 'Early Hints', desc: 'Used to return some response headers before the final HTTP message.' },
+  ],
+  '2xx Success': [
+    { code: 200, name: 'OK', desc: 'The request succeeded. The meaning depends on the HTTP method used.' },
+    { code: 201, name: 'Created', desc: 'The request succeeded and a new resource was created as a result.' },
+    { code: 202, name: 'Accepted', desc: 'The request has been received but not yet acted upon.' },
+    { code: 203, name: 'Non-Authoritative Information', desc: 'The returned metadata is not exactly the same as available from the origin server.' },
+    { code: 204, name: 'No Content', desc: 'There is no content to send for this request, but the headers may be useful.' },
+    { code: 205, name: 'Reset Content', desc: 'Tells the client to reset the document view.' },
+    { code: 206, name: 'Partial Content', desc: 'This response is used when the client sends a Range header to request part of a resource.' },
+    { code: 207, name: 'Multi-Status', desc: 'Conveys information about multiple resources in situations where multiple status codes might be appropriate.' },
+    { code: 208, name: 'Already Reported', desc: 'Used inside a DAV response to avoid enumerating the members of multiple bindings to the same collection repeatedly.' },
+    { code: 226, name: 'IM Used', desc: 'The server has fulfilled a GET request for the resource and the response is a representation of the result of one or more instance-manipulations.' },
+  ],
+  '3xx Redirection': [
+    { code: 300, name: 'Multiple Choices', desc: 'The request has more than one possible response. The user agent should choose one of them.' },
+    { code: 301, name: 'Moved Permanently', desc: 'The URL of the requested resource has been changed permanently. The new URL is given in the response.' },
+    { code: 302, name: 'Found', desc: 'The URI of the requested resource has been changed temporarily.' },
+    { code: 303, name: 'See Other', desc: 'The server redirects the client to a different resource with a GET request.' },
+    { code: 304, name: 'Not Modified', desc: 'Used for caching. Tells the client the response has not been modified so the client can continue to use the cached version.' },
+    { code: 307, name: 'Temporary Redirect', desc: 'The server sends this response to direct the client to get the requested resource at another URI with same method.' },
+    { code: 308, name: 'Permanent Redirect', desc: 'The resource is now permanently located at another URI. Same as 301 but the HTTP method must not be changed.' },
+  ],
+  '4xx Client Errors': [
+    { code: 400, name: 'Bad Request', desc: 'The server cannot or will not process the request due to a client error such as malformed request syntax.' },
+    { code: 401, name: 'Unauthorized', desc: 'The client must authenticate itself to get the requested response.' },
+    { code: 402, name: 'Payment Required', desc: 'Reserved for future use. Some services use it to indicate a payment is required.' },
+    { code: 403, name: 'Forbidden', desc: 'The client does not have access rights to the content. Unlike 401 the client\'s identity is known to the server.' },
+    { code: 404, name: 'Not Found', desc: 'The server cannot find the requested resource. The URL is not recognised.' },
+    { code: 405, name: 'Method Not Allowed', desc: 'The request method is known by the server but is not supported by the target resource.' },
+    { code: 406, name: 'Not Acceptable', desc: 'The server cannot produce a response matching the list of acceptable values defined in the request headers.' },
+    { code: 407, name: 'Proxy Authentication Required', desc: 'Authentication is needed to be done by a proxy.' },
+    { code: 408, name: 'Request Timeout', desc: 'The server timed out waiting for the request.' },
+    { code: 409, name: 'Conflict', desc: 'This response is sent when a request conflicts with the current state of the server.' },
+    { code: 410, name: 'Gone', desc: 'The content has been permanently deleted from server with no forwarding address.' },
+    { code: 411, name: 'Length Required', desc: 'Server rejected the request because the Content-Length header field is not defined.' },
+    { code: 412, name: 'Precondition Failed', desc: 'The client has indicated preconditions in its headers which the server does not meet.' },
+    { code: 413, name: 'Content Too Large', desc: 'The request entity is larger than limits defined by the server.' },
+    { code: 414, name: 'URI Too Long', desc: 'The URI requested by the client is longer than the server is willing to interpret.' },
+    { code: 415, name: 'Unsupported Media Type', desc: 'The media format of the requested data is not supported by the server.' },
+    { code: 416, name: 'Range Not Satisfiable', desc: 'The range specified by the Range header field cannot be fulfilled.' },
+    { code: 417, name: 'Expectation Failed', desc: 'The expectation indicated by the Expect request header field cannot be met by the server.' },
+    { code: 418, name: 'I\'m a teapot', desc: 'The server refuses the attempt to brew coffee with a teapot. An April Fools\' joke that became an official status code.' },
+    { code: 422, name: 'Unprocessable Content', desc: 'The request was well-formed but could not be followed due to semantic errors.' },
+    { code: 423, name: 'Locked', desc: 'The resource that is being accessed is locked.' },
+    { code: 424, name: 'Failed Dependency', desc: 'The request failed because it depended on another request that failed.' },
+    { code: 425, name: 'Too Early', desc: 'The server is unwilling to risk processing a request that might be replayed.' },
+    { code: 426, name: 'Upgrade Required', desc: 'The client should switch to a different protocol.' },
+    { code: 428, name: 'Precondition Required', desc: 'The origin server requires the request to be conditional.' },
+    { code: 429, name: 'Too Many Requests', desc: 'The user has sent too many requests in a given amount of time — rate limiting.' },
+    { code: 431, name: 'Request Header Fields Too Large', desc: 'The server is unwilling to process the request because its header fields are too large.' },
+    { code: 451, name: 'Unavailable For Legal Reasons', desc: 'The server is denying access due to a legal demand.' },
+  ],
+  '5xx Server Errors': [
+    { code: 500, name: 'Internal Server Error', desc: 'The server encountered an unexpected condition that prevented it from fulfilling the request.' },
+    { code: 501, name: 'Not Implemented', desc: 'The request method is not supported by the server and cannot be handled.' },
+    { code: 502, name: 'Bad Gateway', desc: 'The server got an invalid response while working as a gateway to handle the response.' },
+    { code: 503, name: 'Service Unavailable', desc: 'The server is not ready to handle the request. Common causes are server overload or maintenance.' },
+    { code: 504, name: 'Gateway Timeout', desc: 'The server is acting as a gateway and cannot get a response in time from the upstream server.' },
+    { code: 505, name: 'HTTP Version Not Supported', desc: 'The HTTP version used in the request is not supported by the server.' },
+    { code: 506, name: 'Variant Also Negotiates', desc: 'The server has an internal configuration error.' },
+    { code: 507, name: 'Insufficient Storage', desc: 'The method could not be performed because the server cannot store the representation needed.' },
+    { code: 508, name: 'Loop Detected', desc: 'The server detected an infinite loop while processing the request.' },
+    { code: 510, name: 'Not Extended', desc: 'Further extensions to the request are required for the server to fulfil it.' },
+    { code: 511, name: 'Network Authentication Required', desc: 'The client needs to authenticate to gain network access.' },
+  ]
+};
+
+const CLASS_MAP = { '1xx': 'c1xx', '2xx': 'c2xx', '3xx': 'c3xx', '4xx': 'c4xx', '5xx': 'c5xx' };
+const DOT_MAP = { '1xx': 'dot1xx', '2xx': 'dot2xx', '3xx': 'dot3xx', '4xx': 'dot4xx', '5xx': 'dot5xx' };
+
+function render(filter = '') {
+  const container = document.getElementById('codes-container');
+  container.innerHTML = '';
+  const q = filter.toLowerCase();
+
+  Object.entries(STATUS_CODES).forEach(([category, codes]) => {
+    const prefix = category.substring(0, 3);
+    const colorClass = CLASS_MAP[prefix] || '';
+    const dotClass = DOT_MAP[prefix] || '';
+
+    const filtered = codes.filter(c =>
+      !q || c.code.toString().includes(q) || c.name.toLowerCase().includes(q) || c.desc.toLowerCase().includes(q)
+    );
+
+    if (filtered.length === 0) return;
+
+    const section = document.createElement('div');
+    section.className = 'category-section';
+    section.innerHTML = `
+      <div class="category-header">
+        <div class="category-dot ${dotClass}"></div>
+        ${category}
+      </div>
+      <div class="status-grid">
+        ${filtered.map(c => `
+          <div class="status-item" onclick="navigator.clipboard.writeText('${c.code}')">
+            <span class="status-code ${colorClass}">${c.code}</span>
+            <div>
+              <div class="status-name">${c.name}</div>
+              <div class="status-desc">${c.desc}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    container.appendChild(section);
+  });
+}
+
+function filterCodes() {
+  render(document.getElementById('search').value);
+}
+
+render();
+</script>
+</body>
+</html>

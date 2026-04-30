@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Number Base Converter Online — Binary Decimal Hex Free | DevToolbox</title>
+  <meta name="description" content="Convert numbers between binary, decimal, octal and hexadecimal online for free. Instant results, no login required." />
+  <link rel="stylesheet" href="../../style.css" />
+  <style>
+    .base-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .base-item { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 1.2rem; }
+    .base-item label { font-size: 0.72rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 0.5rem; }
+    .base-item input { width: 100%; background: #0d1117; border: 1px solid #21262d; border-radius: 6px; color: #58a6ff; font-family: monospace; font-size: 1rem; padding: 0.6rem 0.8rem; outline: none; transition: border-color 0.2s; }
+    .base-item input:focus { border-color: #58a6ff; }
+    .base-item .base-label { font-size: 0.78rem; color: #58a6ff; margin-top: 0.4rem; font-family: monospace; }
+    .copy-btn { background: transparent; border: none; color: #8b949e; font-size: 0.75rem; cursor: pointer; padding: 0.2rem 0; font-weight: 600; float: right; }
+    .copy-btn:hover { color: #58a6ff; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="/" class="logo"><div class="logo-icon">⚡</div><span class="logo-text">DevToolbox</span></a>
+  <div class="header-right">Free tools for developers</div>
+</header>
+<div class="container">
+  <h1 class="page-title">Number Base Converter</h1>
+  <p class="page-subtitle">Convert numbers between binary, decimal, octal and hexadecimal instantly. Type in any field and all others update automatically.</p>
+
+  <div class="base-grid">
+    <div class="base-item">
+      <label>Decimal (Base 10)</label>
+      <button class="copy-btn" onclick="copyField('decimal')">copy</button>
+      <input type="text" id="decimal" placeholder="255" oninput="convert('decimal')" />
+      <div class="base-label">0–9</div>
+    </div>
+    <div class="base-item">
+      <label>Binary (Base 2)</label>
+      <button class="copy-btn" onclick="copyField('binary')">copy</button>
+      <input type="text" id="binary" placeholder="11111111" oninput="convert('binary')" />
+      <div class="base-label">0–1</div>
+    </div>
+    <div class="base-item">
+      <label>Octal (Base 8)</label>
+      <button class="copy-btn" onclick="copyField('octal')">copy</button>
+      <input type="text" id="octal" placeholder="377" oninput="convert('octal')" />
+      <div class="base-label">0–7</div>
+    </div>
+    <div class="base-item">
+      <label>Hexadecimal (Base 16)</label>
+      <button class="copy-btn" onclick="copyField('hex')">copy</button>
+      <input type="text" id="hex" placeholder="FF" oninput="convert('hex')" />
+      <div class="base-label">0–9, A–F</div>
+    </div>
+  </div>
+
+  <div class="status" id="status"></div>
+
+  <div class="toolbar">
+    <button class="btn-danger" onclick="clearAll()">Clear</button>
+    <button class="btn-secondary" onclick="loadSample()">Load Sample</button>
+  </div>
+
+  <hr class="divider" />
+  <div class="content-section">
+    <h2>What is Number Base Conversion?</h2>
+    <p>Computers work in binary — base 2 — using only 0s and 1s. But humans prefer decimal — base 10. Hexadecimal — base 16 — is a compact way to represent binary that is widely used in programming for memory addresses, colour codes, and byte values. Octal — base 8 — is used in Unix file permissions and some older systems.</p>
+    <p>Understanding how to convert between these bases is a fundamental skill for developers working close to the hardware, writing systems code, or debugging binary data.</p>
+    <h3>How to Use This Tool</h3>
+    <ol class="steps">
+      <li>Type a number into any of the four input boxes.</li>
+      <li>All other bases update automatically as you type.</li>
+      <li>Click copy next to any field to copy that value.</li>
+    </ol>
+    <hr class="divider" />
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <div class="faq-item">
+        <h4>Why do programmers use hexadecimal?</h4>
+        <p>Each hex digit represents exactly 4 binary bits. So two hex digits represent one byte. This makes hex a compact and readable way to work with binary data. Memory addresses, colour codes like #FF5733, and byte sequences are all commonly written in hex.</p>
+      </div>
+      <div class="faq-item">
+        <h4>What is octal used for?</h4>
+        <p>Octal is most commonly used in Unix and Linux file permissions. The permission value 755 is an octal number meaning owner can read/write/execute, group and others can read/execute.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<footer><p><a href="/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox — Free developer tools.</p></footer>
+<script>
+  const bases = { decimal: 10, binary: 2, octal: 8, hex: 16 };
+  function convert(from) {
+    const input = document.getElementById(from).value.trim();
+    const status = document.getElementById('status');
+    if (!input) { ['decimal','binary','octal','hex'].filter(b => b !== from).forEach(b => document.getElementById(b).value = ''); status.textContent = ''; return; }
+    try {
+      const decimal = parseInt(input, bases[from]);
+      if (isNaN(decimal)) throw new Error('Invalid number');
+      if (from !== 'decimal') document.getElementById('decimal').value = decimal.toString(10);
+      if (from !== 'binary') document.getElementById('binary').value = decimal.toString(2);
+      if (from !== 'octal') document.getElementById('octal').value = decimal.toString(8);
+      if (from !== 'hex') document.getElementById('hex').value = decimal.toString(16).toUpperCase();
+      status.textContent = '✓ Converted successfully';
+      status.className = 'status ok';
+    } catch(e) {
+      status.textContent = '✗ Invalid input for this base';
+      status.className = 'status err';
+    }
+  }
+  function copyField(id) {
+    const val = document.getElementById(id).value;
+    if (!val) return;
+    navigator.clipboard.writeText(val);
+    event.target.textContent = '✓';
+    setTimeout(() => event.target.textContent = 'copy', 1200);
+  }
+  function clearAll() {
+    ['decimal','binary','octal','hex'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('status').textContent = '';
+  }
+  function loadSample() {
+    document.getElementById('decimal').value = '255';
+    convert('decimal');
+  }
+  loadSample();
+</script>
+</body>
+</html>

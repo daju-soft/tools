@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>String Length Counter Online — Free Tool | DevToolbox</title>
+  <meta name="description" content="Count string length, bytes, words and lines online for free. Check if your string fits within limits. No login required." />
+  <link rel="stylesheet" href="../../style.css" />
+  <style>
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .stat-card { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 1.2rem; text-align: center; }
+    .stat-card .num { font-size: 2rem; font-weight: 800; color: #58a6ff; font-family: monospace; }
+    .stat-card .label { font-size: 0.72rem; color: #8b949e; margin-top: 0.3rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .limit-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .limit-row label { font-size: 0.82rem; color: #8b949e; }
+    .limit-bar { height: 6px; border-radius: 99px; background: #21262d; margin-top: 0.5rem; overflow: hidden; }
+    .limit-fill { height: 100%; border-radius: 99px; transition: width 0.3s, background 0.3s; background: #3fb950; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="/" class="logo"><div class="logo-icon">⚡</div><span class="logo-text">DevToolbox</span></a>
+  <div class="header-right">Free tools for developers</div>
+</header>
+<div class="container">
+  <h1 class="page-title">String Length Counter</h1>
+  <p class="page-subtitle">Count characters, bytes, words and lines in any string. Set a limit to check if your string fits. Updates as you type.</p>
+
+  <div class="stats-grid">
+    <div class="stat-card"><div class="num" id="length">0</div><div class="label">Length</div></div>
+    <div class="stat-card"><div class="num" id="bytes">0</div><div class="label">Bytes (UTF-8)</div></div>
+    <div class="stat-card"><div class="num" id="words">0</div><div class="label">Words</div></div>
+    <div class="stat-card"><div class="num" id="lines">0</div><div class="label">Lines</div></div>
+    <div class="stat-card"><div class="num" id="spaces">0</div><div class="label">Spaces</div></div>
+    <div class="stat-card"><div class="num" id="no-spaces">0</div><div class="label">No Spaces</div></div>
+  </div>
+
+  <div class="limit-row">
+    <label>Character limit:</label>
+    <input type="number" id="limit" value="160" min="1" style="width:100px" oninput="updateStats()" />
+    <span style="font-size:0.82rem;color:#8b949e">Common limits: SMS=160, Tweet=280, Meta description=160, Title tag=60</span>
+  </div>
+  <div class="limit-bar"><div class="limit-fill" id="limit-fill" style="width:0%"></div></div>
+  <div class="status" id="limit-status" style="margin-bottom:1rem"></div>
+
+  <textarea id="input" style="height:240px" placeholder="Type or paste your string here. Stats update instantly as you type..." oninput="updateStats()"></textarea>
+
+  <div class="toolbar">
+    <button class="btn-danger" onclick="clearAll()">Clear</button>
+    <button class="btn-secondary" onclick="copyText()">Copy Text</button>
+    <button class="btn-secondary" onclick="loadSample()">Load Sample</button>
+  </div>
+
+  <hr class="divider" />
+  <div class="content-section">
+    <h2>What is String Length?</h2>
+    <p>String length is the number of characters in a piece of text. In most programming languages this is what the length or len property returns. However length can mean different things depending on context — number of characters, number of bytes, or number of Unicode code points.</p>
+    <p>This tool shows you all the important measurements at once. The character length is what most programming languages report. The byte count is important when you are working with databases or APIs that have byte limits rather than character limits. Multi-byte characters like emoji or Chinese characters take more than one byte each.</p>
+    <h3>Common String Length Limits</h3>
+    <p>SMS messages are limited to 160 characters. Tweets are 280 characters. Meta descriptions should be under 160 characters for SEO. Page title tags should be under 60 characters. Database VARCHAR fields have a defined maximum length. Use the limit checker above to validate against any of these.</p>
+    <hr class="divider" />
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <div class="faq-item">
+        <h4>Why is the byte count different from the character count?</h4>
+        <p>In UTF-8 encoding, ASCII characters like letters and numbers take 1 byte each. Characters with accents take 2 bytes. Chinese, Japanese, and Korean characters take 3 bytes. Emoji take 4 bytes. So a string with emoji will have a higher byte count than character count.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Is my text safe?</h4>
+        <p>Yes. Everything runs in your browser. Your text is never sent to any server.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<footer><p><a href="/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox — Free developer tools.</p></footer>
+<script>
+  function updateStats() {
+    const text = document.getElementById('input').value;
+    const limit = parseInt(document.getElementById('limit').value) || 0;
+    const length = text.length;
+    const bytes = new TextEncoder().encode(text).length;
+    const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+    const lines = text === '' ? 0 : text.split('\n').length;
+    const spaces = (text.match(/ /g) || []).length;
+
+    document.getElementById('length').textContent = length.toLocaleString();
+    document.getElementById('bytes').textContent = bytes.toLocaleString();
+    document.getElementById('words').textContent = words.toLocaleString();
+    document.getElementById('lines').textContent = lines.toLocaleString();
+    document.getElementById('spaces').textContent = spaces.toLocaleString();
+    document.getElementById('no-spaces').textContent = (length - spaces).toLocaleString();
+
+    if (limit > 0) {
+      const pct = Math.min(100, Math.round((length / limit) * 100));
+      const fill = document.getElementById('limit-fill');
+      const status = document.getElementById('limit-status');
+      fill.style.width = pct + '%';
+      fill.style.background = pct > 100 ? '#f85149' : pct > 80 ? '#e3b341' : '#3fb950';
+      status.textContent = length <= limit
+        ? `✓ ${length}/${limit} characters — ${limit - length} remaining`
+        : `✗ ${length}/${limit} characters — ${length - limit} over limit`;
+      status.className = 'status ' + (length <= limit ? 'ok' : 'err');
+    }
+  }
+
+  function clearAll() {
+    document.getElementById('input').value = '';
+    updateStats();
+  }
+
+  function copyText() {
+    const text = document.getElementById('input').value;
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy Text', 1500);
+  }
+
+  function loadSample() {
+    document.getElementById('input').value = 'The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. 🦊';
+    updateStats();
+  }
+</script>
+</body>
+</html>

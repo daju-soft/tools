@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../style.css" />
-  <title>Unix Timestamp Converter Online — Free Tool | DevToolbox</title>
+  <title>Unix Timestamp Converter Online - Free Tool | DevToolbox</title>
   <meta name="description" content="Convert Unix timestamps to human readable dates and back. Get the current timestamp instantly. Free, no login required, works in your browser." />
   
 </head>
@@ -26,8 +26,8 @@
   <div class="now-box">
     <div>
       <div class="now-label">Current Unix Timestamp</div>
-      <div class="now-value" id="current-ts">—</div>
-      <div class="now-date" id="current-date">—</div>
+      <div class="now-value" id="current-ts">-</div>
+      <div class="now-date" id="current-date">-</div>
     </div>
     <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
       <button class="btn-secondary" onclick="copyCurrentTs()">Copy Timestamp</button>
@@ -93,7 +93,7 @@
 
       <div class="faq-item">
         <h4>Does this tool handle timezones?</h4>
-        <p>The tool shows results in both UTC and your local timezone so you can see both. Unix timestamps themselves are always UTC — the timezone only matters when displaying the time in a human readable format.</p>
+        <p>The tool shows results in both UTC and your local timezone so you can see both. Unix timestamps themselves are always UTC - the timezone only matters when displaying the time in a human readable format.</p>
       </div>
 
     </div>
@@ -101,7 +101,7 @@
 </div>
 
 <footer>
-  <p><a href="/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox — Free developer tools. No login required.</p>
+  <p><a href="/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox - Free developer tools. No login required.</p>
 </footer>
 
 <script>
@@ -151,7 +151,7 @@
 
     let ts = parseInt(raw);
     if (isNaN(ts)) {
-      status.textContent = '✗ Invalid timestamp — must be a number.';
+      status.textContent = '✗ Invalid timestamp - must be a number.';
       status.className = 'status err';
       results.innerHTML = '';
       return;

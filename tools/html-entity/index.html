@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HTML Entity Encoder Decoder Online — Free Tool | DevToolbox</title>
+  <title>HTML Entity Encoder Decoder Online - Free Tool | DevToolbox</title>
   <meta name="description" content="Encode and decode HTML entities online for free. Convert special characters to HTML entities and back instantly. No login required." />
   <link rel="stylesheet" href="../../style.css" />
 </head>
@@ -23,12 +23,12 @@
 
   <div class="editor-grid">
     <div class="editor-box">
-      <label id="input-label">Input — plain text</label>
+      <label id="input-label">Input - plain text</label>
       <textarea id="input" style="height:280px" placeholder="Type or paste text with special characters..." oninput="process()"></textarea>
       <div class="status" id="input-status"></div>
     </div>
     <div class="editor-box">
-      <label id="output-label">Output — HTML entities</label>
+      <label id="output-label">Output - HTML entities</label>
       <textarea id="output" style="height:280px" readonly placeholder="Result will appear here..."></textarea>
       <div class="status" id="output-status"></div>
     </div>
@@ -48,7 +48,7 @@
     <p>HTML entities are special codes used to represent characters that have special meaning in HTML or that cannot be easily typed. For example the less-than sign &lt; has special meaning in HTML because it starts a tag. To display it as text you write &amp;lt; instead. The browser then shows it as &lt; on the page.</p>
     <p>Common HTML entities include &amp;amp; for ampersand, &amp;lt; for less-than, &amp;gt; for greater-than, &amp;quot; for double quote, and &amp;nbsp; for a non-breaking space. There are hundreds of named entities for mathematical symbols, currency signs, arrows, and more.</p>
     <h3>When to Use HTML Entities</h3>
-    <p>Use HTML entities when you need to display characters that would otherwise be interpreted as HTML code. This is important for security — user input should always be HTML-encoded before being displayed in a page to prevent cross-site scripting attacks.</p>
+    <p>Use HTML entities when you need to display characters that would otherwise be interpreted as HTML code. This is important for security - user input should always be HTML-encoded before being displayed in a page to prevent cross-site scripting attacks.</p>
     <hr class="divider" />
     <h2>Frequently Asked Questions</h2>
     <div class="faq">
@@ -63,7 +63,7 @@
     </div>
   </div>
 </div>
-<footer><p><a href="/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox — Free developer tools.</p></footer>
+<footer><p><a href="/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox - Free developer tools.</p></footer>
 <script>
   let mode = 'encode';
 
@@ -71,8 +71,8 @@
     mode = m;
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
-    document.getElementById('input-label').textContent = m === 'encode' ? 'Input — plain text' : 'Input — HTML entities';
-    document.getElementById('output-label').textContent = m === 'encode' ? 'Output — HTML entities' : 'Output — plain text';
+    document.getElementById('input-label').textContent = m === 'encode' ? 'Input - plain text' : 'Input - HTML entities';
+    document.getElementById('output-label').textContent = m === 'encode' ? 'Output - HTML entities' : 'Output - plain text';
     clearAll();
   }
 
@@ -131,7 +131,7 @@
 
   function loadSample() {
     if (mode === 'encode') {
-      document.getElementById('input').value = '<div class="example">Hello & "World" — it\'s a <test></div>';
+      document.getElementById('input').value = '<div class="example">Hello & "World" - it\'s a <test></div>';
     } else {
       document.getElementById('input').value = '&lt;div class=&quot;example&quot;&gt;Hello &amp; &quot;World&quot;&lt;/div&gt;';
     }

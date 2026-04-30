@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../style.css" />
-  <title>URL Encoder & Decoder Online — Free Tool | DevToolbox</title>
+  <title>URL Encoder & Decoder Online - Free Tool | DevToolbox</title>
   <meta name="description" content="Encode and decode URLs online for free. Encode special characters for safe use in URLs. Decode percent-encoded URLs instantly. No login required." />
   
 </head>
@@ -35,12 +35,12 @@
 
   <div class="editor-grid">
     <div class="editor-box">
-      <label id="input-label">Input — plain URL or text</label>
+      <label id="input-label">Input - plain URL or text</label>
       <textarea id="input" placeholder="Paste your URL or text here..." oninput="process()"></textarea>
       <div class="status" id="input-status"></div>
     </div>
     <div class="editor-box">
-      <label id="output-label">Output — encoded URL</label>
+      <label id="output-label">Output - encoded URL</label>
       <textarea id="output" readonly placeholder="Result will appear here..."></textarea>
       <div class="status" id="output-status"></div>
     </div>
@@ -59,7 +59,7 @@
   <div class="content-section">
 
     <h2>What is URL Encoding?</h2>
-    <p>URL encoding — also called percent encoding — converts characters that are not allowed in a URL into a format that can be safely transmitted over the internet. Every character that is not a letter, number, or one of the safe characters like hyphen and underscore gets replaced with a percent sign followed by two hex digits.</p>
+    <p>URL encoding - also called percent encoding - converts characters that are not allowed in a URL into a format that can be safely transmitted over the internet. Every character that is not a letter, number, or one of the safe characters like hyphen and underscore gets replaced with a percent sign followed by two hex digits.</p>
     <p>For example a space becomes %20, an ampersand becomes %26, and a forward slash becomes %2F. This is important because some characters have special meaning in a URL. A question mark starts the query string. An ampersand separates parameters. If your data contains these characters they need to be encoded so the URL parser does not misinterpret them.</p>
 
     <h3>Encode URI vs Encode URI Component</h3>
@@ -104,7 +104,7 @@
 </div>
 
 <footer>
-  <p><a href="/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox — Free developer tools. No login required.</p>
+  <p><a href="/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox - Free developer tools. No login required.</p>
 </footer>
 
 <script>
@@ -114,8 +114,8 @@
     mode = m;
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
-    document.getElementById('input-label').textContent = m === 'encode' ? 'Input — plain URL or text' : 'Input — encoded URL';
-    document.getElementById('output-label').textContent = m === 'encode' ? 'Output — encoded URL' : 'Output — decoded text';
+    document.getElementById('input-label').textContent = m === 'encode' ? 'Input - plain URL or text' : 'Input - encoded URL';
+    document.getElementById('output-label').textContent = m === 'encode' ? 'Output - encoded URL' : 'Output - decoded text';
     document.getElementById('input').placeholder = m === 'encode' ? 'Paste your URL or text here...' : 'Paste your percent-encoded URL here...';
     clearAll();
   }

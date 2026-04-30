@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../style.css" />
-  <title>JWT Decoder Online — Decode & Inspect JWT Tokens Free | DevToolbox</title>
+  <title>JWT Decoder Online - Decode & Inspect JWT Tokens Free | DevToolbox</title>
   <meta name="description" content="Decode and inspect JWT tokens online for free. See header, payload and signature instantly. No login required. Your token never leaves your browser." />
   
 </head>
@@ -63,8 +63,8 @@
   <div class="content-section">
 
     <h2>What is a JWT?</h2>
-    <p>JWT stands for JSON Web Token. It is a compact, URL-safe way of representing claims between two parties. A JWT is commonly used in authentication systems — when you log in to a web application the server gives you a JWT and your browser sends it back with every request to prove who you are.</p>
-    <p>A JWT has three parts separated by dots. The header, the payload, and the signature. Each part is Base64 encoded separately. The header says what algorithm was used to sign the token. The payload contains the actual claims — data like your user ID, email, and when the token expires. The signature is used to verify the token was not tampered with.</p>
+    <p>JWT stands for JSON Web Token. It is a compact, URL-safe way of representing claims between two parties. A JWT is commonly used in authentication systems - when you log in to a web application the server gives you a JWT and your browser sends it back with every request to prove who you are.</p>
+    <p>A JWT has three parts separated by dots. The header, the payload, and the signature. Each part is Base64 encoded separately. The header says what algorithm was used to sign the token. The payload contains the actual claims - data like your user ID, email, and when the token expires. The signature is used to verify the token was not tampered with.</p>
 
     <h3>Is it Safe to Paste My JWT Here?</h3>
     <p>This tool runs entirely in your browser. Your token is never sent to any server. That said, you should still be careful with tokens that are currently active in production. A JWT can be used to authenticate as you until it expires. If you are debugging in a safe environment there is no risk, but avoid pasting live production tokens into any online tool if you can help it.</p>
@@ -94,7 +94,7 @@
 
       <div class="faq-item">
         <h4>Why can anyone decode a JWT?</h4>
-        <p>Because the header and payload are only Base64 encoded, not encrypted. JWTs are designed to be readable — the security comes from the signature which proves the token was issued by a trusted server and has not been modified. Never put sensitive data in a JWT payload that you do not want visible.</p>
+        <p>Because the header and payload are only Base64 encoded, not encrypted. JWTs are designed to be readable - the security comes from the signature which proves the token was issued by a trusted server and has not been modified. Never put sensitive data in a JWT payload that you do not want visible.</p>
       </div>
 
     </div>
@@ -102,7 +102,7 @@
 </div>
 
 <footer>
-  <p><a href="/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox — Free developer tools. No login required.</p>
+  <p><a href="/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox - Free developer tools. No login required.</p>
 </footer>
 
 <script>
@@ -129,7 +129,7 @@
 
     const parts = token.split('.');
     if (parts.length !== 3) {
-      status.textContent = '✗ Invalid JWT — must have exactly 3 parts separated by dots';
+      status.textContent = '✗ Invalid JWT - must have exactly 3 parts separated by dots';
       status.className = 'status err';
       results.style.display = 'none';
       return;

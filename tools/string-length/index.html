@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>String Length Counter Online — Free Tool | DevToolbox</title>
+  <title>String Length Counter Online - Free Tool | DevToolbox</title>
   <meta name="description" content="Count string length, bytes, words and lines online for free. Check if your string fits within limits. No login required." />
   <link rel="stylesheet" href="../../style.css" />
   <style>
@@ -54,7 +54,7 @@
   <hr class="divider" />
   <div class="content-section">
     <h2>What is String Length?</h2>
-    <p>String length is the number of characters in a piece of text. In most programming languages this is what the length or len property returns. However length can mean different things depending on context — number of characters, number of bytes, or number of Unicode code points.</p>
+    <p>String length is the number of characters in a piece of text. In most programming languages this is what the length or len property returns. However length can mean different things depending on context - number of characters, number of bytes, or number of Unicode code points.</p>
     <p>This tool shows you all the important measurements at once. The character length is what most programming languages report. The byte count is important when you are working with databases or APIs that have byte limits rather than character limits. Multi-byte characters like emoji or Chinese characters take more than one byte each.</p>
     <h3>Common String Length Limits</h3>
     <p>SMS messages are limited to 160 characters. Tweets are 280 characters. Meta descriptions should be under 160 characters for SEO. Page title tags should be under 60 characters. Database VARCHAR fields have a defined maximum length. Use the limit checker above to validate against any of these.</p>
@@ -72,7 +72,7 @@
     </div>
   </div>
 </div>
-<footer><p><a href="/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox — Free developer tools.</p></footer>
+<footer><p><a href="/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox - Free developer tools.</p></footer>
 <script>
   function updateStats() {
     const text = document.getElementById('input').value;
@@ -97,8 +97,8 @@
       fill.style.width = pct + '%';
       fill.style.background = pct > 100 ? '#f85149' : pct > 80 ? '#e3b341' : '#3fb950';
       status.textContent = length <= limit
-        ? `✓ ${length}/${limit} characters — ${limit - length} remaining`
-        : `✗ ${length}/${limit} characters — ${length - limit} over limit`;
+        ? `✓ ${length}/${limit} characters - ${limit - length} remaining`
+        : `✗ ${length}/${limit} characters - ${length - limit} over limit`;
       status.className = 'status ' + (length <= limit ? 'ok' : 'err');
     }
   }

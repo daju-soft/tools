@@ -138,16 +138,10 @@
 
 
 <!-- QR Library -->
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script src="qrcode.min.js"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-
-  if (typeof QRCode === "undefined") {
-    console.error("QR library failed to load");
-    document.getElementById('status').textContent = "✗ QR library failed to load";
-    return;
-  }
 
   let currentType = 'url';
 
@@ -238,6 +232,12 @@ document.addEventListener("DOMContentLoaded", function () {
   window.generate = function() {
     const content = typeConfigs[currentType].build();
     const status = document.getElementById('status');
+
+    if (typeof QRCode === 'undefined') {
+      status.textContent = '✗ QR library failed to load. Please refresh the page.';
+      status.className = 'status err';
+      return;
+    }
 
     if (!content) {
       clearQR();

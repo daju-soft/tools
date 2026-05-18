@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chmod Calculator Online — Free Unix Permission Calculator | DevToolbox</title>
+  <meta name="description" content="Calculate Unix file permissions online for free. Convert between symbolic and octal chmod notation instantly. No login required." />
+  <link rel="canonical" href="https://aftabkh4n.github.io/tools/chmod-calculator/" />
+  <link rel="stylesheet" href="../../style.css" />
+  <style>
+    .chmod-grid { display: grid; grid-template-columns: auto 1fr 1fr 1fr; gap: 0; margin-bottom: 1.5rem; border: 1px solid #21262d; border-radius: 10px; overflow: hidden; }
+    .chmod-header { background: #0d1117; padding: 0.7rem 1rem; font-size: 0.72rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; border-bottom: 1px solid #21262d; }
+    .chmod-row { display: contents; }
+    .chmod-row:not(:last-child) .chmod-cell { border-bottom: 1px solid #21262d; }
+    .chmod-cell { padding: 0.9rem 1rem; background: #161b22; display: flex; align-items: center; gap: 0.5rem; border-right: 1px solid #21262d; }
+    .chmod-cell:last-child { border-right: none; }
+    .chmod-label { padding: 0.9rem 1rem; background: #0d1117; font-size: 0.85rem; font-weight: 700; color: #f0f6fc; border-right: 1px solid #21262d; display: flex; align-items: center; }
+    .chmod-cell input[type=checkbox] { width: 18px; height: 18px; accent-color: #58a6ff; cursor: pointer; }
+    .chmod-cell label { font-size: 0.82rem; color: #8b949e; cursor: pointer; }
+    .result-box { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .result-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+    .result-row:last-child { margin-bottom: 0; }
+    .result-label { font-size: 0.75rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.08em; min-width: 120px; font-weight: 600; }
+    .result-value { font-family: monospace; font-size: 1.1rem; color: #58a6ff; font-weight: 700; flex: 1; }
+    .copy-btn { background: transparent; border: none; color: #8b949e; font-size: 0.75rem; cursor: pointer; padding: 0; font-weight: 600; }
+    .copy-btn:hover { color: #58a6ff; }
+    .octal-input { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 1.5rem; }
+    .octal-input label { font-size: 0.82rem; color: #8b949e; }
+    .octal-input input { width: 80px; text-align: center; font-family: monospace; font-size: 1.1rem; }
+    .preset-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .preset-btn { background: #161b22; border: 1px solid #21262d; border-radius: 6px; color: #8b949e; font-size: 0.78rem; padding: 0.35rem 0.75rem; cursor: pointer; transition: all 0.2s; font-family: monospace; }
+    .preset-btn:hover { border-color: #58a6ff; color: #58a6ff; opacity: 1; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="/" class="logo"><div class="logo-icon">⚡</div><span class="logo-text">DevToolbox</span></a>
+  <div class="header-right">Free tools for developers</div>
+</header>
+<div class="container">
+  <h1 class="page-title">Chmod Calculator</h1>
+  <p class="page-subtitle">Calculate Unix file permissions by clicking checkboxes or entering an octal value. Get symbolic and octal notation instantly.</p>
+
+  <div class="octal-input">
+    <label>Enter octal value:</label>
+    <input type="text" id="octal-input" placeholder="755" maxlength="3" oninput="fromOctal()" />
+    <button class="btn-secondary" onclick="fromOctal()">Apply</button>
+  </div>
+
+  <div style="margin-bottom:0.6rem;font-size:0.72rem;color:#8b949e;text-transform:uppercase;letter-spacing:0.08em;font-weight:600">Common Presets</div>
+  <div class="preset-row">
+    <button class="preset-btn" onclick="applyPreset('755')">755 — rwxr-xr-x</button>
+    <button class="preset-btn" onclick="applyPreset('644')">644 — rw-r--r--</button>
+    <button class="preset-btn" onclick="applyPreset('777')">777 — rwxrwxrwx</button>
+    <button class="preset-btn" onclick="applyPreset('600')">600 — rw-------</button>
+    <button class="preset-btn" onclick="applyPreset('644')">644 — rw-r--r--</button>
+    <button class="preset-btn" onclick="applyPreset('700')">700 — rwx------</button>
+    <button class="preset-btn" onclick="applyPreset('664')">664 — rw-rw-r--</button>
+    <button class="preset-btn" onclick="applyPreset('666')">666 — rw-rw-rw-</button>
+  </div>
+
+  <div class="chmod-grid">
+    <div class="chmod-header">Entity</div>
+    <div class="chmod-header">Read (r)</div>
+    <div class="chmod-header">Write (w)</div>
+    <div class="chmod-header">Execute (x)</div>
+
+    <div class="chmod-label">Owner</div>
+    <div class="chmod-cell"><input type="checkbox" id="or" onchange="calculate()" /><label for="or">Read</label></div>
+    <div class="chmod-cell"><input type="checkbox" id="ow" onchange="calculate()" /><label for="ow">Write</label></div>
+    <div class="chmod-cell"><input type="checkbox" id="ox" onchange="calculate()" /><label for="ox">Execute</label></div>
+
+    <div class="chmod-label">Group</div>
+    <div class="chmod-cell"><input type="checkbox" id="gr" onchange="calculate()" /><label for="gr">Read</label></div>
+    <div class="chmod-cell"><input type="checkbox" id="gw" onchange="calculate()" /><label for="gw">Write</label></div>
+    <div class="chmod-cell"><input type="checkbox" id="gx" onchange="calculate()" /><label for="gx">Execute</label></div>
+
+    <div class="chmod-label">Others</div>
+    <div class="chmod-cell"><input type="checkbox" id="pr" onchange="calculate()" /><label for="pr">Read</label></div>
+    <div class="chmod-cell"><input type="checkbox" id="pw" onchange="calculate()" /><label for="pw">Write</label></div>
+    <div class="chmod-cell"><input type="checkbox" id="px" onchange="calculate()" /><label for="px">Execute</label></div>
+  </div>
+
+  <div class="result-box">
+    <div class="result-row">
+      <span class="result-label">Octal</span>
+      <span class="result-value" id="res-octal">000</span>
+      <button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('res-octal').textContent);this.textContent='✓';setTimeout(()=>this.textContent='copy',1200)">copy</button>
+    </div>
+    <div class="result-row">
+      <span class="result-label">Symbolic</span>
+      <span class="result-value" id="res-symbolic">---------</span>
+      <button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('res-symbolic').textContent);this.textContent='✓';setTimeout(()=>this.textContent='copy',1200)">copy</button>
+    </div>
+    <div class="result-row">
+      <span class="result-label">chmod command</span>
+      <span class="result-value" id="res-cmd">chmod 000 filename</span>
+      <button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('res-cmd').textContent);this.textContent='✓';setTimeout(()=>this.textContent='copy',1200)">copy</button>
+    </div>
+  </div>
+
+  <hr class="divider" />
+  <div class="content-section">
+    <h2>What are Unix File Permissions?</h2>
+    <p>Unix and Linux systems control access to files using a permission system. Every file and directory has three sets of permissions — one for the owner, one for the group, and one for everyone else. Each set has three possible permissions: read, write, and execute.</p>
+    <p>Permissions are represented in two ways. Symbolic notation uses letters like rwxr-xr-x. Octal notation uses three digits like 755 where each digit represents the sum of the permission values for that entity. Read is worth 4, write is worth 2, and execute is worth 1.</p>
+
+    <h3>Common Permission Values</h3>
+    <p>755 is the most common permission for directories and executable files. It means the owner can read, write and execute while group and others can only read and execute. 644 is standard for regular files where the owner can read and write but everyone else can only read. 600 is used for private files like SSH keys where only the owner can read and write.</p>
+
+    <h3>How to Apply Permissions</h3>
+    <p>Use the chmod command in the terminal. For example chmod 755 myfile sets the permissions to rwxr-xr-x. Use chmod -R to apply permissions recursively to all files in a directory.</p>
+
+    <hr class="divider" />
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <div class="faq-item">
+        <h4>What does execute permission mean for a directory?</h4>
+        <p>For directories, execute permission means the ability to enter the directory and access its contents. Without execute permission you cannot cd into a directory or access files inside it even if you have read permission. Read permission on a directory lets you list its contents with ls.</p>
+      </div>
+      <div class="faq-item">
+        <h4>What is the difference between 755 and 777?</h4>
+        <p>755 gives the owner full permissions and gives group and others read and execute only. 777 gives everyone full permissions including write. You should avoid 777 in production because it lets any user on the system modify your files.</p>
+      </div>
+      <div class="faq-item">
+        <h4>What permissions should I use for web server files?</h4>
+        <p>For most web server setups, directories should be 755 and files should be 644. This lets the web server read everything while preventing other users from modifying your files. Configuration files with sensitive data like passwords should be 600 so only the owner can read them.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<footer><p><a href="/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox — Free developer tools.</p></footer>
+<script>
+  function calculate() {
+    const or=document.getElementById('or').checked;
+    const ow=document.getElementById('ow').checked;
+    const ox=document.getElementById('ox').checked;
+    const gr=document.getElementById('gr').checked;
+    const gw=document.getElementById('gw').checked;
+    const gx=document.getElementById('gx').checked;
+    const pr=document.getElementById('pr').checked;
+    const pw=document.getElementById('pw').checked;
+    const px=document.getElementById('px').checked;
+
+    const o=(or?4:0)+(ow?2:0)+(ox?1:0);
+    const g=(gr?4:0)+(gw?2:0)+(gx?1:0);
+    const p=(pr?4:0)+(pw?2:0)+(px?1:0);
+
+    const octal=`${o}${g}${p}`;
+    const symbolic=(or?'r':'-')+(ow?'w':'-')+(ox?'x':'-')+(gr?'r':'-')+(gw?'w':'-')+(gx?'x':'-')+(pr?'r':'-')+(pw?'w':'-')+(px?'x':'-');
+
+    document.getElementById('res-octal').textContent = octal;
+    document.getElementById('res-symbolic').textContent = symbolic;
+    document.getElementById('res-cmd').textContent = `chmod ${octal} filename`;
+    document.getElementById('octal-input').value = octal;
+  }
+
+  function fromOctal() {
+    const val = document.getElementById('octal-input').value.trim();
+    if (!/^[0-7]{3}$/.test(val)) return;
+    const o=parseInt(val[0]);
+    const g=parseInt(val[1]);
+    const p=parseInt(val[2]);
+    document.getElementById('or').checked=!!(o&4);
+    document.getElementById('ow').checked=!!(o&2);
+    document.getElementById('ox').checked=!!(o&1);
+    document.getElementById('gr').checked=!!(g&4);
+    document.getElementById('gw').checked=!!(g&2);
+    document.getElementById('gx').checked=!!(g&1);
+    document.getElementById('pr').checked=!!(p&4);
+    document.getElementById('pw').checked=!!(p&2);
+    document.getElementById('px').checked=!!(p&1);
+    calculate();
+  }
+
+  function applyPreset(val) {
+    document.getElementById('octal-input').value = val;
+    fromOctal();
+  }
+
+  applyPreset('755');
+</script>
+</body>
+</html>

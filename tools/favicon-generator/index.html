@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Favicon Generator Online — Free Tool | DevToolbox</title>
+  <meta name="description" content="Generate favicons from text or emoji online for free. Download as PNG in multiple sizes. No login required. Works in your browser." />
+  <link rel="canonical" href="https://aftabkh4n.github.io/tools/favicon-generator/" />
+  <link rel="stylesheet" href="../../style.css" />
+  <style>
+    .generator-wrap { display: grid; grid-template-columns: 300px 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+    @media(max-width:700px) { .generator-wrap { grid-template-columns: 1fr; } }
+    .controls { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 1.4rem; }
+    .field-row { margin-bottom: 1rem; }
+    .field-row label { display: block; font-size: 0.75rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem; font-weight: 600; }
+    .field-row input[type=text] { width: 100%; font-size: 1.5rem; text-align: center; }
+    .field-row input[type=range] { width: 100%; accent-color: #58a6ff; }
+    .field-row input[type=color] { width: 100%; height: 44px; border: 1px solid #21262d; border-radius: 8px; background: #161b22; cursor: pointer; padding: 3px; }
+    .preview-section { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 1.4rem; }
+    .preview-section h3 { font-size: 0.82rem; font-weight: 700; color: #f0f6fc; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.06em; }
+    .preview-sizes { display: flex; gap: 1.5rem; align-items: flex-end; flex-wrap: wrap; margin-bottom: 1rem; }
+    .preview-size { text-align: center; }
+    .preview-size canvas { display: block; border-radius: 4px; border: 1px solid #21262d; }
+    .preview-size .size-label { font-size: 0.7rem; color: #8b949e; margin-top: 0.3rem; font-family: monospace; }
+    .download-grid { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
+    .emoji-grid { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+    .emoji-btn { background: #0d1117; border: 1px solid #21262d; border-radius: 6px; font-size: 1.2rem; width: 36px; height: 36px; cursor: pointer; transition: border-color 0.2s; display: flex; align-items: center; justify-content: center; }
+    .emoji-btn:hover { border-color: #58a6ff; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="/" class="logo"><div class="logo-icon">⚡</div><span class="logo-text">DevToolbox</span></a>
+  <div class="header-right">Free tools for developers</div>
+</header>
+<div class="container">
+  <h1 class="page-title">Favicon Generator</h1>
+  <p class="page-subtitle">Create a favicon from text or emoji. Download in 16x16, 32x32, 48x48, and 180x180 sizes. Everything runs in your browser.</p>
+
+  <div class="generator-wrap">
+    <div class="controls">
+      <div class="field-row">
+        <label>Text or Emoji</label>
+        <div class="emoji-grid">
+          <button class="emoji-btn" onclick="setText('⚡')">⚡</button>
+          <button class="emoji-btn" onclick="setText('🔧')">🔧</button>
+          <button class="emoji-btn" onclick="setText('🚀')">🚀</button>
+          <button class="emoji-btn" onclick="setText('💡')">💡</button>
+          <button class="emoji-btn" onclick="setText('🎯')">🎯</button>
+          <button class="emoji-btn" onclick="setText('🔥')">🔥</button>
+          <button class="emoji-btn" onclick="setText('✨')">✨</button>
+          <button class="emoji-btn" onclick="setText('🎨')">🎨</button>
+        </div>
+        <input type="text" id="favicon-text" value="⚡" maxlength="3" oninput="render()" style="font-size:1.8rem;text-align:center;padding:0.5rem" />
+      </div>
+      <div class="field-row">
+        <label>Background Color</label>
+        <input type="color" id="bg-color" value="#161b22" oninput="render()" />
+      </div>
+      <div class="field-row">
+        <label>Text Color</label>
+        <input type="color" id="text-color" value="#58a6ff" oninput="render()" />
+      </div>
+      <div class="field-row">
+        <label>Border Radius <span id="radius-val" style="color:#58a6ff;font-family:monospace">20%</span></label>
+        <input type="range" id="border-radius" min="0" max="50" value="20" oninput="updateRadius();render()" />
+      </div>
+      <div class="field-row">
+        <label>Font Size <span id="size-val" style="color:#58a6ff;font-family:monospace">70%</span></label>
+        <input type="range" id="font-size" min="30" max="95" value="70" oninput="updateSize();render()" />
+      </div>
+    </div>
+
+    <div class="preview-section">
+      <h3>Preview</h3>
+      <div class="preview-sizes">
+        <div class="preview-size"><canvas id="c16" width="16" height="16" style="width:16px;height:16px"></canvas><div class="size-label">16x16</div></div>
+        <div class="preview-size"><canvas id="c32" width="32" height="32" style="width:32px;height:32px"></canvas><div class="size-label">32x32</div></div>
+        <div class="preview-size"><canvas id="c48" width="48" height="48" style="width:48px;height:48px"></canvas><div class="size-label">48x48</div></div>
+        <div class="preview-size"><canvas id="c180" width="180" height="180" style="width:90px;height:90px"></canvas><div class="size-label">180x180</div></div>
+      </div>
+      <div class="download-grid">
+        <button class="btn-primary" onclick="download(16)">Download 16x16</button>
+        <button class="btn-secondary" onclick="download(32)">Download 32x32</button>
+        <button class="btn-secondary" onclick="download(48)">Download 48x48</button>
+        <button class="btn-secondary" onclick="download(180)">Download 180x180</button>
+      </div>
+      <div style="margin-top:1rem;background:#0d1117;border-radius:8px;padding:0.8rem;font-family:monospace;font-size:0.78rem;color:#8b949e">
+        <div style="color:#f0f6fc;margin-bottom:0.4rem">Add to your HTML head:</div>
+        <div>&lt;link rel="icon" type="image/png" href="favicon-32.png"&gt;</div>
+        <div>&lt;link rel="apple-touch-icon" href="favicon-180.png"&gt;</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+  <div class="content-section">
+    <h2>What is a Favicon?</h2>
+    <p>A favicon is the small icon that appears in the browser tab next to your page title. It also appears in bookmarks, browser history, and on mobile device home screens when a user saves your site. The name comes from favourite icon because it was originally used to represent bookmarked sites.</p>
+    <p>A well-designed favicon makes your site look professional and helps users identify your tab when they have many tabs open. A missing favicon causes browsers to make a request for /favicon.ico that returns a 404 error which wastes a network request on every page load.</p>
+
+    <h3>Recommended Favicon Sizes</h3>
+    <p>16x16 and 32x32 are the standard sizes for browser tabs. 48x48 is used by some desktop operating systems for shortcuts. 180x180 is the Apple Touch Icon size used when users add your site to their iOS home screen. For best compatibility provide all four sizes.</p>
+
+    <hr class="divider" />
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <div class="faq-item">
+        <h4>How do I add the favicon to my website?</h4>
+        <p>Download the PNG files and upload them to your website root. Add the link tags shown above to your HTML head section. The browser will automatically display the favicon in the tab. For .ico format support, rename the 32x32 PNG to favicon.ico.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Is my favicon stored anywhere?</h4>
+        <p>No. The favicon is generated entirely in your browser using the Canvas API. Nothing is uploaded to any server.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<footer><p><a href="/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox — Free developer tools.</p></footer>
+<script>
+  function updateRadius() { document.getElementById('radius-val').textContent = document.getElementById('border-radius').value + '%'; }
+  function updateSize() { document.getElementById('size-val').textContent = document.getElementById('font-size').value + '%'; }
+  function setText(t) { document.getElementById('favicon-text').value = t; render(); }
+
+  function renderToCanvas(canvas) {
+    const size = canvas.width;
+    const ctx = canvas.getContext('2d');
+    const text = document.getElementById('favicon-text').value || '?';
+    const bg = document.getElementById('bg-color').value;
+    const fg = document.getElementById('text-color').value;
+    const radius = (parseInt(document.getElementById('border-radius').value) / 100) * size;
+    const fontSize = (parseInt(document.getElementById('font-size').value) / 100) * size;
+
+    ctx.clearRect(0, 0, size, size);
+    ctx.beginPath();
+    ctx.moveTo(radius, 0);
+    ctx.lineTo(size - radius, 0);
+    ctx.arcTo(size, 0, size, radius, radius);
+    ctx.lineTo(size, size - radius);
+    ctx.arcTo(size, size, size - radius, size, radius);
+    ctx.lineTo(radius, size);
+    ctx.arcTo(0, size, 0, size - radius, radius);
+    ctx.lineTo(0, radius);
+    ctx.arcTo(0, 0, radius, 0, radius);
+    ctx.closePath();
+    ctx.fillStyle = bg;
+    ctx.fill();
+
+    ctx.fillStyle = fg;
+    ctx.font = `${fontSize}px serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, size / 2, size / 2 + fontSize * 0.05);
+  }
+
+  function render() {
+    [16, 32, 48, 180].forEach(s => renderToCanvas(document.getElementById('c' + s)));
+  }
+
+  function download(size) {
+    const canvas = document.getElementById('c' + size);
+    const a = document.createElement('a');
+    a.download = 'favicon-' + size + '.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  }
+
+  render();
+</script>
+</body>
+</html>

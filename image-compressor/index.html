@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Compressor Online — Compress JPG PNG Free | DevToolbox</title>
+  <meta name="description" content="Compress images online for free. Reduce JPG and PNG file size without losing quality. No upload to server, everything runs in your browser." />
+  <link rel="canonical" href="https://daju-soft.github.io/tools/image-compressor/" />
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .upload-area { border: 2px dashed #21262d; border-radius: 12px; padding: 3rem 2rem; text-align: center; cursor: pointer; transition: border-color 0.2s; background: #161b22; margin-bottom: 1.5rem; }
+    .upload-area:hover, .upload-area.dragover { border-color: #58a6ff; }
+    .upload-area p { color: #8b949e; font-size: 0.9rem; margin-top: 0.5rem; }
+    .upload-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .upload-area input[type=file] { display: none; }
+    .preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+    @media(max-width:700px) { .preview-grid { grid-template-columns: 1fr; } }
+    .preview-box { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 1rem; }
+    .preview-box label { font-size: 0.72rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 0.6rem; font-weight: 600; }
+    .preview-box img { width: 100%; border-radius: 6px; display: block; max-height: 300px; object-fit: contain; background: #0d1117; }
+    .preview-box .info { font-size: 0.8rem; color: #8b949e; margin-top: 0.6rem; font-family: monospace; }
+    .preview-box .info span { color: #58a6ff; font-weight: 700; }
+    .controls { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 1.2rem; margin-bottom: 1.5rem; }
+    .control-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+    .control-row label { font-size: 0.82rem; color: #8b949e; min-width: 120px; }
+    .control-row input[type=range] { flex: 1; accent-color: #58a6ff; min-width: 150px; }
+    .control-row span { color: #58a6ff; font-family: monospace; font-weight: 700; min-width: 40px; }
+    .savings-badge { display: inline-block; background: #1a4d2e; color: #4ade80; border-radius: 6px; padding: 0.3rem 0.8rem; font-size: 0.82rem; font-weight: 700; font-family: monospace; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="/tools/" class="logo"><div class="logo-icon">⚡</div><span class="logo-text">DevToolbox</span></a>
+  <div class="header-right">Free tools for developers</div>
+</header>
+<div class="container">
+  <h1 class="page-title">Image Compressor</h1>
+  <p class="page-subtitle">Compress JPG and PNG images directly in your browser. No file is uploaded to any server. Adjust quality and download instantly.</p>
+
+  <div class="upload-area" id="upload-area" onclick="document.getElementById('file-input').click()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+    <div class="upload-icon">🖼️</div>
+    <strong style="color:#f0f6fc">Click to upload or drag and drop</strong>
+    <p>Supports JPG and PNG. File stays in your browser.</p>
+    <input type="file" id="file-input" accept="image/jpeg,image/png" onchange="handleFile(this.files[0])" />
+  </div>
+
+  <div id="results" style="display:none">
+    <div class="controls">
+      <div class="control-row">
+        <label>Quality</label>
+        <input type="range" id="quality" min="1" max="100" value="75" oninput="updateQuality()" />
+        <span id="quality-val">75%</span>
+      </div>
+      <div class="control-row">
+        <label>Max Width (px)</label>
+        <input type="range" id="max-width" min="100" max="4000" value="1920" step="10" oninput="updateWidth()" />
+        <span id="width-val">1920px</span>
+      </div>
+      <div class="control-row" style="margin-bottom:0">
+        <label>Savings</label>
+        <span class="savings-badge" id="savings-badge">0%</span>
+      </div>
+    </div>
+
+    <div class="preview-grid">
+      <div class="preview-box">
+        <label>Original</label>
+        <img id="original-preview" src="" alt="Original" />
+        <div class="info">Size: <span id="original-size">-</span> &nbsp; Dimensions: <span id="original-dims">-</span></div>
+      </div>
+      <div class="preview-box">
+        <label>Compressed</label>
+        <img id="compressed-preview" src="" alt="Compressed" />
+        <div class="info">Size: <span id="compressed-size">-</span> &nbsp; Dimensions: <span id="compressed-dims">-</span></div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <button class="btn-primary" onclick="compress()">Compress</button>
+      <button class="btn-success" onclick="download()">Download</button>
+      <button class="btn-danger" onclick="reset()">Clear</button>
+    </div>
+    <div class="status" id="status"></div>
+  </div>
+
+  <hr class="divider" />
+  <div class="content-section">
+    <h2>How Image Compression Works</h2>
+    <p>This tool uses your browser's built-in Canvas API to redraw the image at a lower quality setting. For JPG images, lowering the quality removes fine detail that is barely visible to the human eye but takes up a lot of file space. For PNG images, resizing reduces the pixel count which directly reduces file size.</p>
+    <p>Most images taken on phones or cameras are far larger than what websites need. A photo taken on a modern phone might be 5MB or more. For a website, the same image at 200KB looks nearly identical on screen but loads 25 times faster. This matters for page speed which directly affects both user experience and Google rankings.</p>
+
+    <h3>How to Use This Tool</h3>
+    <ol class="steps">
+      <li>Click the upload area or drag and drop your image file.</li>
+      <li>Adjust the quality slider. 70 to 80 percent is a good starting point for most images.</li>
+      <li>Adjust the max width if you want to resize the image as well.</li>
+      <li>Click Compress to apply and see the result side by side.</li>
+      <li>Click Download to save the compressed image.</li>
+    </ol>
+
+    <h3>What Quality Setting Should I Use?</h3>
+    <p>For photos with lots of colour and detail, 70 to 80 percent quality looks identical to the original at normal viewing sizes but cuts file size by 50 to 70 percent. For images with text or sharp edges, use 85 to 90 percent to avoid visible compression artefacts. For thumbnail images that will be shown small, you can go as low as 50 to 60 percent.</p>
+
+    <hr class="divider" />
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <div class="faq-item">
+        <h4>Is my image uploaded to a server?</h4>
+        <p>No. Your image never leaves your device. Everything is processed using your browser's Canvas API. This makes it completely private and works even without an internet connection once the page loads.</p>
+      </div>
+      <div class="faq-item">
+        <h4>What is the difference between lossy and lossless compression?</h4>
+        <p>Lossy compression removes some image data to achieve smaller file sizes. The quality loss is often invisible at moderate settings. Lossless compression reduces file size without removing any data but achieves smaller reductions. This tool uses lossy compression via the Canvas API quality setting.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Why is the compressed PNG larger than the original sometimes?</h4>
+        <p>PNG compression works differently from JPG. If the original PNG was already well optimised, re-encoding it through Canvas can sometimes make it slightly larger. In that case try converting it to JPG format instead which typically achieves much better compression for photos.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Is there a file size limit?</h4>
+        <p>No hard limit. Since everything runs in your browser the only limit is your device memory. Very large images above 20MB may be slow to process on older devices.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<footer><p><a href="/tools/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox — Free developer tools.</p></footer>
+<script>
+  let originalFile = null;
+  let compressedBlob = null;
+  let originalImage = new Image();
+
+  function handleDragOver(e) {
+    e.preventDefault();
+    document.getElementById('upload-area').classList.add('dragover');
+  }
+
+  function handleDragLeave(e) {
+    document.getElementById('upload-area').classList.remove('dragover');
+  }
+
+  function handleDrop(e) {
+    e.preventDefault();
+    document.getElementById('upload-area').classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file && (file.type === 'image/jpeg' || file.type === 'image/png')) {
+      handleFile(file);
+    }
+  }
+
+  function handleFile(file) {
+    if (!file) return;
+    originalFile = file;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      originalImage = new Image();
+      originalImage.onload = function() {
+        document.getElementById('original-preview').src = e.target.result;
+        document.getElementById('original-size').textContent = formatSize(file.size);
+        document.getElementById('original-dims').textContent = originalImage.width + 'x' + originalImage.height;
+        document.getElementById('results').style.display = 'block';
+        document.getElementById('max-width').max = originalImage.width;
+        document.getElementById('max-width').value = Math.min(1920, originalImage.width);
+        document.getElementById('width-val').textContent = document.getElementById('max-width').value + 'px';
+        compress();
+      };
+      originalImage.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function updateQuality() {
+    document.getElementById('quality-val').textContent = document.getElementById('quality').value + '%';
+    compress();
+  }
+
+  function updateWidth() {
+    document.getElementById('width-val').textContent = document.getElementById('max-width').value + 'px';
+    compress();
+  }
+
+  function compress() {
+    if (!originalFile) return;
+    const quality = parseInt(document.getElementById('quality').value) / 100;
+    const maxWidth = parseInt(document.getElementById('max-width').value);
+    const canvas = document.createElement('canvas');
+    let width = originalImage.width;
+    let height = originalImage.height;
+
+    if (width > maxWidth) {
+      height = Math.round(height * maxWidth / width);
+      width = maxWidth;
+    }
+
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(originalImage, 0, 0, width, height);
+
+    const mimeType = originalFile.type === 'image/png' ? 'image/png' : 'image/jpeg';
+    canvas.toBlob(blob => {
+      compressedBlob = blob;
+      const url = URL.createObjectURL(blob);
+      document.getElementById('compressed-preview').src = url;
+      document.getElementById('compressed-size').textContent = formatSize(blob.size);
+      document.getElementById('compressed-dims').textContent = width + 'x' + height;
+      const savings = Math.round((1 - blob.size / originalFile.size) * 100);
+      const badge = document.getElementById('savings-badge');
+      badge.textContent = (savings > 0 ? '-' : '+') + Math.abs(savings) + '% ' + (savings > 0 ? 'smaller' : 'larger');
+      badge.style.background = savings > 0 ? '#1a4d2e' : '#4d1a1a';
+      badge.style.color = savings > 0 ? '#4ade80' : '#f87171';
+      document.getElementById('status').textContent = savings > 0 ? '✓ Compressed successfully' : '⚠ Original is already well optimised';
+      document.getElementById('status').className = 'status ' + (savings > 0 ? 'ok' : 'err');
+    }, mimeType, quality);
+  }
+
+  function download() {
+    if (!compressedBlob) return;
+    const ext = originalFile.type === 'image/png' ? '.png' : '.jpg';
+    const name = originalFile.name.replace(/\.[^/.]+$/, '') + '-compressed' + ext;
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(compressedBlob);
+    a.download = name;
+    a.click();
+  }
+
+  function reset() {
+    originalFile = null;
+    compressedBlob = null;
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('original-preview').src = '';
+    document.getElementById('compressed-preview').src = '';
+    document.getElementById('status').textContent = '';
+    document.getElementById('file-input').value = '';
+  }
+
+  function formatSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+  }
+</script>
+</body>
+</html>

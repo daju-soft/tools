@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Number Base Converter Online - Binary Decimal Hex Free | DevToolbox</title>
+  <meta name="description" content="Convert numbers between binary, decimal, octal and hexadecimal online for free. Instant results, no login required." />
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .base-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .base-item { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 1.2rem; }
+    .base-item label { font-size: 0.72rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 0.5rem; }
+    .base-item input { width: 100%; background: #0d1117; border: 1px solid #21262d; border-radius: 6px; color: #58a6ff; font-family: monospace; font-size: 1rem; padding: 0.6rem 0.8rem; outline: none; transition: border-color 0.2s; }
+    .base-item input:focus { border-color: #58a6ff; }
+    .base-item .base-label { font-size: 0.78rem; color: #58a6ff; margin-top: 0.4rem; font-family: monospace; }
+    .copy-btn { background: transparent; border: none; color: #8b949e; font-size: 0.75rem; cursor: pointer; padding: 0.2rem 0; font-weight: 600; float: right; }
+    .copy-btn:hover { color: #58a6ff; }
+  </style>
+  <link rel="canonical" href="https://daju-soft.github.io/tools/base-converter/" />
+</head>
+<body>
+<header>
+  <a href="/tools/" class="logo"><div class="logo-icon">⚡</div><span class="logo-text">DevToolbox</span></a>
+  <div class="header-right">Free tools for developers</div>
+</header>
+<div class="container">
+  <h1 class="page-title">Number Base Converter</h1>
+  <p class="page-subtitle">Convert numbers between binary, decimal, octal and hexadecimal instantly. Type in any field and all others update automatically.</p>
+
+  <div class="base-grid">
+    <div class="base-item">
+      <label>Decimal (Base 10)</label>
+      <button class="copy-btn" onclick="copyField('decimal')">copy</button>
+      <input type="text" id="decimal" placeholder="255" oninput="convert('decimal')" />
+      <div class="base-label">0–9</div>
+    </div>
+    <div class="base-item">
+      <label>Binary (Base 2)</label>
+      <button class="copy-btn" onclick="copyField('binary')">copy</button>
+      <input type="text" id="binary" placeholder="11111111" oninput="convert('binary')" />
+      <div class="base-label">0–1</div>
+    </div>
+    <div class="base-item">
+      <label>Octal (Base 8)</label>
+      <button class="copy-btn" onclick="copyField('octal')">copy</button>
+      <input type="text" id="octal" placeholder="377" oninput="convert('octal')" />
+      <div class="base-label">0–7</div>
+    </div>
+    <div class="base-item">
+      <label>Hexadecimal (Base 16)</label>
+      <button class="copy-btn" onclick="copyField('hex')">copy</button>
+      <input type="text" id="hex" placeholder="FF" oninput="convert('hex')" />
+      <div class="base-label">0–9, A–F</div>
+    </div>
+  </div>
+
+  <div class="status" id="status"></div>
+
+  <div class="toolbar">
+    <button class="btn-danger" onclick="clearAll()">Clear</button>
+    <button class="btn-secondary" onclick="loadSample()">Load Sample</button>
+  </div>
+
+  <hr class="divider" />
+  <div class="content-section">
+    <h2>What is Number Base Conversion?</h2>
+    <p>A number base defines how many digits a number system uses. Decimal uses ten digits from 0 to 9. Binary uses two digits, 0 and 1. Octal uses eight digits from 0 to 7. Hexadecimal uses sixteen digits, 0 to 9 plus A to F where A represents 10 and F represents 15. All four systems represent the same numbers just in different ways.</p>
+    <p>Computers work in binary at the hardware level because electronic circuits have two states, on and off. But binary numbers are long and hard for humans to read. A single byte needs 8 binary digits. Hexadecimal was developed as a compact human-readable representation of binary where each hex digit represents exactly four binary bits.</p>
+
+    <h3>Binary (Base 2)</h3>
+    <p>Binary is the native language of computers. Every number, character, image, and instruction stored in a computer is ultimately represented as a sequence of 0s and 1s. Understanding binary helps developers work with bitwise operations, understand memory layout, and debug low-level issues. The binary number 1010 equals decimal 10 because it has a 1 in the eights position and a 1 in the twos position: 8 + 2 = 10.</p>
+
+    <h3>Hexadecimal (Base 16)</h3>
+    <p>Hexadecimal is used constantly in programming. Memory addresses are shown in hex. Color codes in CSS like #FF5733 are hex values where FF is red, 57 is green, and 33 is blue. ASCII character codes, network addresses, and cryptographic hashes are all displayed in hex. Each hex digit represents exactly 4 binary bits so two hex digits represent one byte. This makes hex a compact and readable way to work with binary data.</p>
+
+    <h3>Octal (Base 8)</h3>
+    <p>Octal is most commonly used in Unix and Linux file permissions. The chmod command uses octal numbers to set permissions. 755 in octal means the owner has read, write, and execute permission (4+2+1=7) while group and others have read and execute permission (4+1=5). Octal was more commonly used in older computing systems and is less common today outside of Unix permissions.</p>
+
+    <h3>How to Convert Between Bases</h3>
+    <p>To convert decimal to binary, repeatedly divide by 2 and collect the remainders. To convert binary to hex, group the binary digits into groups of four from right to left and convert each group to a hex digit. To convert between any bases mentally, convert to decimal first as an intermediate step then convert from decimal to the target base. This tool does all conversions instantly so you do not need to do the arithmetic manually.</p>
+
+    <h3>How to Use This Tool</h3>
+    <ol class="steps">
+      <li>Type a number into any of the four input boxes.</li>
+      <li>All other bases update automatically as you type.</li>
+      <li>Click copy next to any field to copy that value to your clipboard.</li>
+      <li>Use Load Sample to see example values for the number 255.</li>
+    </ol>
+
+    <hr class="divider" />
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <div class="faq-item">
+        <h4>Why do programmers use hexadecimal instead of decimal?</h4>
+        <p>Because hex maps cleanly to binary. Each hex digit represents exactly 4 binary bits. So two hex digits represent one byte. This makes it easy to read and write binary data in a compact form. Decimal does not have this clean mapping to binary which makes it less useful for low-level programming work.</p>
+      </div>
+      <div class="faq-item">
+        <h4>What does 0x mean before a number?</h4>
+        <p>The 0x prefix indicates that a number is in hexadecimal format. For example 0xFF means the hex value FF which is 255 in decimal. This prefix is used in most programming languages including C, C++, Java, JavaScript, Python, and C# to distinguish hex literals from decimal numbers.</p>
+      </div>
+      <div class="faq-item">
+        <h4>What does 0b mean before a number?</h4>
+        <p>The 0b prefix indicates binary format. For example 0b1010 means the binary number 1010 which is 10 in decimal. This prefix is supported in Python, JavaScript, Java, C#, and most modern programming languages.</p>
+      </div>
+      <div class="faq-item">
+        <h4>How many binary digits does a byte have?</h4>
+        <p>A byte is exactly 8 binary digits (bits). The maximum value of a byte is 11111111 in binary, which is FF in hexadecimal, 377 in octal, and 255 in decimal. This is why you often see values ranging from 0 to 255 in computing contexts like RGB color values and network subnet masks.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<footer><p><a href="/tools/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox - Free developer tools.</p></footer>
+<script>
+  const bases = { decimal: 10, binary: 2, octal: 8, hex: 16 };
+  function convert(from) {
+    const input = document.getElementById(from).value.trim();
+    const status = document.getElementById('status');
+    if (!input) { ['decimal','binary','octal','hex'].filter(b => b !== from).forEach(b => document.getElementById(b).value = ''); status.textContent = ''; return; }
+    try {
+      const decimal = parseInt(input, bases[from]);
+      if (isNaN(decimal)) throw new Error('Invalid number');
+      if (from !== 'decimal') document.getElementById('decimal').value = decimal.toString(10);
+      if (from !== 'binary') document.getElementById('binary').value = decimal.toString(2);
+      if (from !== 'octal') document.getElementById('octal').value = decimal.toString(8);
+      if (from !== 'hex') document.getElementById('hex').value = decimal.toString(16).toUpperCase();
+      status.textContent = '✓ Converted successfully';
+      status.className = 'status ok';
+    } catch(e) {
+      status.textContent = '✗ Invalid input for this base';
+      status.className = 'status err';
+    }
+  }
+  function copyField(id) {
+    const val = document.getElementById(id).value;
+    if (!val) return;
+    navigator.clipboard.writeText(val);
+    event.target.textContent = '✓';
+    setTimeout(() => event.target.textContent = 'copy', 1200);
+  }
+  function clearAll() {
+    ['decimal','binary','octal','hex'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('status').textContent = '';
+  }
+  function loadSample() {
+    document.getElementById('decimal').value = '255';
+    convert('decimal');
+  }
+  loadSample();
+</script>
+</body>
+</html>

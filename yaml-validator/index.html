@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YAML Validator Online - Free YAML Checker | DevToolbox</title>
+  <meta name="description" content="Validate and format YAML online for free. Paste your YAML and get instant validation results. No login required." />
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="canonical" href="https://daju-soft.github.io/tools/yaml-validator/" />
+</head>
+<body>
+<header>
+  <a href="/tools/" class="logo"><div class="logo-icon">⚡</div><span class="logo-text">DevToolbox</span></a>
+  <div class="header-right">Free tools for developers</div>
+</header>
+<div class="container">
+  <h1 class="page-title">YAML Validator</h1>
+  <p class="page-subtitle">Paste your YAML below to validate it instantly. See the parsed structure as JSON to verify your YAML is correct.</p>
+
+  <div class="editor-grid">
+    <div class="editor-box">
+      <label>YAML Input</label>
+      <textarea id="input" style="height:420px" placeholder="Paste your YAML here..." oninput="validate()"></textarea>
+      <div class="status" id="input-status"></div>
+    </div>
+    <div class="editor-box">
+      <label>Parsed as JSON - verify structure</label>
+      <textarea id="output" style="height:420px" readonly placeholder="Parsed JSON will appear here..."></textarea>
+      <div class="status" id="output-status"></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn-primary" onclick="validate()">Validate</button>
+    <button class="btn-secondary" onclick="copyOutput()">Copy JSON</button>
+    <button class="btn-danger" onclick="clearAll()">Clear</button>
+    <button class="btn-secondary" onclick="loadSample()">Load Sample</button>
+  </div>
+
+  <hr class="divider" />
+  <div class="content-section">
+    <h2>What is YAML?</h2>
+    <p>YAML stands for YAML Ain't Markup Language. It is a human-readable data serialisation format used in configuration files. Docker Compose files, Kubernetes manifests, GitHub Actions workflows, and many other tools use YAML for their configuration. YAML uses indentation to represent structure which makes it readable but also easy to break with incorrect indentation.</p>
+    <p>Common YAML mistakes include using tabs instead of spaces for indentation, inconsistent indentation levels, missing colons after keys, and incorrect string quoting. This tool catches all of these errors and shows you exactly where the problem is.</p>
+    <h3>YAML vs JSON</h3>
+    <p>YAML is a superset of JSON - all valid JSON is valid YAML. YAML is more human-friendly for writing by hand because it does not require quotes around strings, curly braces around objects, or commas between items. JSON is better for machine generation and API responses.</p>
+    <hr class="divider" />
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <div class="faq-item">
+        <h4>Can I use tabs in YAML?</h4>
+        <p>No. YAML does not allow tabs for indentation. You must use spaces. This is the most common source of YAML errors. Most text editors can be configured to insert spaces when you press the Tab key.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Is my YAML safe?</h4>
+        <p>Yes. Everything runs in your browser. Your YAML is never sent to any server.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<footer><p><a href="/tools/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox - Free developer tools.</p></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+<script>
+  function validate() {
+    const input = document.getElementById('input').value;
+    const inputStatus = document.getElementById('input-status');
+    const outputStatus = document.getElementById('output-status');
+    const output = document.getElementById('output');
+
+    if (!input.trim()) {
+      inputStatus.textContent = '';
+      output.value = '';
+      return;
+    }
+
+    try {
+      const parsed = jsyaml.load(input);
+      const json = JSON.stringify(parsed, null, 2);
+      output.value = json;
+      inputStatus.textContent = '✓ Valid YAML';
+      inputStatus.className = 'status ok';
+      outputStatus.textContent = `✓ Parsed successfully`;
+      outputStatus.className = 'status ok';
+    } catch (e) {
+      inputStatus.textContent = '✗ Invalid YAML: ' + e.message;
+      inputStatus.className = 'status err';
+      output.value = '';
+      outputStatus.textContent = '';
+    }
+  }
+
+  function copyOutput() {
+    const text = document.getElementById('output').value;
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy JSON', 1500);
+  }
+
+  function clearAll() {
+    document.getElementById('input').value = '';
+    document.getElementById('output').value = '';
+    document.getElementById('input-status').textContent = '';
+    document.getElementById('output-status').textContent = '';
+  }
+
+  function loadSample() {
+    document.getElementById('input').value = `name: my-application
+version: 1.0.0
+environment: production
+
+database:
+  host: localhost
+  port: 5432
+  name: mydb
+  credentials:
+    username: admin
+    password: secret
+
+server:
+  host: 0.0.0.0
+  port: 8080
+  workers: 4
+
+features:
+  - authentication
+  - logging
+  - rate-limiting
+
+logging:
+  level: info
+  format: json
+  output: stdout`;
+    validate();
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SVG to CSS Converter Online — Free Tool | DevToolbox</title>
+  <meta name="description" content="Convert SVG to CSS background-image data URI online for free. Use SVGs as CSS backgrounds without extra HTTP requests. No login required." />
+  <link rel="canonical" href="https://daju-soft.github.io/tools/svg-to-css/" />
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+<header>
+  <a href="/tools/" class="logo"><div class="logo-icon">⚡</div><span class="logo-text">DevToolbox</span></a>
+  <div class="header-right">Free tools for developers</div>
+</header>
+<div class="container">
+  <h1 class="page-title">SVG to CSS Converter</h1>
+  <p class="page-subtitle">Convert SVG code into a CSS background-image data URI. Use SVGs directly in CSS without extra HTTP requests.</p>
+
+  <div class="editor-grid">
+    <div class="editor-box">
+      <label>SVG Input</label>
+      <textarea id="input" style="height:380px" placeholder="Paste your SVG code here...&#10;&#10;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; ...&gt;&#10;  ...&#10;&lt;/svg&gt;"></textarea>
+      <div class="status" id="input-status"></div>
+    </div>
+    <div class="editor-box">
+      <label>CSS Output</label>
+      <textarea id="output" style="height:380px" readonly placeholder="CSS will appear here..."></textarea>
+      <div class="status" id="output-status"></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn-primary" onclick="convert()">Convert to CSS</button>
+    <button class="btn-secondary" onclick="copyOutput()">Copy CSS</button>
+    <button class="btn-danger" onclick="clearAll()">Clear</button>
+    <button class="btn-secondary" onclick="loadSample()">Load Sample</button>
+  </div>
+
+  <div id="preview-wrap" style="display:none;margin-top:1.5rem">
+    <div style="font-size:0.75rem;color:#8b949e;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;font-weight:600">Preview</div>
+    <div id="preview-box" style="width:100px;height:100px;border:1px solid #21262d;border-radius:8px;background-repeat:no-repeat;background-position:center;background-size:contain"></div>
+  </div>
+
+  <hr class="divider" />
+  <div class="content-section">
+    <h2>What is SVG to CSS Conversion?</h2>
+    <p>This tool converts an SVG file into a CSS background-image property using a data URI. A data URI encodes the file contents directly into the CSS string so the browser does not need to make a separate HTTP request to load the SVG. This can improve performance for small icons and decorative SVGs that are used as CSS backgrounds.</p>
+    <p>The output is a complete CSS background-image property that you can paste directly into your stylesheet. The SVG is encoded using URL encoding which keeps the output readable and is well supported in all modern browsers.</p>
+
+    <h3>When to Use SVG Data URIs</h3>
+    <p>Use SVG data URIs for small decorative SVGs like icons, patterns, and dividers that are applied as CSS backgrounds. For SVGs that are part of the content and need to be accessible to screen readers, inline SVG in HTML is a better choice. For large SVGs, separate files loaded with img tags or background-image with a URL are more practical because they can be cached by the browser.</p>
+
+    <h3>How to Use This Tool</h3>
+    <ol class="steps">
+      <li>Paste your SVG code into the left input box.</li>
+      <li>Click Convert to CSS to generate the data URI.</li>
+      <li>Copy the CSS output and paste it into your stylesheet.</li>
+      <li>Apply the class to any HTML element to use the SVG as a background.</li>
+    </ol>
+
+    <hr class="divider" />
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <div class="faq-item">
+        <h4>Why use a data URI instead of a file URL?</h4>
+        <p>A data URI embeds the SVG directly in the CSS which eliminates an HTTP request. For small SVGs this can be faster because the browser does not need to wait for a separate file to download. The trade-off is that data URIs cannot be cached separately from the CSS file and they make the CSS file larger.</p>
+      </div>
+      <div class="faq-item">
+        <h4>What is the size limit for SVG data URIs?</h4>
+        <p>Most browsers support data URIs up to 32MB but in practice you should keep SVG data URIs under a few kilobytes. Large data URIs increase CSS file size, cannot be cached effectively, and slow down page rendering. For large SVGs use a separate file referenced by URL.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Is my SVG safe?</h4>
+        <p>Yes. Everything runs in your browser. Your SVG code is never sent to any server.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<footer><p><a href="/tools/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox — Free developer tools.</p></footer>
+<script>
+  function svgToDataUri(svg) {
+    const encoded = svg
+      .replace(/\n/g, ' ')
+      .replace(/\s+/g, ' ')
+      .replace(/"/g, "'")
+      .replace(/#/g, '%23')
+      .replace(/</g, '%3C')
+      .replace(/>/g, '%3E')
+      .trim();
+    return "url(\"data:image/svg+xml," + encoded + "\")";
+  }
+
+  function convert() {
+    const input = document.getElementById('input').value.trim();
+    const inputStatus = document.getElementById('input-status');
+    const outputStatus = document.getElementById('output-status');
+    const output = document.getElementById('output');
+
+    if (!input) {
+      inputStatus.textContent = 'Please paste some SVG code first.';
+      inputStatus.className = 'status err';
+      return;
+    }
+
+    if (!input.includes('<svg')) {
+      inputStatus.textContent = '✗ Input does not appear to be SVG code.';
+      inputStatus.className = 'status err';
+      return;
+    }
+
+    const dataUri = svgToDataUri(input);
+    const css = `.element {\n  background-image: ${dataUri};\n  background-repeat: no-repeat;\n  background-position: center;\n  background-size: contain;\n}`;
+
+    output.value = css;
+    inputStatus.textContent = '✓ Converted successfully';
+    inputStatus.className = 'status ok';
+    outputStatus.textContent = '✓ ' + css.length + ' characters';
+    outputStatus.className = 'status ok';
+
+    const preview = document.getElementById('preview-box');
+    preview.style.backgroundImage = dataUri;
+    document.getElementById('preview-wrap').style.display = 'block';
+  }
+
+  function copyOutput() {
+    const text = document.getElementById('output').value;
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy CSS', 1500);
+  }
+
+  function clearAll() {
+    document.getElementById('input').value = '';
+    document.getElementById('output').value = '';
+    document.getElementById('input-status').textContent = '';
+    document.getElementById('output-status').textContent = '';
+    document.getElementById('preview-wrap').style.display = 'none';
+  }
+
+  function loadSample() {
+    document.getElementById('input').value = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#58a6ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="12" cy="12" r="10"/>
+  <line x1="12" y1="8" x2="12" y2="12"/>
+  <line x1="12" y1="16" x2="12.01" y2="16"/>
+</svg>`;
+    convert();
+  }
+</script>
+</body>
+</html>

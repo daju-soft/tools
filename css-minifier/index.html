@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../style.css" />
+  <title>CSS Minifier Online - Free CSS Minify Tool | DevToolbox</title>
+  <meta name="description" content="Minify CSS online for free. Remove whitespace, comments and unnecessary characters to reduce file size instantly. No login required." />
+  
+  <link rel="canonical" href="https://daju-soft.github.io/tools/css-minifier/" />
+</head>
+<body>
+
+<header>
+  <a href="/tools/" class="logo">
+    <div class="logo-icon">⚡</div>
+    <span class="logo-text">DevToolbox</span>
+  </a>
+  <div class="header-right">Free tools for developers</div>
+</header>
+
+<div class="container">
+
+  <h1 class="page-title">CSS Minifier</h1>
+  <p class="page-subtitle">Paste your CSS below to minify it instantly. Removes comments, whitespace and unnecessary characters to reduce file size.</p>
+
+  <div class="stats-row">
+    <div class="stat-pill">Original: <span id="original-size">0</span> bytes</div>
+    <div class="stat-pill">Minified: <span id="minified-size">0</span> bytes</div>
+    <div class="stat-pill">Saved: <span id="saved-pct">0%</span></div>
+  </div>
+
+  <div class="editor-grid">
+    <div class="editor-box">
+      <label>Input - paste your CSS here</label>
+      <textarea id="input" placeholder="Paste your CSS here...&#10;&#10;body {&#10;  background: #fff;&#10;  color: #333;&#10;}"></textarea>
+      <div class="status" id="input-status"></div>
+    </div>
+    <div class="editor-box">
+      <label>Output - minified CSS</label>
+      <textarea id="output" readonly placeholder="Minified CSS will appear here..."></textarea>
+      <div class="status" id="output-status"></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn-primary" onclick="minifyCSS()">Minify CSS</button>
+    <button class="btn-secondary" onclick="copyOutput()">Copy Output</button>
+    <button class="btn-danger" onclick="clearAll()">Clear</button>
+    <button class="btn-secondary" onclick="loadSample()">Load Sample</button>
+  </div>
+
+  <hr class="divider" />
+
+  <div class="content-section">
+
+    <h2>What is CSS Minification?</h2>
+    <p>CSS minification is the process of removing all unnecessary characters from CSS code without changing how it works. This includes whitespace, line breaks, comments, and sometimes shortening color values and removing redundant semicolons. The result is a smaller file that loads faster in the browser.</p>
+    <p>A typical CSS file can be reduced by 20 to 50 percent through minification. For large stylesheets this makes a real difference to page load time. Faster pages rank better on Google and give users a better experience.</p>
+
+    <h3>What Does This Tool Remove?</h3>
+    <p>This tool removes all comments, leading and trailing whitespace, unnecessary spaces around selectors and properties, multiple spaces collapsed to one, and blank lines. The resulting CSS is functionally identical to the original but takes up much less space.</p>
+
+    <h3>Should I Minify CSS in Production?</h3>
+    <p>Yes, always. Serving unminified CSS in production wastes bandwidth and slows down your pages. Most build tools like Webpack, Vite, and Parcel minify CSS automatically as part of the build process. If you are not using a build tool, minify manually before uploading to your server.</p>
+
+    <hr class="divider" />
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+
+      <div class="faq-item">
+        <h4>Will minified CSS still work exactly the same?</h4>
+        <p>Yes. Minification only removes characters that browsers ignore anyway - whitespace and comments. The actual CSS rules, selectors, and values are untouched. Your styles will look and behave identically after minification.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>How much smaller will my CSS be?</h4>
+        <p>It depends on how much whitespace and how many comments your original CSS has. Typical savings are between 20 and 50 percent. Heavily commented CSS with lots of blank lines can see even bigger reductions.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>Can I edit minified CSS?</h4>
+        <p>Not easily. Minified CSS is very hard to read. Always keep your original formatted CSS as your source file and minify it as part of your deployment process. Never edit the minified version directly.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>Is my CSS safe?</h4>
+        <p>Yes. Everything runs in your browser. Your CSS is never sent to any server.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p><a href="/tools/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox - Free developer tools. No login required.</p>
+</footer>
+
+<script>
+  function minifyCSS() {
+    const input = document.getElementById('input').value;
+    const inputStatus = document.getElementById('input-status');
+    const outputStatus = document.getElementById('output-status');
+    const output = document.getElementById('output');
+
+    if (!input.trim()) {
+      inputStatus.textContent = 'Please paste some CSS first.';
+      inputStatus.className = 'status err';
+      return;
+    }
+
+    let minified = input
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/\s+/g, ' ')
+      .replace(/\s*{\s*/g, '{')
+      .replace(/\s*}\s*/g, '}')
+      .replace(/\s*:\s*/g, ':')
+      .replace(/\s*;\s*/g, ';')
+      .replace(/\s*,\s*/g, ',')
+      .replace(/;}/g, '}')
+      .trim();
+
+    output.value = minified;
+
+    const originalSize = new Blob([input]).size;
+    const minifiedSize = new Blob([minified]).size;
+    const saved = originalSize > 0 ? Math.round((1 - minifiedSize / originalSize) * 100) : 0;
+
+    document.getElementById('original-size').textContent = originalSize.toLocaleString();
+    document.getElementById('minified-size').textContent = minifiedSize.toLocaleString();
+    document.getElementById('saved-pct').textContent = saved + '%';
+
+    inputStatus.textContent = '✓ Minified successfully';
+    inputStatus.className = 'status ok';
+    outputStatus.textContent = `✓ Reduced by ${saved}% - ${minifiedSize} bytes`;
+    outputStatus.className = 'status ok';
+  }
+
+  function copyOutput() {
+    const text = document.getElementById('output').value;
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy Output', 1500);
+  }
+
+  function clearAll() {
+    document.getElementById('input').value = '';
+    document.getElementById('output').value = '';
+    document.getElementById('input-status').textContent = '';
+    document.getElementById('output-status').textContent = '';
+    document.getElementById('original-size').textContent = '0';
+    document.getElementById('minified-size').textContent = '0';
+    document.getElementById('saved-pct').textContent = '0%';
+  }
+
+  function loadSample() {
+    document.getElementById('input').value = `/* Main layout styles */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, sans-serif;
+  background-color: #ffffff;
+  color: #333333;
+}
+
+/* Header */
+header {
+  background: #161b22;
+  border-bottom: 1px solid #21262d;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Navigation links */
+nav a {
+  color: #58a6ff;
+  text-decoration: none;
+  margin-right: 1rem;
+  font-size: 0.9rem;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* Button styles */
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-primary {
+  background: #58a6ff;
+  color: #000000;
+}`;
+    minifyCSS();
+  }
+</script>
+
+</body>
+</html>

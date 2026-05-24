@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Markdown to HTML Converter Online - Free Tool | DevToolbox</title>
+  <meta name="description" content="Convert Markdown to HTML online for free. Paste your Markdown and get clean HTML instantly. Preview included. No login required." />
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .preview-box { background: #161b22; border: 1px solid #21262d; border-radius: 8px; padding: 1.5rem; min-height: 200px; color: #e8e8f0; line-height: 1.7; font-size: 0.92rem; }
+    .preview-box h1,.preview-box h2,.preview-box h3 { color: #f0f6fc; margin: 1rem 0 0.5rem; }
+    .preview-box h1 { font-size: 1.5rem; border-bottom: 1px solid #21262d; padding-bottom: 0.5rem; }
+    .preview-box h2 { font-size: 1.2rem; border-bottom: 1px solid #21262d; padding-bottom: 0.4rem; }
+    .preview-box code { background: #0d1117; color: #58a6ff; padding: 0.1rem 0.4rem; border-radius: 4px; font-family: monospace; font-size: 0.85rem; }
+    .preview-box pre { background: #0d1117; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; }
+    .preview-box pre code { background: none; padding: 0; color: #e8e8f0; }
+    .preview-box blockquote { border-left: 3px solid #58a6ff; padding-left: 1rem; color: #8b949e; margin: 0.8rem 0; }
+    .preview-box a { color: #58a6ff; }
+    .preview-box ul,.preview-box ol { padding-left: 1.5rem; margin: 0.5rem 0; }
+    .preview-box li { margin-bottom: 0.3rem; }
+    .preview-box table { border-collapse: collapse; width: 100%; margin: 0.8rem 0; }
+    .preview-box th,.preview-box td { border: 1px solid #21262d; padding: 0.5rem 0.8rem; text-align: left; }
+    .preview-box th { background: #0d1117; color: #f0f6fc; }
+    .preview-box hr { border: none; border-top: 1px solid #21262d; margin: 1rem 0; }
+    .preview-box strong { color: #f0f6fc; }
+  </style>
+  <link rel="canonical" href="https://daju-soft.github.io/tools/markdown-to-html/" />
+</head>
+<body>
+
+<header>
+  <a href="/tools/" class="logo">
+    <div class="logo-icon">⚡</div>
+    <span class="logo-text">DevToolbox</span>
+  </a>
+  <div class="header-right">Free tools for developers</div>
+</header>
+
+<div class="container">
+  <h1 class="page-title">Markdown to HTML Converter</h1>
+  <p class="page-subtitle">Paste your Markdown on the left and get clean HTML on the right instantly. Preview included.</p>
+
+  <div class="tabs">
+    <button class="tab active" onclick="setView('split', this)">Split View</button>
+    <button class="tab" onclick="setView('preview', this)">Preview</button>
+    <button class="tab" onclick="setView('html', this)">HTML Output</button>
+  </div>
+
+  <div id="split-view">
+    <div class="editor-grid">
+      <div class="editor-box">
+        <label>Markdown Input</label>
+        <textarea id="md-input" style="height:400px" placeholder="# Hello World&#10;&#10;Type your **markdown** here...&#10;&#10;- Item 1&#10;- Item 2" oninput="convert()"></textarea>
+      </div>
+      <div class="editor-box">
+        <label>HTML Output</label>
+        <textarea id="html-output" style="height:400px" readonly placeholder="HTML will appear here..."></textarea>
+      </div>
+    </div>
+    <div class="editor-box" style="margin-top:1rem">
+      <label>Preview</label>
+      <div class="preview-box" id="preview"></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn-primary" onclick="convert()">Convert</button>
+    <button class="btn-secondary" onclick="copyHTML()">Copy HTML</button>
+    <button class="btn-danger" onclick="clearAll()">Clear</button>
+    <button class="btn-secondary" onclick="loadSample()">Load Sample</button>
+  </div>
+
+  <hr class="divider" />
+
+  <div class="content-section">
+    <h2>What is Markdown?</h2>
+    <p>Markdown is a lightweight markup language that uses plain text formatting syntax. It was created so that people could write using an easy-to-read format that converts to valid HTML. It is used everywhere - GitHub READMEs, blog posts, documentation, and chat applications like Slack and Discord all support Markdown.</p>
+    <p>The idea is simple. Instead of writing HTML tags you use simple punctuation. A hash sign makes a heading. Asterisks make text bold or italic. A hyphen makes a list item. The result is text that is readable as-is and also converts cleanly to HTML.</p>
+
+    <h3>Common Markdown Syntax</h3>
+    <p># Heading 1 - ## Heading 2 - **bold** - *italic* - `code` - [link](url) - ![image](url) - - list item - > blockquote</p>
+
+    <hr class="divider" />
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <div class="faq-item">
+        <h4>Does this support GitHub Flavoured Markdown?</h4>
+        <p>Yes. This tool supports tables, strikethrough, task lists, and fenced code blocks which are GitHub Flavoured Markdown extensions on top of standard Markdown.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Is the output clean HTML?</h4>
+        <p>Yes. The output is clean semantic HTML with no inline styles or unnecessary attributes. You can paste it directly into any HTML page or CMS.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Is my content safe?</h4>
+        <p>Yes. Everything runs in your browser. Your Markdown is never sent to any server.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p><a href="/tools/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox - Free developer tools.</p>
+</footer>
+
+<script>
+function mdToHtml(md) {
+  let html = md
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/^#{6}\s(.+)$/gm, '<h6>$1</h6>')
+    .replace(/^#{5}\s(.+)$/gm, '<h5>$1</h5>')
+    .replace(/^#{4}\s(.+)$/gm, '<h4>$1</h4>')
+    .replace(/^#{3}\s(.+)$/gm, '<h3>$1</h3>')
+    .replace(/^#{2}\s(.+)$/gm, '<h2>$1</h2>')
+    .replace(/^#{1}\s(.+)$/gm, '<h1>$1</h1>')
+    .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/~~(.+?)~~/g, '<del>$1</del>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
+    .replace(/^---$/gm, '<hr>')
+    .replace(/^>\s(.+)$/gm, '<blockquote>$1</blockquote>')
+    .replace(/^[-*]\s(.+)$/gm, '<li>$1</li>')
+    .replace(/^\d+\.\s(.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/^(?!<[a-z])/gm, '');
+  return '<p>' + html + '</p>';
+}
+
+function convert() {
+  const md = document.getElementById('md-input').value;
+  const html = mdToHtml(md);
+  document.getElementById('html-output').value = html;
+  document.getElementById('preview').innerHTML = html;
+}
+
+function setView(view, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function copyHTML() {
+  const text = document.getElementById('html-output').value;
+  if (!text) return;
+  navigator.clipboard.writeText(text);
+  const btn = event.target;
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy HTML', 1500);
+}
+
+function clearAll() {
+  document.getElementById('md-input').value = '';
+  document.getElementById('html-output').value = '';
+  document.getElementById('preview').innerHTML = '';
+}
+
+function loadSample() {
+  document.getElementById('md-input').value = `# Welcome to DevToolbox
+
+This is a **Markdown to HTML** converter. It supports *italic*, **bold**, and \`inline code\`.
+
+## Features
+
+- Real-time conversion
+- Live preview
+- Clean HTML output
+- GitHub Flavoured Markdown
+
+## Code Example
+
+\`\`\`
+const hello = "world";
+console.log(hello);
+\`\`\`
+
+> This is a blockquote. Use them for quotes or callouts.
+
+---
+
+[Visit DevToolbox](https://daju-soft.github.io/tools)`;
+  convert();
+}
+
+loadSample();
+</script>
+</body>
+</html>

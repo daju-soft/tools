@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Robots.txt Generator Online - Free Tool | DevToolbox</title>
+  <meta name="description" content="Generate a robots.txt file for your website online for free. Control which pages search engines can crawl. No login required." />
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .rule-item { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 1.2rem; margin-bottom: 0.75rem; }
+    .rule-row { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; margin-bottom: 0.5rem; }
+    .rule-row label { font-size: 0.8rem; color: #8b949e; min-width: 80px; }
+    .rule-row input { flex: 1; min-width: 200px; }
+    .preset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.6rem; margin-bottom: 1.5rem; }
+    .preset-card { background: #161b22; border: 1px solid #21262d; border-radius: 8px; padding: 0.9rem; cursor: pointer; transition: border-color 0.2s; }
+    .preset-card:hover { border-color: #58a6ff; }
+    .preset-card h4 { font-size: 0.85rem; font-weight: 600; color: #f0f6fc; margin-bottom: 0.2rem; }
+    .preset-card p { font-size: 0.75rem; color: #8b949e; }
+  </style>
+  <link rel="canonical" href="https://daju-soft.github.io/tools/robots-generator/" />
+</head>
+<body>
+<header>
+  <a href="/tools/" class="logo"><div class="logo-icon">⚡</div><span class="logo-text">DevToolbox</span></a>
+  <div class="header-right">Free tools for developers</div>
+</header>
+<div class="container">
+  <h1 class="page-title">Robots.txt Generator</h1>
+  <p class="page-subtitle">Generate a robots.txt file for your website. Control which pages search engines can and cannot crawl.</p>
+
+  <div style="margin-bottom:1.5rem">
+    <div style="font-size:0.72rem;color:#8b949e;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.8rem">Quick Presets</div>
+    <div class="preset-grid">
+      <div class="preset-card" onclick="setPreset('allow-all')">
+        <h4>✅ Allow All</h4>
+        <p>Let all search engines crawl everything</p>
+      </div>
+      <div class="preset-card" onclick="setPreset('block-all')">
+        <h4>🚫 Block All</h4>
+        <p>Block all search engines from everything</p>
+      </div>
+      <div class="preset-card" onclick="setPreset('block-admin')">
+        <h4>🔒 Block Admin</h4>
+        <p>Allow all but block admin and private areas</p>
+      </div>
+      <div class="preset-card" onclick="setPreset('wordpress')">
+        <h4>WordPress</h4>
+        <p>Standard robots.txt for WordPress sites</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:1rem">
+    <div style="font-size:0.72rem;color:#8b949e;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.6rem">Sitemap URL (optional)</div>
+    <input type="text" id="sitemap-url" placeholder="https://example.com/sitemap.xml" style="width:100%" oninput="generate()" />
+  </div>
+
+  <div class="editor-box" style="margin-bottom:1rem">
+    <label>Generated robots.txt</label>
+    <textarea id="output" style="height:300px" readonly placeholder="Your robots.txt will appear here..."></textarea>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn-primary" onclick="generate()">Generate</button>
+    <button class="btn-secondary" onclick="copyOutput()">Copy</button>
+    <button class="btn-success" onclick="download()">Download robots.txt</button>
+    <button class="btn-danger" onclick="clearAll()">Clear</button>
+  </div>
+
+  <hr class="divider" />
+  <div class="content-section">
+    <h2>What is robots.txt?</h2>
+    <p>The robots.txt file is a text file placed in the root of your website that tells search engine crawlers which pages they are allowed to visit. It is part of the Robots Exclusion Protocol - a standard that well-behaved bots follow when crawling your site.</p>
+    <p>A properly configured robots.txt file helps search engines crawl your site efficiently by steering them away from unimportant pages like admin panels, login pages, and duplicate content. This can improve your site's crawl budget and help important pages get indexed faster.</p>
+    <h3>Important Notes</h3>
+    <p>robots.txt is a suggestion, not a security measure. Malicious bots may ignore it. Do not rely on robots.txt to hide sensitive content - use authentication instead. Also note that blocking a page in robots.txt does not remove it from search results if other sites link to it.</p>
+    <hr class="divider" />
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <div class="faq-item">
+        <h4>Where do I put robots.txt?</h4>
+        <p>The robots.txt file must be placed in the root directory of your website at example.com/robots.txt. It will not work in subdirectories. Most hosting control panels let you create or edit it directly.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Does blocking in robots.txt remove pages from Google?</h4>
+        <p>No. Blocking crawling prevents Google from reading the page content but if other sites link to the page it may still appear in search results as a URL with no description. To remove a page from results entirely use the noindex meta tag or the URL removal tool in Google Search Console.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<footer><p><a href="/tools/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox - Free developer tools.</p></footer>
+<script>
+  let rules = [{ userAgent: '*', allow: ['/'], disallow: [] }];
+
+  function generate() {
+    const sitemap = document.getElementById('sitemap-url').value.trim();
+    let output = '';
+    rules.forEach(rule => {
+      output += `User-agent: ${rule.userAgent}\n`;
+      rule.allow.forEach(path => { if (path) output += `Allow: ${path}\n`; });
+      rule.disallow.forEach(path => { if (path) output += `Disallow: ${path}\n`; });
+      output += '\n';
+    });
+    if (sitemap) output += `Sitemap: ${sitemap}\n`;
+    document.getElementById('output').value = output.trim();
+  }
+
+  function setPreset(type) {
+    const sitemap = document.getElementById('sitemap-url').value;
+    const presets = {
+      'allow-all': `User-agent: *\nAllow: /\n${sitemap ? '\nSitemap: ' + sitemap : ''}`,
+      'block-all': `User-agent: *\nDisallow: /`,
+      'block-admin': `User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /wp-admin/\nDisallow: /login/\nDisallow: /private/\n${sitemap ? '\nSitemap: ' + sitemap : ''}`,
+      'wordpress': `User-agent: *\nAllow: /wp-content/uploads/\nDisallow: /wp-admin/\nDisallow: /wp-includes/\nDisallow: /wp-login.php\nDisallow: /?s=\nDisallow: /search/\n${sitemap ? '\nSitemap: ' + sitemap : ''}`
+    };
+    document.getElementById('output').value = presets[type] || '';
+  }
+
+  function copyOutput() {
+    const text = document.getElementById('output').value;
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 1500);
+  }
+
+  function download() {
+    const text = document.getElementById('output').value;
+    if (!text) return;
+    const blob = new Blob([text], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'robots.txt';
+    a.click();
+  }
+
+  function clearAll() {
+    document.getElementById('output').value = '';
+    document.getElementById('sitemap-url').value = '';
+  }
+
+  setPreset('allow-all');
+</script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aspect Ratio Calculator Online — Free Tool | DevToolbox</title>
+  <meta name="description" content="Calculate aspect ratios and scale dimensions online for free. Find width or height while maintaining the aspect ratio. No login required." />
+  <link rel="canonical" href="https://daju-soft.github.io/tools/aspect-ratio-calculator/" />
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .calc-section { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 1.4rem; margin-bottom: 1rem; max-width: 600px; }
+    .calc-section h3 { font-size: 0.88rem; font-weight: 700; color: #f0f6fc; margin-bottom: 1rem; }
+    .ratio-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+    .ratio-row input { width: 100px; text-align: center; }
+    .ratio-row span { font-size: 0.9rem; color: #8b949e; }
+    .ratio-row .result { font-size: 1rem; font-weight: 700; color: #58a6ff; font-family: monospace; }
+    .common-ratios { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .ratio-btn { background: #161b22; border: 1px solid #21262d; border-radius: 6px; color: #8b949e; font-size: 0.75rem; padding: 0.3rem 0.7rem; cursor: pointer; transition: all 0.2s; font-family: monospace; }
+    .ratio-btn:hover { border-color: #58a6ff; color: #58a6ff; opacity: 1; }
+    .preview-box { background: #0d1117; border: 1px solid #21262d; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-top: 1rem; overflow: hidden; }
+    .preview-inner { background: #58a6ff20; border: 2px solid #58a6ff40; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; color: #58a6ff; font-family: monospace; transition: all 0.3s; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="/tools/" class="logo"><div class="logo-icon">⚡</div><span class="logo-text">DevToolbox</span></a>
+  <div class="header-right">Free tools for developers</div>
+</header>
+<div class="container">
+  <h1 class="page-title">Aspect Ratio Calculator</h1>
+  <p class="page-subtitle">Calculate and scale dimensions while maintaining the aspect ratio. Scale width or height and get the missing dimension instantly.</p>
+
+  <div style="margin-bottom:0.6rem;font-size:0.72rem;color:#8b949e;text-transform:uppercase;letter-spacing:0.08em;font-weight:600">Common Ratios</div>
+  <div class="common-ratios">
+    <button class="ratio-btn" onclick="setRatio(16,9)">16:9</button>
+    <button class="ratio-btn" onclick="setRatio(4,3)">4:3</button>
+    <button class="ratio-btn" onclick="setRatio(1,1)">1:1</button>
+    <button class="ratio-btn" onclick="setRatio(21,9)">21:9</button>
+    <button class="ratio-btn" onclick="setRatio(3,2)">3:2</button>
+    <button class="ratio-btn" onclick="setRatio(2,3)">2:3</button>
+    <button class="ratio-btn" onclick="setRatio(9,16)">9:16</button>
+    <button class="ratio-btn" onclick="setRatio(1200,630)">OG Image</button>
+    <button class="ratio-btn" onclick="setRatio(1080,1080)">Instagram</button>
+    <button class="ratio-btn" onclick="setRatio(1920,1080)">1080p</button>
+  </div>
+
+  <div class="calc-section">
+    <h3>Find the Aspect Ratio</h3>
+    <div class="ratio-row">
+      <span>Width</span>
+      <input type="number" id="ar-w" placeholder="1920" oninput="findRatio()" />
+      <span>Height</span>
+      <input type="number" id="ar-h" placeholder="1080" oninput="findRatio()" />
+      <span>=</span>
+      <span class="result" id="ar-result">—</span>
+    </div>
+  </div>
+
+  <div class="calc-section">
+    <h3>Scale by Width (keep ratio)</h3>
+    <div class="ratio-row">
+      <span>Ratio</span>
+      <input type="number" id="sw-rw" placeholder="16" oninput="scaleByWidth()" />
+      <span>:</span>
+      <input type="number" id="sw-rh" placeholder="9" oninput="scaleByWidth()" />
+      <span>New width</span>
+      <input type="number" id="sw-w" placeholder="1280" oninput="scaleByWidth()" />
+    </div>
+    <div class="ratio-row">
+      <span>New height =</span>
+      <span class="result" id="sw-result">—</span>
+    </div>
+  </div>
+
+  <div class="calc-section">
+    <h3>Scale by Height (keep ratio)</h3>
+    <div class="ratio-row">
+      <span>Ratio</span>
+      <input type="number" id="sh-rw" placeholder="16" oninput="scaleByHeight()" />
+      <span>:</span>
+      <input type="number" id="sh-rh" placeholder="9" oninput="scaleByHeight()" />
+      <span>New height</span>
+      <input type="number" id="sh-h" placeholder="720" oninput="scaleByHeight()" />
+    </div>
+    <div class="ratio-row">
+      <span>New width =</span>
+      <span class="result" id="sh-result">—</span>
+    </div>
+  </div>
+
+  <hr class="divider" />
+  <div class="content-section">
+    <h2>What is Aspect Ratio?</h2>
+    <p>Aspect ratio is the proportional relationship between the width and height of an image, video, or screen. It is expressed as two numbers separated by a colon like 16:9. This means for every 16 units of width there are 9 units of height. A 1920x1080 pixel image and a 1280x720 pixel image both have a 16:9 aspect ratio.</p>
+    <p>Maintaining aspect ratio is important when resizing images or videos. If you change the width without adjusting the height proportionally the image will appear stretched or squashed. This tool calculates the missing dimension automatically so the image scales correctly.</p>
+
+    <h3>Common Aspect Ratios</h3>
+    <p>16:9 is the standard for HD video, YouTube, and most monitors. 4:3 is the older TV and monitor standard. 1:1 is used for Instagram square posts and profile pictures. 9:16 is used for vertical video on TikTok, Instagram Reels, and YouTube Shorts. 21:9 is the ultrawide monitor and cinema format.</p>
+
+    <hr class="divider" />
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <div class="faq-item">
+        <h4>What is the Open Graph image size?</h4>
+        <p>The recommended Open Graph image size for social sharing is 1200x630 pixels which is approximately a 1.91:1 aspect ratio. This is the size Facebook, LinkedIn, and Twitter use when displaying link previews. Images smaller than this may appear cropped or blurry.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Is my data stored?</h4>
+        <p>No. All calculations happen in your browser. Nothing is sent to any server.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<footer><p><a href="/tools/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox — Free developer tools.</p></footer>
+<script>
+  function gcd(a, b) { return b ? gcd(b, a % b) : a; }
+
+  function findRatio() {
+    const w = parseInt(document.getElementById('ar-w').value);
+    const h = parseInt(document.getElementById('ar-h').value);
+    if (!w || !h) { document.getElementById('ar-result').textContent = '—'; return; }
+    const d = gcd(w, h);
+    document.getElementById('ar-result').textContent = (w/d) + ':' + (h/d);
+  }
+
+  function scaleByWidth() {
+    const rw = parseFloat(document.getElementById('sw-rw').value);
+    const rh = parseFloat(document.getElementById('sw-rh').value);
+    const w = parseFloat(document.getElementById('sw-w').value);
+    if (!rw || !rh || !w) { document.getElementById('sw-result').textContent = '—'; return; }
+    document.getElementById('sw-result').textContent = Math.round(w * rh / rw) + 'px';
+  }
+
+  function scaleByHeight() {
+    const rw = parseFloat(document.getElementById('sh-rw').value);
+    const rh = parseFloat(document.getElementById('sh-rh').value);
+    const h = parseFloat(document.getElementById('sh-h').value);
+    if (!rw || !rh || !h) { document.getElementById('sh-result').textContent = '—'; return; }
+    document.getElementById('sh-result').textContent = Math.round(h * rw / rh) + 'px';
+  }
+
+  function setRatio(w, h) {
+    document.getElementById('sw-rw').value = w;
+    document.getElementById('sw-rh').value = h;
+    document.getElementById('sh-rw').value = w;
+    document.getElementById('sh-rh').value = h;
+    document.getElementById('ar-w').value = w;
+    document.getElementById('ar-h').value = h;
+    findRatio(); scaleByWidth(); scaleByHeight();
+  }
+</script>
+</body>
+</html>

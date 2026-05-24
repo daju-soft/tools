@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JSON Schema Generator Online — Free Tool | DevToolbox</title>
+  <meta name="description" content="Generate JSON Schema from JSON data online for free. Paste your JSON and get a valid JSON Schema instantly. No login required." />
+  <link rel="canonical" href="https://daju-soft.github.io/tools/json-schema-generator/" />
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+<header>
+  <a href="/tools/" class="logo"><div class="logo-icon">⚡</div><span class="logo-text">DevToolbox</span></a>
+  <div class="header-right">Free tools for developers</div>
+</header>
+<div class="container">
+  <h1 class="page-title">JSON Schema Generator</h1>
+  <p class="page-subtitle">Paste your JSON data and get a valid JSON Schema instantly. Useful for API validation, documentation, and form generation.</p>
+
+  <div class="editor-grid">
+    <div class="editor-box">
+      <label>JSON Input</label>
+      <textarea id="input" style="height:420px" placeholder='Paste your JSON here...&#10;&#10;{"name":"John","age":30,"active":true}'></textarea>
+      <div class="status" id="input-status"></div>
+    </div>
+    <div class="editor-box">
+      <label>JSON Schema Output</label>
+      <textarea id="output" style="height:420px" readonly placeholder="JSON Schema will appear here..."></textarea>
+      <div class="status" id="output-status"></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn-primary" onclick="generate()">Generate Schema</button>
+    <button class="btn-secondary" onclick="copyOutput()">Copy Schema</button>
+    <button class="btn-danger" onclick="clearAll()">Clear</button>
+    <button class="btn-secondary" onclick="loadSample()">Load Sample</button>
+  </div>
+
+  <hr class="divider" />
+  <div class="content-section">
+    <h2>What is JSON Schema?</h2>
+    <p>JSON Schema is a vocabulary that allows you to describe the structure and validation rules for JSON data. It defines what properties an object should have, what types those properties should be, which properties are required, and what constraints apply to the values. JSON Schema is used for API documentation, request and response validation, form generation, and code generation.</p>
+    <p>A JSON Schema document is itself a JSON object. It uses keywords like type, properties, required, minimum, and maximum to describe the expected structure of the data. When you validate a JSON document against a schema you get a clear list of any violations which makes debugging API integrations much faster.</p>
+
+    <h3>How This Tool Works</h3>
+    <p>This tool takes a sample JSON document and infers a JSON Schema from it. It detects the type of each value, identifies nested objects and arrays, and generates a schema that would validate the input document. The output follows the JSON Schema Draft 7 specification which is widely supported by validation libraries in all major programming languages.</p>
+
+    <h3>How to Use This Tool</h3>
+    <ol class="steps">
+      <li>Paste a sample JSON document into the left input box.</li>
+      <li>Click Generate Schema to create the JSON Schema.</li>
+      <li>Review the generated schema and adjust required fields as needed.</li>
+      <li>Click Copy Schema to copy it to your clipboard.</li>
+    </ol>
+
+    <h3>Using JSON Schema for API Validation</h3>
+    <p>In .NET use the JsonSchema.Net package to validate requests against a schema. In JavaScript use the ajv library. In Python use jsonschema. In Java use the json-schema-validator library. All of these accept a JSON Schema document and a JSON value and return validation errors if the value does not match the schema.</p>
+
+    <hr class="divider" />
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <div class="faq-item">
+        <h4>Which JSON Schema version does this generate?</h4>
+        <p>This tool generates JSON Schema Draft 7 which is the most widely supported version. Draft 7 is supported by ajv, jsonschema, Json.NET, and most other validation libraries. Newer drafts like 2019-09 and 2020-12 add features but have less library support.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Are all properties marked as required?</h4>
+        <p>Yes. The generated schema marks all detected properties as required based on the sample input. You should review the schema and remove properties from the required array that are actually optional in your API.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Is my JSON data safe?</h4>
+        <p>Yes. Everything runs in your browser. Your JSON data is never sent to any server.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<footer><p><a href="/tools/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox — Free developer tools.</p></footer>
+<script>
+  function inferSchema(value) {
+    if (value === null) return { type: 'null' };
+    if (typeof value === 'boolean') return { type: 'boolean' };
+    if (typeof value === 'number') {
+      return Number.isInteger(value)
+        ? { type: 'integer' }
+        : { type: 'number' };
+    }
+    if (typeof value === 'string') return { type: 'string' };
+    if (Array.isArray(value)) {
+      if (value.length === 0) return { type: 'array', items: {} };
+      return { type: 'array', items: inferSchema(value[0]) };
+    }
+    if (typeof value === 'object') {
+      const properties = {};
+      const required = [];
+      for (const [k, v] of Object.entries(value)) {
+        properties[k] = inferSchema(v);
+        required.push(k);
+      }
+      return { type: 'object', properties, required };
+    }
+    return {};
+  }
+
+  function generate() {
+    const input = document.getElementById('input').value.trim();
+    const inputStatus = document.getElementById('input-status');
+    const outputStatus = document.getElementById('output-status');
+    const output = document.getElementById('output');
+
+    if (!input) {
+      inputStatus.textContent = 'Please paste some JSON first.';
+      inputStatus.className = 'status err';
+      return;
+    }
+
+    try {
+      const data = JSON.parse(input);
+      const schema = {
+        '$schema': 'http://json-schema.org/draft-07/schema#',
+        ...inferSchema(data)
+      };
+      const result = JSON.stringify(schema, null, 2);
+      output.value = result;
+      inputStatus.textContent = '✓ Schema generated successfully';
+      inputStatus.className = 'status ok';
+      outputStatus.textContent = '✓ ' + result.split('\n').length + ' lines';
+      outputStatus.className = 'status ok';
+    } catch(e) {
+      inputStatus.textContent = '✗ Invalid JSON: ' + e.message;
+      inputStatus.className = 'status err';
+      output.value = '';
+    }
+  }
+
+  function copyOutput() {
+    const text = document.getElementById('output').value;
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy Schema', 1500);
+  }
+
+  function clearAll() {
+    document.getElementById('input').value = '';
+    document.getElementById('output').value = '';
+    document.getElementById('input-status').textContent = '';
+    document.getElementById('output-status').textContent = '';
+  }
+
+  function loadSample() {
+    document.getElementById('input').value = JSON.stringify({
+      id: 1,
+      name: 'John Doe',
+      email: 'john@example.com',
+      age: 30,
+      active: true,
+      score: 9.5,
+      address: { street: '123 Main St', city: 'London', country: 'UK', postcode: 'SW1A 1AA' },
+      tags: ['developer', 'javascript', 'nodejs'],
+      metadata: { createdAt: '2024-01-01T00:00:00Z', updatedAt: '2024-06-01T00:00:00Z' }
+    }, null, 2);
+    generate();
+  }
+</script>
+</body>
+</html>

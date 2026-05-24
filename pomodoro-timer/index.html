@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pomodoro Timer Online — Free Focus Timer | DevToolbox</title>
+  <meta name="description" content="Free online Pomodoro timer. 25 minute focus sessions with short and long breaks. No login required. Works in your browser." />
+  <link rel="canonical" href="https://daju-soft.github.io/tools/pomodoro-timer/" />
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .timer-wrap { max-width: 480px; margin: 0 auto 2rem; text-align: center; }
+    .mode-tabs { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 2rem; }
+    .mode-tab { padding: 0.5rem 1.2rem; border-radius: 99px; border: 1px solid #21262d; background: transparent; color: #8b949e; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+    .mode-tab.active { background: #58a6ff; color: #000; border-color: #58a6ff; }
+    .timer-display { font-size: 6rem; font-weight: 800; font-family: monospace; color: #f0f6fc; letter-spacing: -0.04em; line-height: 1; margin-bottom: 0.5rem; }
+    .timer-label { font-size: 0.85rem; color: #8b949e; margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 0.1em; }
+    .timer-controls { display: flex; gap: 1rem; justify-content: center; margin-bottom: 2rem; }
+    .timer-btn { width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 1.2rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+    .timer-btn:hover { transform: scale(1.08); opacity: 1; }
+    .btn-start { background: #58a6ff; color: #000; width: 80px; height: 80px; font-size: 1.5rem; }
+    .btn-reset { background: #21262d; color: #8b949e; }
+    .btn-skip { background: #21262d; color: #8b949e; }
+    .progress-ring { margin: 0 auto 1.5rem; }
+    .session-count { font-size: 0.82rem; color: #8b949e; margin-bottom: 1.5rem; }
+    .session-dots { display: flex; gap: 0.4rem; justify-content: center; margin-top: 0.4rem; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: #21262d; transition: background 0.3s; }
+    .dot.filled { background: #58a6ff; }
+    .settings-box { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 1.2rem; max-width: 480px; margin: 0 auto 1.5rem; }
+    .settings-box h3 { font-size: 0.82rem; font-weight: 700; color: #f0f6fc; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.06em; }
+    .setting-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.7rem; }
+    .setting-row label { font-size: 0.82rem; color: #8b949e; flex: 1; }
+    .setting-row input[type=number] { width: 70px; text-align: center; }
+    .stats-row { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .stat-pill { background: #161b22; border: 1px solid #21262d; border-radius: 8px; padding: 0.6rem 1rem; text-align: center; }
+    .stat-pill .num { font-size: 1.2rem; font-weight: 800; color: #58a6ff; font-family: monospace; }
+    .stat-pill .lbl { font-size: 0.68rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.06em; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="/tools/" class="logo"><div class="logo-icon">⚡</div><span class="logo-text">DevToolbox</span></a>
+  <div class="header-right">Free tools for developers</div>
+</header>
+<div class="container">
+  <h1 class="page-title">Pomodoro Timer</h1>
+  <p class="page-subtitle">Stay focused with 25 minute work sessions and short breaks. The Pomodoro Technique helps you maintain concentration and avoid burnout.</p>
+
+  <div class="timer-wrap">
+    <div class="mode-tabs">
+      <button class="mode-tab active" onclick="setMode('focus', this)">Focus</button>
+      <button class="mode-tab" onclick="setMode('short', this)">Short Break</button>
+      <button class="mode-tab" onclick="setMode('long', this)">Long Break</button>
+    </div>
+
+    <svg class="progress-ring" width="220" height="220" viewBox="0 0 220 220">
+      <circle cx="110" cy="110" r="100" fill="none" stroke="#21262d" stroke-width="8"/>
+      <circle id="progress-circle" cx="110" cy="110" r="100" fill="none" stroke="#58a6ff" stroke-width="8"
+        stroke-linecap="round" stroke-dasharray="628" stroke-dashoffset="0"
+        transform="rotate(-90 110 110)" style="transition:stroke-dashoffset 1s linear"/>
+    </svg>
+
+    <div class="timer-display" id="timer-display">25:00</div>
+    <div class="timer-label" id="timer-label">Focus Time</div>
+
+    <div class="timer-controls">
+      <button class="timer-btn btn-reset" onclick="resetTimer()" title="Reset">↺</button>
+      <button class="timer-btn btn-start" onclick="toggleTimer()" id="start-btn">▶</button>
+      <button class="timer-btn btn-skip" onclick="skipSession()" title="Skip">⏭</button>
+    </div>
+
+    <div class="session-count">
+      Session <span id="session-num">1</span> of 4
+      <div class="session-dots" id="session-dots"></div>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-pill"><div class="num" id="stat-focus">0</div><div class="lbl">Sessions Done</div></div>
+    <div class="stat-pill"><div class="num" id="stat-time">0m</div><div class="lbl">Focus Time</div></div>
+    <div class="stat-pill"><div class="num" id="stat-breaks">0</div><div class="lbl">Breaks Taken</div></div>
+  </div>
+
+  <div class="settings-box">
+    <h3>Settings</h3>
+    <div class="setting-row">
+      <label>Focus duration (minutes)</label>
+      <input type="number" id="focus-duration" value="25" min="1" max="60" onchange="applySettings()" />
+    </div>
+    <div class="setting-row">
+      <label>Short break (minutes)</label>
+      <input type="number" id="short-duration" value="5" min="1" max="30" onchange="applySettings()" />
+    </div>
+    <div class="setting-row">
+      <label>Long break (minutes)</label>
+      <input type="number" id="long-duration" value="15" min="1" max="60" onchange="applySettings()" />
+    </div>
+    <div class="setting-row">
+      <label>Sessions before long break</label>
+      <input type="number" id="sessions-before-long" value="4" min="2" max="8" onchange="applySettings()" />
+    </div>
+    <div class="setting-row">
+      <label><input type="checkbox" id="auto-start" style="accent-color:#58a6ff;margin-right:0.4rem" /> Auto-start next session</label>
+    </div>
+  </div>
+
+  <hr class="divider" />
+  <div class="content-section">
+    <h2>What is the Pomodoro Technique?</h2>
+    <p>The Pomodoro Technique is a time management method developed by Francesco Cirillo in the late 1980s. The technique uses a timer to break work into 25 minute intervals called pomodoros separated by short breaks. After four pomodoros you take a longer break of 15 to 30 minutes.</p>
+    <p>The method is based on the idea that frequent breaks improve mental agility. By committing to focused work for a fixed period then taking a structured break you avoid the mental fatigue that comes from trying to concentrate for hours without stopping. The technique also makes large tasks less daunting by breaking them into manageable 25 minute chunks.</p>
+
+    <h3>How to Use the Pomodoro Technique</h3>
+    <ol class="steps">
+      <li>Choose a task you want to work on.</li>
+      <li>Click the play button to start a 25 minute focus session.</li>
+      <li>Work on the task until the timer rings. Do not check messages or switch tasks.</li>
+      <li>Take the 5 minute short break when it starts automatically.</li>
+      <li>After four focus sessions take the 15 minute long break.</li>
+      <li>Repeat the cycle throughout your work day.</li>
+    </ol>
+
+    <h3>Why 25 Minutes?</h3>
+    <p>Cirillo chose 25 minutes because it is long enough to make meaningful progress on a task but short enough to maintain focus without mental fatigue. Research on attention spans suggests that most people can concentrate deeply for 20 to 40 minutes before attention starts to wander. The 25 minute window sits in the middle of that range and feels achievable even when motivation is low.</p>
+
+    <hr class="divider" />
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <div class="faq-item">
+        <h4>What should I do during breaks?</h4>
+        <p>Stand up, stretch, walk around, get water, or look out a window. The goal is to give your mind a genuine rest from focused work. Avoid checking email, social media, or starting another task during short breaks as these activities engage the same mental resources you are trying to rest.</p>
+      </div>
+      <div class="faq-item">
+        <h4>What if I get interrupted during a session?</h4>
+        <p>If the interruption is urgent, pause the timer, handle it, and restart the session from the beginning. A pomodoro that gets interrupted does not count. If the interruption is not urgent, write it down to handle later and continue your session. The ability to defer non-urgent interruptions is one of the skills the technique helps you develop.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Can I change the session length?</h4>
+        <p>Yes. Use the settings panel above to adjust the focus duration, short break, long break, and the number of sessions before the long break. Some people prefer 50 minute sessions with 10 minute breaks. Others prefer shorter 15 minute sessions. Adjust to what works for you.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Will the timer work if I switch tabs?</h4>
+        <p>Yes. The timer continues running in the background when you switch tabs. The browser will play a sound and update the tab title when a session ends.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<footer><p><a href="/tools/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox — Free developer tools.</p></footer>
+<script>
+  const MODES = { focus: 'Focus Time', short: 'Short Break', long: 'Long Break' };
+  let mode = 'focus';
+  let timeLeft = 25 * 60;
+  let totalTime = 25 * 60;
+  let running = false;
+  let interval = null;
+  let sessionNum = 1;
+  let sessionsBeforeLong = 4;
+  let statFocus = 0;
+  let statBreaks = 0;
+  let statTime = 0;
+
+  function getDurations() {
+    return {
+      focus: parseInt(document.getElementById('focus-duration').value) * 60,
+      short: parseInt(document.getElementById('short-duration').value) * 60,
+      long: parseInt(document.getElementById('long-duration').value) * 60
+    };
+  }
+
+  function setMode(m, btn) {
+    mode = m;
+    if (btn) {
+      document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+    }
+    const durations = getDurations();
+    timeLeft = durations[m];
+    totalTime = durations[m];
+    document.getElementById('timer-label').textContent = MODES[m];
+    clearInterval(interval);
+    running = false;
+    document.getElementById('start-btn').textContent = '▶';
+    updateDisplay();
+  }
+
+  function toggleTimer() {
+    if (running) {
+      clearInterval(interval);
+      running = false;
+      document.getElementById('start-btn').textContent = '▶';
+    } else {
+      running = true;
+      document.getElementById('start-btn').textContent = '⏸';
+      interval = setInterval(tick, 1000);
+    }
+  }
+
+  function tick() {
+    if (timeLeft <= 0) {
+      clearInterval(interval);
+      running = false;
+      onSessionEnd();
+      return;
+    }
+    timeLeft--;
+    if (mode === 'focus') statTime++;
+    updateDisplay();
+  }
+
+  function onSessionEnd() {
+    document.getElementById('start-btn').textContent = '▶';
+    if (mode === 'focus') {
+      statFocus++;
+      const sbl = parseInt(document.getElementById('sessions-before-long').value);
+      if (sessionNum >= sbl) {
+        sessionNum = 1;
+        setModeAuto('long');
+      } else {
+        sessionNum++;
+        setModeAuto('short');
+      }
+      statBreaks++;
+    } else {
+      setModeAuto('focus');
+    }
+    updateStats();
+    updateDots();
+    if (document.getElementById('auto-start').checked) setTimeout(toggleTimer, 500);
+  }
+
+  function setModeAuto(m) {
+    mode = m;
+    document.querySelectorAll('.mode-tab').forEach((t, i) => {
+      t.classList.toggle('active', ['focus','short','long'][i] === m);
+    });
+    const durations = getDurations();
+    timeLeft = durations[m];
+    totalTime = durations[m];
+    document.getElementById('timer-label').textContent = MODES[m];
+    updateDisplay();
+  }
+
+  function resetTimer() {
+    clearInterval(interval);
+    running = false;
+    document.getElementById('start-btn').textContent = '▶';
+    const durations = getDurations();
+    timeLeft = durations[mode];
+    totalTime = durations[mode];
+    updateDisplay();
+  }
+
+  function skipSession() {
+    clearInterval(interval);
+    running = false;
+    timeLeft = 0;
+    onSessionEnd();
+  }
+
+  function applySettings() {
+    resetTimer();
+    sessionsBeforeLong = parseInt(document.getElementById('sessions-before-long').value);
+    updateDots();
+  }
+
+  function updateDisplay() {
+    const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+    const s = (timeLeft % 60).toString().padStart(2, '0');
+    document.getElementById('timer-display').textContent = m + ':' + s;
+    document.title = m + ':' + s + ' — DevToolbox Pomodoro';
+    const pct = 1 - (timeLeft / totalTime);
+    const circumference = 2 * Math.PI * 100;
+    document.getElementById('progress-circle').style.strokeDashoffset = circumference * (1 - pct);
+    document.getElementById('session-num').textContent = sessionNum;
+  }
+
+  function updateStats() {
+    document.getElementById('stat-focus').textContent = statFocus;
+    document.getElementById('stat-breaks').textContent = statBreaks;
+    const mins = Math.floor(statTime / 60);
+    document.getElementById('stat-time').textContent = mins + 'm';
+  }
+
+  function updateDots() {
+    const sbl = parseInt(document.getElementById('sessions-before-long').value);
+    const dots = document.getElementById('session-dots');
+    dots.innerHTML = Array.from({length: sbl}, (_, i) =>
+      `<div class="dot ${i < sessionNum - 1 ? 'filled' : ''}"></div>`
+    ).join('');
+  }
+
+  updateDisplay();
+  updateDots();
+</script>
+</body>
+</html>

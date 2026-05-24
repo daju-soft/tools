@@ -2,7 +2,7 @@
 
 Free online developer tools. No login, no ads, no tracking. Everything runs in the browser.
 
-Live site: [aftabkh4n.github.io](https://aftabkh4n.github.io)
+Live site: [daju-soft.github.io/tools](https://daju-soft.github.io/tools/)
 
 ---
 
@@ -70,15 +70,14 @@ Every tool is a single HTML file. No build system, no npm, no framework. Just HT
 The site is hosted on GitHub Pages for free. The shared stylesheet lives in `style.css` at the root and each tool references it with a relative path.
 
 ```
-aftabkh4n.github.io/
+daju-soft.github.io/tools/
 ├── index.html
 ├── style.css
 ├── sitemap.xml
-└── tools/
-    ├── json-formatter/index.html
-    ├── word-counter/index.html
-    ├── regex-tester/index.html
-    └── ...
+├── json-formatter/index.html
+├── word-counter/index.html
+├── regex-tester/index.html
+└── ...
 ```
 
 ---
@@ -88,8 +87,8 @@ aftabkh4n.github.io/
 Clone the repo and open `index.html` in a browser. No server needed for most tools. The YAML validator loads a library from a CDN so you need internet access for that one.
 
 ```bash
-git clone https://github.com/aftabkh4n/aftabkh4n.github.io
-cd aftabkh4n.github.io
+git clone https://github.com/daju-soft/tools.git
+cd tools
 # open index.html in your browser
 ```
 
@@ -97,9 +96,9 @@ cd aftabkh4n.github.io
 
 ## Adding a new tool
 
-1. Create a folder under `tools/` with a short URL-friendly name
+1. Create a root-level folder with a short URL-friendly name
 2. Create `index.html` inside it
-3. Link the shared stylesheet: `<link rel="stylesheet" href="../../style.css" />`
+3. Link the shared stylesheet: `<link rel="stylesheet" href="../style.css" />`
 4. Use the standard header HTML for consistency
 5. Add the tool card to `index.html` at the root
 6. Add the URL to `sitemap.xml`

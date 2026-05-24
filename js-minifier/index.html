@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JavaScript Minifier Online - Free JS Minify Tool | DevToolbox</title>
+  <meta name="description" content="Minify JavaScript online for free. Remove whitespace and comments to reduce JS file size instantly. No login required." />
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .stats-row { display:flex; gap:1rem; margin-bottom:1rem; flex-wrap:wrap; }
+    .stat-pill { background:#161b22; border:1px solid #21262d; border-radius:8px; padding:0.5rem 0.9rem; font-size:0.82rem; color:#8b949e; }
+    .stat-pill span { color:#58a6ff; font-weight:700; font-family:monospace; }
+  </style>
+  <link rel="canonical" href="https://daju-soft.github.io/tools/js-minifier/" />
+</head>
+<body>
+<header>
+  <a href="/tools/" class="logo"><div class="logo-icon">⚡</div><span class="logo-text">DevToolbox</span></a>
+  <div class="header-right">Free tools for developers</div>
+</header>
+<div class="container">
+  <h1 class="page-title">JavaScript Minifier</h1>
+  <p class="page-subtitle">Paste your JavaScript below to minify it instantly. Removes comments and unnecessary whitespace to reduce file size.</p>
+
+  <div class="stats-row">
+    <div class="stat-pill">Original: <span id="original-size">0</span> bytes</div>
+    <div class="stat-pill">Minified: <span id="minified-size">0</span> bytes</div>
+    <div class="stat-pill">Saved: <span id="saved-pct">0%</span></div>
+  </div>
+
+  <div class="editor-grid">
+    <div class="editor-box">
+      <label>Input - paste your JavaScript here</label>
+      <textarea id="input" style="height:420px" placeholder="Paste your JavaScript here..."></textarea>
+      <div class="status" id="input-status"></div>
+    </div>
+    <div class="editor-box">
+      <label>Output - minified JavaScript</label>
+      <textarea id="output" style="height:420px" readonly placeholder="Minified JavaScript will appear here..."></textarea>
+      <div class="status" id="output-status"></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn-primary" onclick="minifyJS()">Minify JS</button>
+    <button class="btn-secondary" onclick="copyOutput()">Copy Output</button>
+    <button class="btn-danger" onclick="clearAll()">Clear</button>
+    <button class="btn-secondary" onclick="loadSample()">Load Sample</button>
+  </div>
+
+  <hr class="divider" />
+  <div class="content-section">
+    <h2>What is JavaScript Minification?</h2>
+    <p>JavaScript minification removes all characters that are not necessary for the code to run. This includes whitespace, line breaks, comments, and sometimes shortening variable names. The result is a smaller file that downloads faster and executes at the same speed.</p>
+    <p>Minification is a standard part of any production web build process. Tools like Webpack, Vite, and Parcel do it automatically. If you are not using a build tool you can use this tool to manually minify your JavaScript before deploying.</p>
+    <h3>How Much Smaller Will My File Be?</h3>
+    <p>A typical JavaScript file can be reduced by 20 to 50 percent through minification. Files with lots of comments and whitespace see bigger reductions. Combined with gzip compression on the server, minified files can be 70 to 80 percent smaller than the original.</p>
+    <hr class="divider" />
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <div class="faq-item">
+        <h4>Will minified JavaScript still work the same?</h4>
+        <p>Yes. Basic minification only removes whitespace and comments which JavaScript ignores. The logic and behaviour of your code is unchanged. Always test minified code before deploying to production.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Should I keep the original unminified code?</h4>
+        <p>Yes, always. Keep your original source code and minify it as part of your deployment process. Never edit the minified version directly - it is very difficult to read and maintain.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Is my code safe?</h4>
+        <p>Yes. Everything runs in your browser. Your JavaScript is never sent to any server.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<footer><p><a href="/tools/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox - Free developer tools.</p></footer>
+<script>
+  function minifyJS() {
+    const input = document.getElementById('input').value;
+    const inputStatus = document.getElementById('input-status');
+    const outputStatus = document.getElementById('output-status');
+    const output = document.getElementById('output');
+
+    if (!input.trim()) {
+      inputStatus.textContent = 'Please paste some JavaScript first.';
+      inputStatus.className = 'status err';
+      return;
+    }
+
+    let minified = input
+      .replace(/\/\/[^\n]*/g, '')
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/\n\s*\n/g, '\n')
+      .replace(/^\s+/gm, '')
+      .replace(/\s*([{};,=+\-*/<>!&|?:()])\s*/g, '$1')
+      .replace(/\n/g, '')
+      .trim();
+
+    output.value = minified;
+
+    const originalSize = new Blob([input]).size;
+    const minifiedSize = new Blob([minified]).size;
+    const saved = originalSize > 0 ? Math.round((1 - minifiedSize / originalSize) * 100) : 0;
+
+    document.getElementById('original-size').textContent = originalSize.toLocaleString();
+    document.getElementById('minified-size').textContent = minifiedSize.toLocaleString();
+    document.getElementById('saved-pct').textContent = saved + '%';
+
+    inputStatus.textContent = '✓ Minified successfully';
+    inputStatus.className = 'status ok';
+    outputStatus.textContent = `✓ Reduced by ${saved}% - ${minifiedSize} bytes`;
+    outputStatus.className = 'status ok';
+  }
+
+  function copyOutput() {
+    const text = document.getElementById('output').value;
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy Output', 1500);
+  }
+
+  function clearAll() {
+    document.getElementById('input').value = '';
+    document.getElementById('output').value = '';
+    document.getElementById('input-status').textContent = '';
+    document.getElementById('output-status').textContent = '';
+    document.getElementById('original-size').textContent = '0';
+    document.getElementById('minified-size').textContent = '0';
+    document.getElementById('saved-pct').textContent = '0%';
+  }
+
+  function loadSample() {
+    document.getElementById('input').value = `// Main application file
+// Author: DevToolbox
+
+function greetUser(name) {
+  // Check if name is provided
+  if (!name) {
+    return 'Hello, World!';
+  }
+  
+  // Return personalised greeting
+  return 'Hello, ' + name + '!';
+}
+
+// Format a date to a readable string
+function formatDate(date) {
+  const options = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  };
+  return new Date(date).toLocaleDateString('en-US', options);
+}
+
+// Calculate the sum of an array
+function sumArray(arr) {
+  return arr.reduce(function(total, current) {
+    return total + current;
+  }, 0);
+}`;
+    minifyJS();
+  }
+</script>
+</body>
+</html>

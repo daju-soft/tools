@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XML to JSON Converter Online - Free Tool | DevToolbox</title>
+  <meta name="description" content="Convert XML to JSON online for free. Paste your XML and get clean JSON output instantly. No login required." />
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="canonical" href="https://daju-soft.github.io/tools/xml-to-json/" />
+</head>
+<body>
+<header>
+  <a href="/tools/" class="logo"><div class="logo-icon">⚡</div><span class="logo-text">DevToolbox</span></a>
+  <div class="header-right">Free tools for developers</div>
+</header>
+<div class="container">
+  <h1 class="page-title">XML to JSON Converter</h1>
+  <p class="page-subtitle">Paste your XML on the left and get clean JSON output on the right instantly. Everything runs in your browser.</p>
+
+  <div class="editor-grid">
+    <div class="editor-box">
+      <label>XML Input</label>
+      <textarea id="input" style="height:420px" placeholder="Paste your XML here...&#10;&#10;&lt;person&gt;&#10;  &lt;name&gt;John&lt;/name&gt;&#10;  &lt;age&gt;30&lt;/age&gt;&#10;&lt;/person&gt;"></textarea>
+      <div class="status" id="input-status"></div>
+    </div>
+    <div class="editor-box">
+      <label>JSON Output</label>
+      <textarea id="output" style="height:420px" readonly placeholder="JSON will appear here..."></textarea>
+      <div class="status" id="output-status"></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn-primary" onclick="convert()">Convert to JSON</button>
+    <button class="btn-secondary" onclick="copyOutput()">Copy JSON</button>
+    <button class="btn-danger" onclick="clearAll()">Clear</button>
+    <button class="btn-secondary" onclick="loadSample()">Load Sample</button>
+  </div>
+
+  <hr class="divider" />
+  <div class="content-section">
+    <h2>What is XML to JSON Conversion?</h2>
+    <p>XML and JSON are both data interchange formats but they have different strengths. XML is verbose but supports attributes, namespaces, and mixed content. JSON is compact and maps directly to data structures in most programming languages. Converting XML to JSON makes the data easier to work with in JavaScript and modern APIs.</p>
+    <p>This conversion is common when consuming older SOAP APIs or XML feeds and needing to work with the data in a modern JavaScript application. Many enterprise systems still output XML and this tool lets you quickly convert it to JSON for further processing.</p>
+    <h3>How to Use This Tool</h3>
+    <ol class="steps">
+      <li>Paste your XML into the left input box.</li>
+      <li>Click Convert to JSON to see the result.</li>
+      <li>Click Copy JSON to copy the output to your clipboard.</li>
+    </ol>
+    <hr class="divider" />
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <div class="faq-item">
+        <h4>Are XML attributes included in the JSON output?</h4>
+        <p>Yes. XML attributes are included in the JSON output under an @ key by convention. This preserves all the information from the original XML document.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Is my data safe?</h4>
+        <p>Yes. Everything runs in your browser. Your XML is never sent to any server.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<footer><p><a href="/tools/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox - Free developer tools.</p></footer>
+<script>
+  function xmlToJson(xml) {
+    const obj = {};
+    if (xml.nodeType === 1) {
+      if (xml.attributes.length > 0) {
+        obj['@attributes'] = {};
+        for (let i = 0; i < xml.attributes.length; i++) {
+          const attr = xml.attributes.item(i);
+          obj['@attributes'][attr.nodeName] = attr.nodeValue;
+        }
+      }
+    } else if (xml.nodeType === 3) {
+      return xml.nodeValue.trim();
+    }
+    if (xml.hasChildNodes()) {
+      for (let i = 0; i < xml.childNodes.length; i++) {
+        const item = xml.childNodes.item(i);
+        const nodeName = item.nodeName;
+        const val = xmlToJson(item);
+        if (val === '' || val === null || val === undefined) continue;
+        if (typeof obj[nodeName] === 'undefined') {
+          obj[nodeName] = val;
+        } else {
+          if (!Array.isArray(obj[nodeName])) obj[nodeName] = [obj[nodeName]];
+          obj[nodeName].push(val);
+        }
+      }
+    }
+    return obj;
+  }
+
+  function convert() {
+    const input = document.getElementById('input').value.trim();
+    const inputStatus = document.getElementById('input-status');
+    const outputStatus = document.getElementById('output-status');
+    const output = document.getElementById('output');
+
+    if (!input) {
+      inputStatus.textContent = 'Please paste some XML first.';
+      inputStatus.className = 'status err';
+      return;
+    }
+
+    try {
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(input, 'text/xml');
+      const error = xmlDoc.querySelector('parsererror');
+      if (error) throw new Error('Invalid XML: ' + error.textContent.split('\n')[0]);
+      const json = xmlToJson(xmlDoc);
+      const result = JSON.stringify(json, null, 2);
+      output.value = result;
+      inputStatus.textContent = '✓ Converted successfully';
+      inputStatus.className = 'status ok';
+      outputStatus.textContent = `✓ ${result.split('\n').length} lines`;
+      outputStatus.className = 'status ok';
+    } catch (e) {
+      inputStatus.textContent = '✗ ' + e.message;
+      inputStatus.className = 'status err';
+      output.value = '';
+    }
+  }
+
+  function copyOutput() {
+    const text = document.getElementById('output').value;
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy JSON', 1500);
+  }
+
+  function clearAll() {
+    document.getElementById('input').value = '';
+    document.getElementById('output').value = '';
+    document.getElementById('input-status').textContent = '';
+    document.getElementById('output-status').textContent = '';
+  }
+
+  function loadSample() {
+    document.getElementById('input').value = `<?xml version="1.0" encoding="UTF-8"?>
+<employees>
+  <employee id="1">
+    <name>John Doe</name>
+    <age>30</age>
+    <email>john@example.com</email>
+    <department>Engineering</department>
+    <skills>
+      <skill>JavaScript</skill>
+      <skill>Python</skill>
+      <skill>C#</skill>
+    </skills>
+  </employee>
+  <employee id="2">
+    <name>Jane Smith</name>
+    <age>25</age>
+    <email>jane@example.com</email>
+    <department>Design</department>
+    <skills>
+      <skill>Figma</skill>
+      <skill>CSS</skill>
+    </skills>
+  </employee>
+</employees>`;
+    convert();
+  }
+</script>
+</body>
+</html>

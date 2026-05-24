@@ -1,22 +1,22 @@
 #!/bin/bash
 
 TOOLS=(
-  "tools/json-formatter/index.html"
-  "tools/word-counter/index.html"
-  "tools/uuid-generator/index.html"
-  "tools/base64-encoder/index.html"
-  "tools/regex-tester/index.html"
-  "tools/jwt-decoder/index.html"
-  "tools/timestamp-converter/index.html"
-  "tools/url-encoder/index.html"
-  "tools/css-minifier/index.html"
-  "tools/color-converter/index.html"
+  "json-formatter/index.html"
+  "word-counter/index.html"
+  "uuid-generator/index.html"
+  "base64-encoder/index.html"
+  "regex-tester/index.html"
+  "jwt-decoder/index.html"
+  "timestamp-converter/index.html"
+  "url-encoder/index.html"
+  "css-minifier/index.html"
+  "color-converter/index.html"
 )
 
-NEW_HEAD='  <link rel="stylesheet" href="../../style.css" />'
+NEW_HEAD='  <link rel="stylesheet" href="../style.css" />'
 
 NEW_HEADER='<header>
-  <a href="/" class="logo">
+  <a href="/tools/" class="logo">
     <div class="logo-icon">⚡</div>
     <span class="logo-text">DevToolbox</span>
   </a>

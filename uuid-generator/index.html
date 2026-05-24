@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../style.css" />
+  <title>UUID Generator Online - Free UUID v4 Generator | DevToolbox</title>
+  <meta name="description" content="Generate UUID v4 unique identifiers online for free. Generate single or bulk UUIDs instantly. No login required. Works in your browser." />
+  
+  <link rel="canonical" href="https://daju-soft.github.io/tools/uuid-generator/" />
+</head>
+<body>
+
+<header>
+  <a href="/tools/" class="logo">
+    <div class="logo-icon">⚡</div>
+    <span class="logo-text">DevToolbox</span>
+  </a>
+  <div class="header-right">Free tools for developers</div>
+</header>
+
+<div class="container">
+
+  <h1 class="page-title">UUID Generator</h1>
+  <p class="page-subtitle">Generate version 4 UUIDs instantly. Single or bulk. Copy with one click. Everything runs in your browser.</p>
+
+  <div class="main-uuid">
+    <div class="uuid-display" id="single-uuid">Click Generate to create a UUID</div>
+    <div class="toolbar">
+      <button class="btn-primary" onclick="generateSingle()">Generate UUID</button>
+      <button class="btn-success" onclick="copySingle()">Copy</button>
+    </div>
+  </div>
+
+  <div class="bulk-section">
+    <h3>Bulk UUID Generator</h3>
+    <div class="bulk-controls">
+      <label>How many?</label>
+      <input type="number" id="bulk-count" value="10" min="1" max="1000" />
+      <button class="btn-primary" onclick="generateBulk()">Generate</button>
+      <button class="btn-secondary" onclick="copyBulk()">Copy All</button>
+      <button class="btn-secondary" onclick="clearBulk()">Clear</button>
+    </div>
+    <div class="options-row">
+      <label><input type="checkbox" id="uppercase" /> Uppercase</label>
+      <label><input type="checkbox" id="no-hyphens" /> No hyphens</label>
+    </div>
+    <textarea id="bulk-output" readonly placeholder="Generated UUIDs will appear here..."></textarea>
+  </div>
+
+  <hr class="divider" />
+
+  <div class="content-section">
+    <h2>What is a UUID?</h2>
+    <p>UUID stands for Universally Unique Identifier. It is a 128-bit number used to identify information in computer systems. A typical UUID looks like this: 550e8400-e29b-41d4-a716-446655440000. It has five groups of characters separated by hyphens in the pattern 8-4-4-4-12.</p>
+    <p>UUIDs are designed to be unique across all systems and all time without needing a central authority to issue them. You can generate a UUID on any machine at any time and be confident it has never been generated before and never will be again. This makes them ideal for distributed systems where multiple services need to create unique identifiers independently.</p>
+
+    <h3>UUID Version 4</h3>
+    <p>Version 4 UUIDs are randomly generated. The only fixed positions are the version indicator in the 13th character which is always 4, and the variant indicator in the 17th character which is always 8, 9, a, or b. Everything else is random. This makes v4 the most commonly used UUID version for general purpose ID generation in web applications and databases.</p>
+
+    <h3>When to Use UUIDs</h3>
+    <p>Use UUIDs as primary keys in databases when you want IDs that are unique without relying on auto-increment sequences. Auto-increment IDs require a central database to issue them which creates a bottleneck in distributed systems. UUIDs can be generated client-side before the record is saved which simplifies application logic. Use them in APIs to identify resources. Use them in file names when you need guaranteed uniqueness. Use them in distributed systems where multiple services create records independently.</p>
+
+    <h3>UUID vs ULID vs NanoID</h3>
+    <p>UUID v4 is the most widely supported format and works everywhere. ULID is a newer alternative that is sortable by creation time which makes it better for database indexing. NanoID is a compact URL-safe alternative that is shorter than a UUID and uses a custom alphabet. For most web applications UUID v4 is the right choice because it is universally supported in every programming language and database without any extra libraries.</p>
+
+    <h3>UUID in Different Languages</h3>
+    <p>In JavaScript use crypto.randomUUID() in modern browsers and Node.js 19 or later. In Python use uuid.uuid4() from the built-in uuid module. In C# use Guid.NewGuid(). In Java use UUID.randomUUID(). In Go use the google/uuid package. In PostgreSQL use gen_random_uuid(). In MySQL use UUID().</p>
+
+    <h3>How to Use This Tool</h3>
+    <ol class="steps">
+      <li>Click Generate UUID to create a single UUID instantly.</li>
+      <li>Click Copy to copy it to your clipboard.</li>
+      <li>For bulk generation enter a number up to 1000 and click Generate.</li>
+      <li>Use the Uppercase or No hyphens options to change the output format.</li>
+      <li>Click Copy All to copy the entire bulk list.</li>
+    </ol>
+
+    <hr class="divider" />
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <div class="faq-item">
+        <h4>Are these UUIDs truly unique?</h4>
+        <p>Version 4 UUIDs are randomly generated from 122 bits of randomness. The probability of generating the same UUID twice is astronomically small — about 1 in 5.3 undecillion. In practice you will never generate a duplicate UUID in your lifetime even generating millions per second.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Is it safe to use these UUIDs in production?</h4>
+        <p>Yes. This tool uses the browser's built-in crypto.randomUUID() function which is cryptographically secure random number generation. It is the same function used by professional developers and production applications worldwide.</p>
+      </div>
+      <div class="faq-item">
+        <h4>What is the difference between UUID v1 and UUID v4?</h4>
+        <p>UUID v1 is generated from the current timestamp and the machine's MAC address. This makes v1 UUIDs sortable by creation time but they leak information about when and where they were created. UUID v4 is completely random and reveals nothing about the system that generated it. For most use cases v4 is preferred.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Should I store UUIDs as strings or binary in a database?</h4>
+        <p>Storing UUIDs as binary (16 bytes) uses less space than storing them as strings (36 characters) and is faster for indexing and comparison. However string storage is more readable and easier to debug. For most applications the difference is negligible. For high-scale databases with millions of records, binary storage is worth the extra complexity.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Can I use UUIDs as URL parameters?</h4>
+        <p>Yes. UUID characters are all alphanumeric plus hyphens which are safe in URLs without encoding. A URL like /users/550e8400-e29b-41d4-a716-446655440000 works fine in any browser and web framework.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p><a href="/tools/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox - Free developer tools. No login required.</p>
+</footer>
+
+<script>
+  function generateUUID() {
+    if (crypto.randomUUID) return crypto.randomUUID();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const r = Math.random() * 16 | 0;
+      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+  }
+
+  function applyOptions(uuid) {
+    if (document.getElementById('no-hyphens').checked) uuid = uuid.replace(/-/g, '');
+    if (document.getElementById('uppercase').checked) uuid = uuid.toUpperCase();
+    return uuid;
+  }
+
+  function generateSingle() {
+    const uuid = applyOptions(generateUUID());
+    document.getElementById('single-uuid').textContent = uuid;
+  }
+
+  function copySingle() {
+    const text = document.getElementById('single-uuid').textContent;
+    if (text === 'Click Generate to create a UUID') return;
+    navigator.clipboard.writeText(text);
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 1500);
+  }
+
+  function generateBulk() {
+    const count = Math.min(parseInt(document.getElementById('bulk-count').value) || 10, 1000);
+    const uuids = Array.from({ length: count }, () => applyOptions(generateUUID()));
+    document.getElementById('bulk-output').value = uuids.join('\n');
+  }
+
+  function copyBulk() {
+    const text = document.getElementById('bulk-output').value;
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy All', 1500);
+  }
+
+  function clearBulk() {
+    document.getElementById('bulk-output').value = '';
+  }
+
+  generateSingle();
+</script>
+
+</body>
+</html>

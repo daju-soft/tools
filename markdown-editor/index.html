@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Markdown Editor Online — Free Live Preview Editor | DevToolbox</title>
+  <meta name="description" content="Write and preview Markdown online for free. Live preview updates as you type. Export to HTML. No login required." />
+  <link rel="canonical" href="https://daju-soft.github.io/tools/markdown-editor/" />
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .editor-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid #21262d; border-radius: 10px; overflow: hidden; margin-bottom: 1rem; height: 540px; }
+    @media(max-width:700px) { .editor-wrap { grid-template-columns: 1fr; height: auto; } }
+    .editor-pane { display: flex; flex-direction: column; }
+    .pane-header { background: #0d1117; padding: 0.6rem 1rem; font-size: 0.72rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; border-bottom: 1px solid #21262d; display: flex; align-items: center; justify-content: space-between; }
+    .editor-pane:first-child { border-right: 1px solid #21262d; }
+    #md-input { flex: 1; background: #0d1117; border: none; color: #e8e8f0; font-family: 'Courier New', monospace; font-size: 0.88rem; padding: 1rem; resize: none; outline: none; line-height: 1.7; }
+    .preview-pane { flex: 1; overflow-y: auto; padding: 1.2rem; background: #161b22; color: #e8e8f0; font-size: 0.9rem; line-height: 1.7; }
+    .preview-pane h1 { font-size: 1.6rem; font-weight: 800; color: #f0f6fc; margin: 0.5rem 0 0.8rem; border-bottom: 1px solid #21262d; padding-bottom: 0.5rem; }
+    .preview-pane h2 { font-size: 1.2rem; font-weight: 700; color: #f0f6fc; margin: 1rem 0 0.6rem; border-bottom: 1px solid #21262d; padding-bottom: 0.4rem; }
+    .preview-pane h3 { font-size: 1rem; font-weight: 700; color: #f0f6fc; margin: 0.8rem 0 0.4rem; }
+    .preview-pane p { margin-bottom: 0.8rem; }
+    .preview-pane code { background: #0d1117; color: #58a6ff; padding: 0.1rem 0.4rem; border-radius: 4px; font-family: monospace; font-size: 0.85rem; }
+    .preview-pane pre { background: #0d1117; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.8rem 0; border: 1px solid #21262d; }
+    .preview-pane pre code { background: none; padding: 0; color: #e8e8f0; }
+    .preview-pane blockquote { border-left: 3px solid #58a6ff; padding-left: 1rem; color: #8b949e; margin: 0.8rem 0; }
+    .preview-pane a { color: #58a6ff; }
+    .preview-pane ul, .preview-pane ol { padding-left: 1.5rem; margin: 0.5rem 0 0.8rem; }
+    .preview-pane li { margin-bottom: 0.2rem; }
+    .preview-pane table { border-collapse: collapse; width: 100%; margin: 0.8rem 0; }
+    .preview-pane th, .preview-pane td { border: 1px solid #21262d; padding: 0.5rem 0.8rem; text-align: left; font-size: 0.85rem; }
+    .preview-pane th { background: #0d1117; color: #f0f6fc; }
+    .preview-pane hr { border: none; border-top: 1px solid #21262d; margin: 1rem 0; }
+    .preview-pane strong { color: #f0f6fc; }
+    .preview-pane img { max-width: 100%; border-radius: 6px; }
+    .toolbar-row { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .fmt-btn { background: #161b22; border: 1px solid #21262d; border-radius: 5px; color: #8b949e; font-size: 0.78rem; padding: 0.3rem 0.7rem; cursor: pointer; transition: all 0.2s; font-family: monospace; font-weight: 600; }
+    .fmt-btn:hover { border-color: #58a6ff; color: #58a6ff; opacity: 1; }
+    .word-count { font-size: 0.75rem; color: #8b949e; font-family: monospace; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="/tools/" class="logo"><div class="logo-icon">⚡</div><span class="logo-text">DevToolbox</span></a>
+  <div class="header-right">Free tools for developers</div>
+</header>
+<div class="container">
+  <h1 class="page-title">Markdown Editor</h1>
+  <p class="page-subtitle">Write Markdown on the left and see the live preview on the right. Export to HTML when you are done.</p>
+
+  <div class="toolbar-row">
+    <button class="fmt-btn" onclick="insertFmt('**','**')"><b>B</b></button>
+    <button class="fmt-btn" onclick="insertFmt('*','*')"><i>I</i></button>
+    <button class="fmt-btn" onclick="insertFmt('~~','~~')">~~S~~</button>
+    <button class="fmt-btn" onclick="insertFmt('`','`')">code</button>
+    <button class="fmt-btn" onclick="insertLine('## ')">H2</button>
+    <button class="fmt-btn" onclick="insertLine('### ')">H3</button>
+    <button class="fmt-btn" onclick="insertLine('- ')">List</button>
+    <button class="fmt-btn" onclick="insertLine('1. ')">1. List</button>
+    <button class="fmt-btn" onclick="insertLine('> ')">Quote</button>
+    <button class="fmt-btn" onclick="insertLine('---')">HR</button>
+    <button class="fmt-btn" onclick="insertFmt('[','](url)')">Link</button>
+    <button class="fmt-btn" onclick="insertFmt('```\n','\n```')">Block</button>
+  </div>
+
+  <div class="editor-wrap">
+    <div class="editor-pane">
+      <div class="pane-header">
+        <span>Markdown</span>
+        <span class="word-count" id="word-count">0 words</span>
+      </div>
+      <textarea id="md-input" placeholder="Start writing Markdown here..." oninput="renderPreview()"></textarea>
+    </div>
+    <div class="editor-pane">
+      <div class="pane-header"><span>Preview</span></div>
+      <div class="preview-pane" id="preview"></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn-primary" onclick="exportHTML()">Export HTML</button>
+    <button class="btn-secondary" onclick="copyMarkdown()">Copy Markdown</button>
+    <button class="btn-secondary" onclick="loadSample()">Load Sample</button>
+    <button class="btn-danger" onclick="clearAll()">Clear</button>
+  </div>
+
+  <hr class="divider" />
+  <div class="content-section">
+    <h2>What is a Markdown Editor?</h2>
+    <p>A Markdown editor lets you write in Markdown syntax and see a formatted preview in real time. Markdown is a lightweight markup language that converts plain text formatting into HTML. It is used for writing README files, documentation, blog posts, and notes.</p>
+    <p>This editor works entirely in your browser. Nothing is saved to any server. Your writing stays on your device.</p>
+
+    <h3>Markdown Syntax Quick Reference</h3>
+    <p># Heading 1 — ## Heading 2 — **bold** — *italic* — `inline code` — [link text](url) — ![alt](image-url) — - list item — 1. numbered item — > blockquote — --- horizontal rule — ```code block```</p>
+
+    <hr class="divider" />
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <div class="faq-item">
+        <h4>Is my writing saved?</h4>
+        <p>Your content is saved automatically in your browser's local storage as you type. It will still be there if you close and reopen the tab. It is not saved to any server.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Can I export my document?</h4>
+        <p>Yes. Click Export HTML to get the rendered HTML version of your Markdown. You can paste it into any CMS, email, or web page.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Does this support tables?</h4>
+        <p>Yes. Use pipes and hyphens to create tables. For example: | Header | Header | then | --- | --- | then | Cell | Cell |</p>
+      </div>
+    </div>
+  </div>
+</div>
+<footer><p><a href="/tools/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox — Free developer tools.</p></footer>
+<script>
+  function mdToHtml(md) {
+    let html = md
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/```([\s\S]*?)```/g,'<pre><code>$1</code></pre>')
+      .replace(/`([^`]+)`/g,'<code>$1</code>')
+      .replace(/^#{6}\s(.+)$/gm,'<h6>$1</h6>')
+      .replace(/^#{5}\s(.+)$/gm,'<h5>$1</h5>')
+      .replace(/^#{4}\s(.+)$/gm,'<h4>$1</h4>')
+      .replace(/^#{3}\s(.+)$/gm,'<h3>$1</h3>')
+      .replace(/^#{2}\s(.+)$/gm,'<h2>$1</h2>')
+      .replace(/^#{1}\s(.+)$/gm,'<h1>$1</h1>')
+      .replace(/\*\*\*(.+?)\*\*\*/g,'<strong><em>$1</em></strong>')
+      .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g,'<em>$1</em>')
+      .replace(/~~(.+?)~~/g,'<del>$1</del>')
+      .replace(/!\[([^\]]*)\]\(([^)]+)\)/g,'<img src="$2" alt="$1" />')
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2">$1</a>')
+      .replace(/^---$/gm,'<hr>')
+      .replace(/^>\s(.+)$/gm,'<blockquote>$1</blockquote>')
+      .replace(/^\d+\.\s(.+)$/gm,'<li>$1</li>')
+      .replace(/^[-*]\s(.+)$/gm,'<li>$1</li>')
+      .replace(/(<li>[\s\S]+?<\/li>)/g,'<ul>$1</ul>')
+      .replace(/\|(.+)\|/g, (match) => {
+        const cells = match.split('|').filter(c => c.trim() && !c.match(/^[\s-]+$/));
+        if (!cells.length) return match;
+        return '<tr>' + cells.map(c => '<td>' + c.trim() + '</td>').join('') + '</tr>';
+      })
+      .replace(/(<tr>[\s\S]+?<\/tr>)/g,'<table>$1</table>')
+      .replace(/\n\n/g,'</p><p>')
+      .trim();
+    return '<p>' + html + '</p>';
+  }
+
+  function renderPreview() {
+    const md = document.getElementById('md-input').value;
+    document.getElementById('preview').innerHTML = mdToHtml(md);
+    const words = md.trim() ? md.trim().split(/\s+/).length : 0;
+    document.getElementById('word-count').textContent = words + ' words';
+    localStorage.setItem('md-editor-content', md);
+  }
+
+  function insertFmt(before, after) {
+    const ta = document.getElementById('md-input');
+    const start = ta.selectionStart;
+    const end = ta.selectionEnd;
+    const selected = ta.value.substring(start, end);
+    ta.value = ta.value.substring(0, start) + before + selected + after + ta.value.substring(end);
+    ta.focus();
+    ta.setSelectionRange(start + before.length, end + before.length);
+    renderPreview();
+  }
+
+  function insertLine(prefix) {
+    const ta = document.getElementById('md-input');
+    const start = ta.selectionStart;
+    const before = ta.value.lastIndexOf('\n', start - 1) + 1;
+    ta.value = ta.value.substring(0, before) + prefix + ta.value.substring(before);
+    ta.focus();
+    renderPreview();
+  }
+
+  function exportHTML() {
+    const html = document.getElementById('preview').innerHTML;
+    const blob = new Blob([html], { type: 'text/html' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'document.html';
+    a.click();
+  }
+
+  function copyMarkdown() {
+    const text = document.getElementById('md-input').value;
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy Markdown', 1500);
+  }
+
+  function clearAll() {
+    document.getElementById('md-input').value = '';
+    document.getElementById('preview').innerHTML = '';
+    document.getElementById('word-count').textContent = '0 words';
+    localStorage.removeItem('md-editor-content');
+  }
+
+  function loadSample() {
+    document.getElementById('md-input').value = `# Welcome to the Markdown Editor
+
+This is a **live preview** editor. Type on the left and see the result on the right.
+
+## What you can do
+
+- Write *italic* and **bold** text
+- Create lists and [links](https://example.com)
+- Add \`inline code\` or code blocks
+- Insert blockquotes and tables
+
+## Code Example
+
+\`\`\`
+function hello(name) {
+  return 'Hello, ' + name;
+}
+\`\`\`
+
+> This is a blockquote. Use it for callouts or quotes.
+
+---
+
+| Column 1 | Column 2 | Column 3 |
+| --- | --- | --- |
+| Row 1 | Data | More data |
+| Row 2 | Data | More data |`;
+    renderPreview();
+  }
+
+  const saved = localStorage.getItem('md-editor-content');
+  if (saved) { document.getElementById('md-input').value = saved; renderPreview(); }
+  else { loadSample(); }
+</script>
+</body>
+</html>

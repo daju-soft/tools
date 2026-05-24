@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lorem Ipsum Generator Online - Free Placeholder Text | DevToolbox</title>
+  <meta name="description" content="Generate lorem ipsum placeholder text online for free. Choose number of paragraphs, sentences or words. No login required." />
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="canonical" href="https://daju-soft.github.io/tools/lorem-ipsum/" />
+</head>
+<body>
+
+<header>
+  <a href="/tools/" class="logo">
+    <div class="logo-icon">⚡</div>
+    <span class="logo-text">DevToolbox</span>
+  </a>
+  <div class="header-right">Free tools for developers</div>
+</header>
+
+<div class="container">
+  <h1 class="page-title">Lorem Ipsum Generator</h1>
+  <p class="page-subtitle">Generate placeholder text instantly. Choose paragraphs, sentences or words. Everything runs in your browser.</p>
+
+  <div class="section-box">
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem">
+      <label style="font-size:0.82rem;color:#8b949e">Generate</label>
+      <input type="number" id="amount" value="3" min="1" max="100" style="width:80px" />
+      <select id="type">
+        <option value="paragraphs">Paragraphs</option>
+        <option value="sentences">Sentences</option>
+        <option value="words">Words</option>
+      </select>
+      <label style="font-size:0.82rem;color:#8b949e;display:flex;align-items:center;gap:0.4rem">
+        <input type="checkbox" id="start-lorem" checked style="accent-color:#58a6ff" /> Start with "Lorem ipsum"
+      </label>
+    </div>
+    <div class="toolbar">
+      <button class="btn-primary" onclick="generate()">Generate</button>
+      <button class="btn-secondary" onclick="copyOutput()">Copy</button>
+      <button class="btn-danger" onclick="clearOutput()">Clear</button>
+    </div>
+  </div>
+
+  <div class="editor-box" style="margin-top:1rem">
+    <label>Generated Text</label>
+    <textarea id="output" style="height:360px" readonly placeholder="Click Generate to create placeholder text..."></textarea>
+    <div class="status ok" id="status"></div>
+  </div>
+
+  <hr class="divider" />
+
+  <div class="content-section">
+    <h2>What is Lorem Ipsum?</h2>
+    <p>Lorem ipsum is placeholder text used in design and publishing. It has been the industry standard dummy text since the 1500s. The text comes from a work by Cicero but is scrambled so it reads as meaningless Latin. Designers use it to fill space in mockups and wireframes without distracting viewers with readable content.</p>
+    <p>Using real content in a design mockup draws attention to the words rather than the layout. Lorem ipsum lets reviewers focus on fonts, spacing, and visual hierarchy instead of reading the text. It is one of the most widely used tools in graphic design and web development.</p>
+
+    <h3>How to Use This Tool</h3>
+    <ol class="steps">
+      <li>Choose how many paragraphs, sentences or words you need.</li>
+      <li>Click Generate to create the text.</li>
+      <li>Click Copy to copy it to your clipboard.</li>
+      <li>Paste it into your design tool, code editor or document.</li>
+    </ol>
+
+    <hr class="divider" />
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <div class="faq-item">
+        <h4>Where does lorem ipsum come from?</h4>
+        <p>It comes from sections of a work by Cicero called "de Finibus Bonorum et Malorum" written in 45 BC. The text has been scrambled and altered over the centuries and is no longer recognisable as the original Latin.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Can I use this text in a real project?</h4>
+        <p>Yes for mockups and prototypes. Never ship a real product with lorem ipsum still in it. Always replace placeholder text with real content before going live.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Is my text saved anywhere?</h4>
+        <p>No. Everything runs in your browser. Nothing is sent to any server.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p><a href="/tools/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox - Free developer tools.</p>
+</footer>
+
+<script>
+const WORDS = ["lorem","ipsum","dolor","sit","amet","consectetur","adipiscing","elit","sed","do","eiusmod","tempor","incididunt","ut","labore","et","dolore","magna","aliqua","enim","ad","minim","veniam","quis","nostrud","exercitation","ullamco","laboris","nisi","aliquip","ex","ea","commodo","consequat","duis","aute","irure","in","reprehenderit","voluptate","velit","esse","cillum","eu","fugiat","nulla","pariatur","excepteur","sint","occaecat","cupidatat","non","proident","sunt","culpa","qui","officia","deserunt","mollit","anim","id","est","laborum","at","vero","eos","accusamus","iusto","odio","dignissimos","ducimus","blanditiis","praesentium","voluptatum","deleniti","atque","corrupti","quos","quas","molestias","excepturi","occaecati","cupiditate","provident","similique","mollitia","animi","dolorum","fuga","harum","quidem","rerum","facilis","expedita","distinctio","nam","libero","tempore","cum","soluta","nobis","eligendi","optio","cumque","nihil","impedit","quo","minus","maxime","placeat","facere","possimus","omnis","voluptas","assumenda","repellendus"];
+
+function randomWord() { return WORDS[Math.floor(Math.random() * WORDS.length)]; }
+
+function randomSentence() {
+  const len = 8 + Math.floor(Math.random() * 12);
+  const words = Array.from({length: len}, randomWord);
+  words[0] = words[0].charAt(0).toUpperCase() + words[0].slice(1);
+  return words.join(' ') + '.';
+}
+
+function randomParagraph() {
+  const len = 4 + Math.floor(Math.random() * 4);
+  return Array.from({length: len}, randomSentence).join(' ');
+}
+
+function generate() {
+  const amount = parseInt(document.getElementById('amount').value) || 3;
+  const type = document.getElementById('type').value;
+  const startLorem = document.getElementById('start-lorem').checked;
+  let result = [];
+
+  if (type === 'paragraphs') {
+    for (let i = 0; i < amount; i++) result.push(randomParagraph());
+  } else if (type === 'sentences') {
+    for (let i = 0; i < amount; i++) result.push(randomSentence());
+  } else {
+    for (let i = 0; i < amount; i++) result.push(randomWord());
+  }
+
+  let text = type === 'paragraphs' ? result.join('\n\n') : result.join(type === 'words' ? ' ' : ' ');
+  if (startLorem) text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ' + text;
+
+  document.getElementById('output').value = text;
+  document.getElementById('status').textContent = `✓ Generated ${amount} ${type}`;
+}
+
+function copyOutput() {
+  const text = document.getElementById('output').value;
+  if (!text) return;
+  navigator.clipboard.writeText(text);
+  document.getElementById('status').textContent = '✓ Copied to clipboard';
+}
+
+function clearOutput() {
+  document.getElementById('output').value = '';
+  document.getElementById('status').textContent = '';
+}
+
+generate();
+</script>
+</body>
+</html>

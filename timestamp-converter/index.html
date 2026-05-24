@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../style.css" />
+  <title>Unix Timestamp Converter Online - Free Tool | DevToolbox</title>
+  <meta name="description" content="Convert Unix timestamps to human readable dates and back. Get the current timestamp instantly. Free, no login required, works in your browser." />
+  
+  <link rel="canonical" href="https://daju-soft.github.io/tools/timestamp-converter/" />
+</head>
+<body>
+
+<header>
+  <a href="/tools/" class="logo">
+    <div class="logo-icon">⚡</div>
+    <span class="logo-text">DevToolbox</span>
+  </a>
+  <div class="header-right">Free tools for developers</div>
+</header>
+
+<div class="container">
+
+  <h1 class="page-title">Unix Timestamp Converter</h1>
+  <p class="page-subtitle">Convert Unix timestamps to readable dates and back. See the current timestamp live.</p>
+
+  <div class="now-box">
+    <div>
+      <div class="now-label">Current Unix Timestamp</div>
+      <div class="now-value" id="current-ts">-</div>
+      <div class="now-date" id="current-date">-</div>
+    </div>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+      <button class="btn-secondary" onclick="copyCurrentTs()">Copy Timestamp</button>
+      <button class="btn-secondary" onclick="useCurrentTs()">Use This Timestamp</button>
+    </div>
+  </div>
+
+  <div class="section-box">
+    <h3>Timestamp → Human Readable Date</h3>
+    <div class="input-row">
+      <input type="number" id="ts-input" placeholder="Enter Unix timestamp e.g. 1700000000" />
+      <button class="btn-primary" onclick="convertTsToDate()">Convert</button>
+      <button class="btn-secondary" onclick="clearTs()">Clear</button>
+    </div>
+    <div class="status" id="ts-status"></div>
+    <div class="result-grid" id="ts-results" style="margin-top:1rem"></div>
+  </div>
+
+  <div class="section-box">
+    <h3>Human Readable Date → Timestamp</h3>
+    <div class="input-row">
+      <input type="text" id="date-input" placeholder="e.g. 2024-01-15 or Jan 15 2024 10:30:00" />
+      <button class="btn-primary" onclick="convertDateToTs()">Convert</button>
+      <button class="btn-secondary" onclick="clearDate()">Clear</button>
+    </div>
+    <div class="status" id="date-status"></div>
+    <div class="result-grid" id="date-results" style="margin-top:1rem"></div>
+  </div>
+
+  <hr class="divider" />
+
+  <div class="content-section">
+
+    <h2>What is a Unix Timestamp?</h2>
+    <p>A Unix timestamp is the number of seconds that have passed since January 1st 1970 at 00:00:00 UTC. This moment is called the Unix Epoch. It is a standard way to represent a point in time in computer systems because it is a single number with no timezone or format ambiguity.</p>
+    <p>Almost every programming language has built-in support for Unix timestamps. In JavaScript you get the current timestamp with Date.now() which returns milliseconds, so divide by 1000 for seconds. In Python you use time.time(). In C# you use DateTimeOffset.UtcNow.ToUnixTimeSeconds().</p>
+
+    <h3>Seconds vs Milliseconds</h3>
+    <p>Some systems store timestamps in seconds and some in milliseconds. A 10 digit timestamp is almost always seconds. A 13 digit timestamp is almost always milliseconds. JavaScript's Date.now() returns milliseconds. Most Unix systems and databases use seconds. This tool handles both automatically.</p>
+
+    <h3>Why Use Unix Timestamps?</h3>
+    <p>Unix timestamps are timezone independent. When you store a timestamp as a number it means the same moment in time everywhere in the world. Converting to a local time is done at display time based on the viewer's timezone. This avoids a whole class of bugs caused by storing dates as formatted strings with timezone information baked in.</p>
+
+    <hr class="divider" />
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+
+      <div class="faq-item">
+        <h4>What is the Unix Epoch?</h4>
+        <p>The Unix Epoch is January 1st 1970 at 00:00:00 UTC. Unix timestamps count seconds from this moment. It was chosen somewhat arbitrarily when Unix was being developed in the early 1970s and has been the standard ever since.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>What is the Year 2038 problem?</h4>
+        <p>32-bit systems store timestamps as a signed integer which can hold a maximum value of 2,147,483,647. This corresponds to January 19 2038. After that date 32-bit systems will overflow. Most modern systems use 64-bit integers which can store timestamps billions of years into the future.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>How do I get the current timestamp in code?</h4>
+        <p>In JavaScript use Math.floor(Date.now() / 1000). In Python use int(time.time()). In C# use DateTimeOffset.UtcNow.ToUnixTimeSeconds(). In PHP use time(). In Go use time.Now().Unix().</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>Does this tool handle timezones?</h4>
+        <p>The tool shows results in both UTC and your local timezone so you can see both. Unix timestamps themselves are always UTC - the timezone only matters when displaying the time in a human readable format.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p><a href="/tools/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox - Free developer tools. No login required.</p>
+</footer>
+
+<script>
+  function updateClock() {
+    const now = Math.floor(Date.now() / 1000);
+    document.getElementById('current-ts').textContent = now;
+    document.getElementById('current-date').textContent = new Date().toUTCString();
+  }
+
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  function copyCurrentTs() {
+    const ts = document.getElementById('current-ts').textContent;
+    navigator.clipboard.writeText(ts);
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy Timestamp', 1500);
+  }
+
+  function useCurrentTs() {
+    const ts = document.getElementById('current-ts').textContent;
+    document.getElementById('ts-input').value = ts;
+    convertTsToDate();
+  }
+
+  function makeResultItem(label, value) {
+    return `<div class="result-item">
+      <div class="r-label">${label}</div>
+      <div class="r-value">
+        <span>${value}</span>
+        <button class="copy-btn" onclick="navigator.clipboard.writeText('${value.replace(/'/g,"\\'")}');this.textContent='✓';setTimeout(()=>this.textContent='copy',1200)">copy</button>
+      </div>
+    </div>`;
+  }
+
+  function convertTsToDate() {
+    const raw = document.getElementById('ts-input').value.trim();
+    const status = document.getElementById('ts-status');
+    const results = document.getElementById('ts-results');
+
+    if (!raw) {
+      status.textContent = 'Please enter a timestamp.';
+      status.className = 'status err';
+      return;
+    }
+
+    let ts = parseInt(raw);
+    if (isNaN(ts)) {
+      status.textContent = '✗ Invalid timestamp - must be a number.';
+      status.className = 'status err';
+      results.innerHTML = '';
+      return;
+    }
+
+    // Auto detect milliseconds
+    if (raw.length >= 13) ts = Math.floor(ts / 1000);
+
+    const date = new Date(ts * 1000);
+    if (isNaN(date.getTime())) {
+      status.textContent = '✗ Could not parse this timestamp.';
+      status.className = 'status err';
+      return;
+    }
+
+    status.textContent = '✓ Converted successfully';
+    status.className = 'status ok';
+
+    results.innerHTML = [
+      makeResultItem('UTC', date.toUTCString()),
+      makeResultItem('ISO 8601', date.toISOString()),
+      makeResultItem('Local Time', date.toLocaleString()),
+      makeResultItem('Date Only', date.toLocaleDateString()),
+      makeResultItem('Time Only', date.toLocaleTimeString()),
+      makeResultItem('Milliseconds', (ts * 1000).toString()),
+    ].join('');
+  }
+
+  function convertDateToTs() {
+    const raw = document.getElementById('date-input').value.trim();
+    const status = document.getElementById('date-status');
+    const results = document.getElementById('date-results');
+
+    if (!raw) {
+      status.textContent = 'Please enter a date.';
+      status.className = 'status err';
+      return;
+    }
+
+    const date = new Date(raw);
+    if (isNaN(date.getTime())) {
+      status.textContent = '✗ Could not parse this date. Try formats like 2024-01-15 or Jan 15 2024.';
+      status.className = 'status err';
+      results.innerHTML = '';
+      return;
+    }
+
+    const ts = Math.floor(date.getTime() / 1000);
+    status.textContent = '✓ Converted successfully';
+    status.className = 'status ok';
+
+    results.innerHTML = [
+      makeResultItem('Unix Timestamp (seconds)', ts.toString()),
+      makeResultItem('Unix Timestamp (milliseconds)', (ts * 1000).toString()),
+      makeResultItem('UTC', date.toUTCString()),
+      makeResultItem('ISO 8601', date.toISOString()),
+    ].join('');
+  }
+
+  function clearTs() {
+    document.getElementById('ts-input').value = '';
+    document.getElementById('ts-status').textContent = '';
+    document.getElementById('ts-results').innerHTML = '';
+  }
+
+  function clearDate() {
+    document.getElementById('date-input').value = '';
+    document.getElementById('date-status').textContent = '';
+    document.getElementById('date-results').innerHTML = '';
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CSS Border Radius Generator Online — Free Tool | DevToolbox</title>
+  <meta name="description" content="Generate CSS border radius visually online for free. Create rounded corners and organic shapes. Copy the CSS instantly. No login required." />
+  <link rel="canonical" href="https://daju-soft.github.io/tools/border-radius-generator/" />
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .generator-wrap { display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+    @media(max-width:800px) { .generator-wrap { grid-template-columns: 1fr; } }
+    .controls-panel { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 1.2rem; }
+    .control-group { margin-bottom: 1rem; }
+    .control-group label { display: flex; justify-content: space-between; font-size: 0.72rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem; font-weight: 600; }
+    .control-group label span { color: #58a6ff; font-family: monospace; }
+    .control-group input[type=range] { width: 100%; accent-color: #58a6ff; }
+    .control-group input[type=checkbox] { accent-color: #58a6ff; margin-right: 0.4rem; }
+    .preview-panel { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 1.2rem; display: flex; align-items: center; justify-content: center; min-height: 280px; }
+    .preview-box { width: 200px; height: 200px; background: linear-gradient(135deg, #58a6ff, #7c6aff); transition: border-radius 0.2s; }
+    .code-output { background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 1rem; font-family: monospace; font-size: 0.9rem; color: #58a6ff; margin-bottom: 1rem; word-break: break-all; }
+    .presets { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .preset-btn { background: #161b22; border: 1px solid #21262d; border-radius: 6px; color: #8b949e; font-size: 0.75rem; padding: 0.35rem 0.75rem; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+    .preset-btn:hover { border-color: #58a6ff; color: #58a6ff; opacity: 1; }
+    .linked-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.8rem; font-size: 0.82rem; color: #8b949e; }
+  </style>
+</head>
+<body>
+<header>
+  <a href="/tools/" class="logo"><div class="logo-icon">⚡</div><span class="logo-text">DevToolbox</span></a>
+  <div class="header-right">Free tools for developers</div>
+</header>
+<div class="container">
+  <h1 class="page-title">CSS Border Radius Generator</h1>
+  <p class="page-subtitle">Create rounded corners and organic shapes visually. Adjust each corner individually and copy the CSS instantly.</p>
+
+  <div style="margin-bottom:0.6rem;font-size:0.72rem;color:#8b949e;text-transform:uppercase;letter-spacing:0.08em;font-weight:600">Presets</div>
+  <div class="presets">
+    <button class="preset-btn" onclick="applyPreset('0')">Square</button>
+    <button class="preset-btn" onclick="applyPreset('4px')">Slight</button>
+    <button class="preset-btn" onclick="applyPreset('8px')">Small</button>
+    <button class="preset-btn" onclick="applyPreset('12px')">Medium</button>
+    <button class="preset-btn" onclick="applyPreset('16px')">Large</button>
+    <button class="preset-btn" onclick="applyPreset('24px')">Extra Large</button>
+    <button class="preset-btn" onclick="applyPreset('50%')">Circle</button>
+    <button class="preset-btn" onclick="applyOrganic()">Organic</button>
+  </div>
+
+  <div class="generator-wrap">
+    <div class="controls-panel">
+      <div class="linked-row">
+        <input type="checkbox" id="linked" checked onchange="update()" />
+        <label for="linked">Link all corners</label>
+      </div>
+      <div class="control-group">
+        <label>Top Left <span id="tl-val">12px</span></label>
+        <input type="range" id="tl" min="0" max="200" value="12" oninput="onSlider('tl')" />
+      </div>
+      <div class="control-group">
+        <label>Top Right <span id="tr-val">12px</span></label>
+        <input type="range" id="tr" min="0" max="200" value="12" oninput="onSlider('tr')" />
+      </div>
+      <div class="control-group">
+        <label>Bottom Right <span id="br-val">12px</span></label>
+        <input type="range" id="br" min="0" max="200" value="12" oninput="onSlider('br')" />
+      </div>
+      <div class="control-group">
+        <label>Bottom Left <span id="bl-val">12px</span></label>
+        <input type="range" id="bl" min="0" max="200" value="12" oninput="onSlider('bl')" />
+      </div>
+      <div class="control-group">
+        <label>Unit</label>
+        <select id="unit" onchange="update()">
+          <option value="px">px</option>
+          <option value="%">%</option>
+          <option value="rem">rem</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="preview-panel">
+      <div class="preview-box" id="preview-box"></div>
+    </div>
+  </div>
+
+  <div class="code-output" id="code-output"></div>
+
+  <div class="toolbar">
+    <button class="btn-primary" onclick="copyCSS()">Copy CSS</button>
+  </div>
+
+  <hr class="divider" />
+  <div class="content-section">
+    <h2>What is CSS Border Radius?</h2>
+    <p>The CSS border-radius property rounds the corners of an element's border box. You can give each corner a different radius to create asymmetric shapes, or use a single value to round all corners equally. A border-radius of 50 percent on a square element creates a circle.</p>
+    <p>The property accepts one to four values. One value applies to all corners. Two values apply to top-left and bottom-right for the first, and top-right and bottom-left for the second. Four values apply individually to top-left, top-right, bottom-right, and bottom-left in that order.</p>
+
+    <hr class="divider" />
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <div class="faq-item">
+        <h4>How do I make a perfect circle?</h4>
+        <p>Set border-radius to 50% on a square element. The element must have equal width and height. If the dimensions differ you will get an ellipse instead of a circle.</p>
+      </div>
+      <div class="faq-item">
+        <h4>What is the difference between px and percent for border radius?</h4>
+        <p>Pixel values give a fixed corner size regardless of the element size. Percent values scale with the element. Use percent when you want the corner radius to stay proportional as the element resizes.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<footer><p><a href="/tools/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox — Free developer tools.</p></footer>
+<script>
+  function onSlider(corner) {
+    const linked = document.getElementById('linked').checked;
+    const val = document.getElementById(corner).value;
+    if (linked) {
+      ['tl','tr','br','bl'].forEach(c => document.getElementById(c).value = val);
+    }
+    update();
+  }
+
+  function update() {
+    const unit = document.getElementById('unit').value;
+    const tl = document.getElementById('tl').value;
+    const tr = document.getElementById('tr').value;
+    const br = document.getElementById('br').value;
+    const bl = document.getElementById('bl').value;
+
+    document.getElementById('tl-val').textContent = tl + unit;
+    document.getElementById('tr-val').textContent = tr + unit;
+    document.getElementById('br-val').textContent = br + unit;
+    document.getElementById('bl-val').textContent = bl + unit;
+
+    const radius = `${tl}${unit} ${tr}${unit} ${br}${unit} ${bl}${unit}`;
+    document.getElementById('preview-box').style.borderRadius = radius;
+    document.getElementById('code-output').textContent = `border-radius: ${radius};`;
+  }
+
+  function applyPreset(val) {
+    const num = parseInt(val) || 0;
+    const unit = val.includes('%') ? '%' : val.includes('rem') ? 'rem' : 'px';
+    document.getElementById('unit').value = unit === 'px' ? 'px' : unit;
+    ['tl','tr','br','bl'].forEach(c => document.getElementById(c).value = num);
+    document.getElementById('linked').checked = true;
+    update();
+  }
+
+  function applyOrganic() {
+    document.getElementById('linked').checked = false;
+    document.getElementById('tl').value = 60;
+    document.getElementById('tr').value = 30;
+    document.getElementById('br').value = 70;
+    document.getElementById('bl').value = 40;
+    document.getElementById('unit').value = '%';
+    update();
+  }
+
+  function copyCSS() {
+    const text = document.getElementById('code-output').textContent;
+    navigator.clipboard.writeText(text);
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy CSS', 1500);
+  }
+
+  update();
+</script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../style.css" />
+  <title>Color Converter Online - HEX RGB HSL Free Tool | DevToolbox</title>
+  <meta name="description" content="Convert colors between HEX, RGB, HSL and more online for free. Pick a color or paste a value and get instant conversions. No login required." />
+  
+  <link rel="canonical" href="https://daju-soft.github.io/tools/color-converter/" />
+</head>
+<body>
+
+<header>
+  <a href="/tools/" class="logo">
+    <div class="logo-icon">⚡</div>
+    <span class="logo-text">DevToolbox</span>
+  </a>
+  <div class="header-right">Free tools for developers</div>
+</header>
+
+<div class="container">
+
+  <h1 class="page-title">Color Converter</h1>
+  <p class="page-subtitle">Convert colors between HEX, RGB, HSL, and more. Pick a color or paste a value to get instant conversions.</p>
+
+  <div class="picker-box">
+    <div class="color-preview" id="color-preview" style="background:#58a6ff"></div>
+    <div class="picker-controls">
+      <label>Pick a Color</label>
+      <input type="color" id="color-picker" value="#58a6ff" oninput="onPickerChange()" />
+      <div class="hex-input-row">
+        <input type="text" id="hex-input" value="#58a6ff" placeholder="#000000" />
+        <button class="btn-primary" onclick="onHexInput()">Convert</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="conversions" id="conversions"></div>
+
+  <div class="shades-box">
+    <label>Shades & Tints</label>
+    <div class="shades-grid" id="shades-grid"></div>
+  </div>
+
+  <hr class="divider" />
+
+  <div class="content-section">
+
+    <h2>Color Formats Explained</h2>
+    <p>There are several ways to represent a color in code. HEX is the most common in web development - it uses a hash sign followed by six hexadecimal digits. RGB uses three numbers from 0 to 255 representing red, green, and blue. HSL uses hue in degrees, saturation as a percentage, and lightness as a percentage. Each format has its use cases and this tool converts between all of them instantly.</p>
+
+    <h3>When to Use HEX</h3>
+    <p>HEX is the most widely used format in CSS and design tools. It is compact and easy to copy and paste. Use HEX when you know the exact color you want and are working in a code editor or design tool that expects it.</p>
+
+    <h3>When to Use HSL</h3>
+    <p>HSL is the most human-friendly format for working with colors programmatically. Because hue, saturation, and lightness are separate values it is easy to create color variations. To make a color lighter just increase the lightness value. To make it more muted reduce the saturation. This makes HSL ideal for generating color palettes and design systems.</p>
+
+    <h3>When to Use RGB</h3>
+    <p>RGB is useful when you need to work with color channels individually, for example when blending colors or working with canvas or WebGL. It is also used in CSS with rgba() when you need to add transparency to a color.</p>
+
+    <hr class="divider" />
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+
+      <div class="faq-item">
+        <h4>What is the difference between RGB and RGBA?</h4>
+        <p>RGBA adds an alpha channel to RGB. The alpha value goes from 0 (fully transparent) to 1 (fully opaque). Use rgba() in CSS when you want a color with some transparency, for example rgba(0, 0, 0, 0.5) for a semi-transparent black overlay.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>What is HEX shorthand?</h4>
+        <p>When all three pairs of hex digits are the same character repeated - like #aabbcc - you can shorten it to three digits - #abc. Browsers treat them identically. This tool shows both the full and shorthand versions when applicable.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>What is HSL hue?</h4>
+        <p>Hue is the color itself represented as a position on a 360 degree color wheel. Red is at 0 degrees, green is at 120 degrees, and blue is at 240 degrees. Values between these produce intermediate colors like orange, yellow, cyan, and purple.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>Can I use this on mobile?</h4>
+        <p>Yes. The tool is fully responsive. The color picker works on both desktop and mobile browsers.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p><a href="/tools/">← Back to all tools</a> &nbsp;|&nbsp; DevToolbox - Free developer tools. No login required.</p>
+</footer>
+
+<script>
+  function hexToRgb(hex) {
+    hex = hex.replace('#', '');
+    if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+    const r = parseInt(hex.substring(0,2), 16);
+    const g = parseInt(hex.substring(2,4), 16);
+    const b = parseInt(hex.substring(4,6), 16);
+    return { r, g, b };
+  }
+
+  function rgbToHsl(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+    if (max === min) { h = s = 0; }
+    else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch(max) {
+        case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+        case g: h = ((b - r) / d + 2) / 6; break;
+        case b: h = ((r - g) / d + 4) / 6; break;
+      }
+    }
+    return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+  }
+
+  function rgbToHex(r, g, b) {
+    return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+  }
+
+  function makeConvItem(label, value) {
+    return `<div class="conv-item">
+      <div class="c-label">${label}</div>
+      <div class="c-value">
+        <span>${value}</span>
+        <button class="copy-btn" onclick="navigator.clipboard.writeText('${value.replace(/'/g,"\\'")}');this.textContent='✓';setTimeout(()=>this.textContent='copy',1200)">copy</button>
+      </div>
+    </div>`;
+  }
+
+  function updateFromHex(hex) {
+    hex = hex.trim();
+    if (!/^#?[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(hex)) return;
+    if (!hex.startsWith('#')) hex = '#' + hex;
+
+    document.getElementById('color-picker').value = hex.length === 4
+      ? '#' + hex[1]+hex[1]+hex[2]+hex[2]+hex[3]+hex[3]
+      : hex;
+    document.getElementById('color-preview').style.background = hex;
+
+    const { r, g, b } = hexToRgb(hex);
+    const { h, s, l } = rgbToHsl(r, g, b);
+
+    const fullHex = rgbToHex(r, g, b);
+    const shortHex = fullHex.replace('#', '').match(/^(.)\1(.)\2(.)\3$/)
+      ? '#' + fullHex[1] + fullHex[3] + fullHex[5]
+      : null;
+
+    document.getElementById('conversions').innerHTML = [
+      makeConvItem('HEX', fullHex),
+      shortHex ? makeConvItem('HEX Shorthand', shortHex) : '',
+      makeConvItem('RGB', `rgb(${r}, ${g}, ${b})`),
+      makeConvItem('RGBA', `rgba(${r}, ${g}, ${b}, 1)`),
+      makeConvItem('HSL', `hsl(${h}, ${s}%, ${l}%)`),
+      makeConvItem('HSLA', `hsla(${h}, ${s}%, ${l}%, 1)`),
+      makeConvItem('R', r.toString()),
+      makeConvItem('G', g.toString()),
+      makeConvItem('B', b.toString()),
+    ].join('');
+
+    const shadesGrid = document.getElementById('shades-grid');
+    shadesGrid.innerHTML = '';
+    for (let i = 10; i <= 90; i += 10) {
+      const shade = document.createElement('div');
+      shade.className = 'shade';
+      shade.style.background = `hsl(${h}, ${s}%, ${i}%)`;
+      shade.title = `hsl(${h}, ${s}%, ${i}%)`;
+      shade.onclick = () => {
+        const shadeHex = hslToHex(h, s, i);
+        document.getElementById('hex-input').value = shadeHex;
+        updateFromHex(shadeHex);
+      };
+      shadesGrid.appendChild(shade);
+    }
+  }
+
+  function hslToHex(h, s, l) {
+    s /= 100; l /= 100;
+    const k = n => (n + h / 30) % 12;
+    const a = s * Math.min(l, 1 - l);
+    const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+    return rgbToHex(Math.round(f(0)*255), Math.round(f(8)*255), Math.round(f(4)*255));
+  }
+
+  function onPickerChange() {
+    const hex = document.getElementById('color-picker').value;
+    document.getElementById('hex-input').value = hex;
+    updateFromHex(hex);
+  }
+
+  function onHexInput() {
+    updateFromHex(document.getElementById('hex-input').value);
+  }
+
+  document.getElementById('hex-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') onHexInput();
+  });
+
+  updateFromHex('#58a6ff');
+</script>
+
+</body>
+</html>

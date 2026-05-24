@@ -46,29 +46,54 @@
 
   <div class="content-section">
     <h2>What is a Hash Function?</h2>
-    <p>A hash function takes any input and produces a fixed-length output called a hash or digest. The same input always produces the same output. But even a tiny change in the input produces a completely different hash. This makes hashes useful for verifying data integrity - if the hash matches, the data has not been tampered with.</p>
-    <p>Hash functions are one-way. You cannot reverse a hash back to the original input. This makes them useful for storing passwords - instead of storing the password itself you store its hash and compare hashes when the user logs in.</p>
+    <p>A hash function takes any input and produces a fixed-length output called a hash, digest, or checksum. The same input always produces the same output. Change even one character in the input and the output changes completely. This property is called the avalanche effect and it is what makes hash functions useful for verifying data integrity.</p>
+    <p>Hash functions are one-way. You cannot mathematically reverse a hash back to the original input. This is what makes them useful for storing passwords. Instead of storing the password itself, systems store its hash. When a user logs in, the system hashes the entered password and compares it to the stored hash. If they match, the password is correct. If the database is breached, attackers only get hashes which cannot be reversed to get the original passwords.</p>
 
-    <h3>SHA-256 vs SHA-512</h3>
-    <p>SHA-256 produces a 256-bit hash represented as a 64 character hex string. SHA-512 produces a 512-bit hash represented as a 128 character hex string. SHA-512 is stronger but both are considered secure for most purposes. SHA-256 is used in Bitcoin and most TLS certificates. SHA-512 is used when extra security margin is needed.</p>
+    <h3>SHA-1</h3>
+    <p>SHA-1 produces a 160-bit hash shown as a 40 character hex string. It was widely used for SSL certificates and file integrity checks but is no longer considered cryptographically secure. Collision attacks have been demonstrated against SHA-1 meaning two different inputs can produce the same hash. Do not use SHA-1 for security purposes. It is still acceptable for non-security checksums where speed matters more than cryptographic strength.</p>
 
-    <h3>Why Not MD5?</h3>
-    <p>MD5 is no longer considered cryptographically secure. Collisions - two different inputs producing the same hash - have been found. Do not use MD5 for security purposes. It is still useful for checksums and non-security data integrity checks where speed matters more than cryptographic strength.</p>
+    <h3>SHA-256</h3>
+    <p>SHA-256 produces a 256-bit hash shown as a 64 character hex string. It is part of the SHA-2 family and is currently the most widely used cryptographic hash function. Bitcoin uses SHA-256 for its proof of work algorithm. Most TLS certificates use SHA-256. File integrity verification tools use SHA-256. It is considered secure against all known attacks and is the recommended choice for most applications.</p>
+
+    <h3>SHA-384</h3>
+    <p>SHA-384 produces a 384-bit hash shown as a 96 character hex string. It is a truncated version of SHA-512 and is used in some TLS cipher suites. It offers more security margin than SHA-256 with a modest performance cost. Most applications do not need SHA-384 specifically but it is a good choice when you need something stronger than SHA-256 but do not need the full SHA-512 output size.</p>
+
+    <h3>SHA-512</h3>
+    <p>SHA-512 produces a 512-bit hash shown as a 128 character hex string. It offers the largest security margin of the SHA-2 family and is used when maximum cryptographic strength is needed. On 64-bit systems SHA-512 is often faster than SHA-256 because it uses 64-bit operations internally. Use SHA-512 for high security applications like signing critical documents or generating key derivation inputs.</p>
+
+    <h3>Hash Functions vs Encryption</h3>
+    <p>Hash functions and encryption are often confused but they are fundamentally different. Encryption is a two-way process — data is encrypted with a key and can be decrypted back to the original with the right key. Hashing is one-way — the hash cannot be reversed to the original input. Use encryption when you need to recover the original data. Use hashing when you only need to verify that data has not changed.</p>
+
+    <h3>How to Use This Tool</h3>
+    <ol class="steps">
+      <li>Type or paste your text into the input box above.</li>
+      <li>All four hash values generate automatically as you type.</li>
+      <li>Click copy next to any hash to copy it to your clipboard.</li>
+      <li>Use Load Sample to see example output with a test string.</li>
+    </ol>
 
     <hr class="divider" />
     <h2>Frequently Asked Questions</h2>
     <div class="faq">
       <div class="faq-item">
-        <h4>Can I reverse a hash?</h4>
-        <p>No. Hash functions are designed to be one-way. You cannot mathematically reverse a hash to get the original input. Rainbow tables can crack weak or common passwords by pre-computing hashes but a strong unique password cannot be reversed.</p>
+        <h4>Can I reverse a hash to get the original text?</h4>
+        <p>No. Hash functions are mathematically one-way. There is no algorithm that can reverse a hash to the original input. Rainbow table attacks can crack weak or common passwords by pre-computing hashes for millions of common inputs but a strong unique password cannot be reversed this way.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Which hash function should I use for passwords?</h4>
+        <p>None of the hash functions on this page. For passwords you should use a dedicated password hashing algorithm like bcrypt, Argon2, or PBKDF2. These are specifically designed to be slow which makes brute force attacks impractical. SHA-256 and SHA-512 are too fast for password hashing — an attacker can try billions of guesses per second.</p>
+      </div>
+      <div class="faq-item">
+        <h4>What is a hash collision?</h4>
+        <p>A collision is when two different inputs produce the same hash output. Because hash functions map an infinite set of inputs to a fixed-length output, collisions are mathematically inevitable. The goal of a cryptographic hash function is to make collisions computationally infeasible to find. SHA-256 and SHA-512 have no known practical collision attacks.</p>
       </div>
       <div class="faq-item">
         <h4>Is my text safe?</h4>
-        <p>Yes. Everything runs in your browser using the Web Crypto API. Your text is never sent to any server.</p>
+        <p>Yes. Everything runs in your browser using the Web Crypto API. Your text is never sent to any server and is not stored anywhere.</p>
       </div>
       <div class="faq-item">
-        <h4>Which hash should I use?</h4>
-        <p>Use SHA-256 for most purposes. It is fast, widely supported, and considered secure. Use SHA-512 when you need extra security margin. Avoid SHA-1 and MD5 for any security-sensitive use.</p>
+        <h4>Why does the same text always produce the same hash?</h4>
+        <p>Hash functions are deterministic — given the same input they always produce the same output. This is what makes them useful for verification. If you hash a file and get a certain value, anyone else hashing the same file should get the exact same value. If even one bit is different the hash will be completely different.</p>
       </div>
     </div>
   </div>

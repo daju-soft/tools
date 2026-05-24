@@ -58,13 +58,18 @@
   <hr class="divider" />
 
   <div class="content-section">
-
     <h2>What is URL Encoding?</h2>
-    <p>URL encoding - also called percent encoding - converts characters that are not allowed in a URL into a format that can be safely transmitted over the internet. Every character that is not a letter, number, or one of the safe characters like hyphen and underscore gets replaced with a percent sign followed by two hex digits.</p>
-    <p>For example a space becomes %20, an ampersand becomes %26, and a forward slash becomes %2F. This is important because some characters have special meaning in a URL. A question mark starts the query string. An ampersand separates parameters. If your data contains these characters they need to be encoded so the URL parser does not misinterpret them.</p>
+    <p>URL encoding, also called percent encoding, converts characters that are not allowed in a URL into a safe format. Every character that is not a letter, number, hyphen, underscore, period, or tilde gets replaced with a percent sign followed by two hexadecimal digits representing the character's ASCII code. For example a space becomes %20, an ampersand becomes %26, and a forward slash becomes %2F.</p>
+    <p>URLs can only contain a limited set of characters defined by the RFC 3986 standard. If your URL contains special characters like spaces, accented letters, Chinese characters, or symbols they must be encoded before the URL is sent over the internet. Most programming languages handle this automatically in their HTTP libraries but sometimes you need to encode values manually.</p>
 
     <h3>Encode URI vs Encode URI Component</h3>
-    <p>There are two levels of URL encoding. Encoding a full URI preserves characters that are part of the URL structure like slashes, question marks, and hash symbols. Encoding a URI component encodes everything including those structural characters. Use component encoding when encoding a value that will be part of a query string parameter.</p>
+    <p>There are two levels of URL encoding. Encoding a full URI preserves the structural characters that give a URL its meaning — the colon, forward slashes, question mark, hash, and ampersand. Encoding a URI component encodes everything including those structural characters. Use component encoding when encoding a value that will be placed inside a query string parameter. For example if a user searches for "C# and .NET" and you put that in a URL parameter, encode it as C%23%20and%20.NET so the ampersand and hash do not break the URL structure.</p>
+
+    <h3>Common Characters and Their Encoded Values</h3>
+    <p>Space becomes %20. Ampersand becomes %26. Plus sign becomes %2B. Equals sign becomes %3D. Question mark becomes %3F. Hash becomes %23. Forward slash becomes %2F. At sign becomes %40. Colon becomes %3A. Square brackets become %5B and %5D.</p>
+
+    <h3>URL Encoding in Different Languages</h3>
+    <p>In JavaScript use encodeURIComponent() for query string values and encodeURI() for full URLs. In Python use urllib.parse.quote() for components and urllib.parse.quote_plus() for form data. In C# use Uri.EscapeDataString() for components and Uri.EscapeUriString() for full URIs. In Java use URLEncoder.encode() with UTF-8 encoding.</p>
 
     <h3>How to Use This Tool</h3>
     <ol class="steps">
@@ -73,33 +78,32 @@
       <li>Paste your text into the left input box.</li>
       <li>The result appears instantly on the right as you type.</li>
       <li>Click Copy Output to copy the result to your clipboard.</li>
+      <li>Use the Flip button to swap input and output to decode what you just encoded.</li>
     </ol>
 
     <hr class="divider" />
-
     <h2>Frequently Asked Questions</h2>
     <div class="faq">
-
       <div class="faq-item">
-        <h4>Why does a space become %20 and not +?</h4>
-        <p>Both are valid in different contexts. %20 is the standard percent encoding for a space in a URL path. The plus sign is used for spaces in HTML form data submitted as application/x-www-form-urlencoded. This tool uses %20 which is the correct encoding for URL paths and query string values.</p>
+        <h4>Why does a space become %20 and not a plus sign?</h4>
+        <p>Both are valid in different contexts. %20 is the correct percent encoding for a space in a URL path or query string value. The plus sign is used for spaces specifically in HTML form data encoded as application/x-www-form-urlencoded. This tool uses %20 which is correct for general URL encoding.</p>
       </div>
-
       <div class="faq-item">
         <h4>When do I need to encode a URL?</h4>
-        <p>Any time you are building a URL programmatically and inserting user input or dynamic data into it. If a user types a name with spaces or special characters and you put it directly into a URL it will break. Always encode user input before putting it in a URL.</p>
+        <p>Any time you are building a URL programmatically and inserting dynamic data into it. If a user types a name with spaces or special characters and you concatenate it directly into a URL it will break. Always encode user-provided data before putting it into a URL parameter.</p>
       </div>
-
       <div class="faq-item">
         <h4>Is URL encoding the same as Base64?</h4>
-        <p>No. They are different encoding schemes for different purposes. URL encoding converts characters to percent-encoded format for use in URLs. Base64 converts binary data to a text-safe string for transmission in systems that only support ASCII text.</p>
+        <p>No. They are completely different encoding schemes for different purposes. URL encoding converts characters to percent-encoded format specifically for use in URLs. Base64 converts binary data to a text-safe string for transmission in systems that only support ASCII. You would never use Base64 in a URL and you would never use percent encoding to encode binary data.</p>
       </div>
-
+      <div class="faq-item">
+        <h4>Can I encode an entire URL?</h4>
+        <p>You can but you usually should not encode the full URL including its structure. Encoding the full URL will encode the slashes and colons that make it a valid URL and the result will not work as a link. Use full URI encoding only when you understand exactly which characters need to stay unencoded. In most cases you only need to encode the values inside query string parameters.</p>
+      </div>
       <div class="faq-item">
         <h4>Is my data safe?</h4>
-        <p>Yes. Everything runs in your browser. Nothing is sent to any server. Your URLs and data stay entirely on your machine.</p>
+        <p>Yes. Everything runs in your browser. Your URLs and text are never sent to any server.</p>
       </div>
-
     </div>
   </div>
 </div>
